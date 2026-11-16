@@ -1,0 +1,11 @@
+{
+  "name": "mrepo-base-howto",
+  "version": "0.1.0",
+  "description": "Module: the mrepo howto protocol, an mrepo's how-tos by activity: extracted from its packages, listed and read.",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "bare ../../node_modules/brittle/cmd.js test/*.test.js"
+  },
+  "license": "MIT"
+}
