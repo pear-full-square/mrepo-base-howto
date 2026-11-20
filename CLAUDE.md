@@ -62,7 +62,8 @@ history, and each package and module has its own repository).
   The open scheduled work: `steps/2-rebuild/tasks.md`. Designs in
   discussion: `steps/2-rebuild/xpath.md`, Splectral's server and package
   template `steps/2-rebuild/splectral.md`, distributed applications
-  `steps/2-rebuild/distributed-applications.md`. The local runs: the
+  `steps/2-rebuild/distributed-applications.md`, small open models
+  shaped for specific tasks `steps/2-rebuild/model-shaping.md`. The local runs: the
   prompt and the last note, `steps/2-rebuild/local-note.md`; the local
   agent's instructions, `steps/2-rebuild/handover-local.md`.
 
@@ -122,8 +123,11 @@ repository's and its tools'.
   package's (`sh tools/packages.sh -m "<what changed>" <org>/<package>...`).
   Pushed when the human asks, or at a milestone agreed with them; not
   after every change. New repositories are created by the human.
-- **Planning:** the phase's request comes from `splectrum/roadmap-1`; the
-  work is planned here, as it goes, and its outcome reported back.
+- **Planning:** the work is planned here, as it goes; the doc packages
+  hold the direction and the decisions (the human, 2026-11-20: "You
+  don't need to report back to roadmap-1, our doc packages should have
+  all"). A session with the human to make sure all of `splectrum/roadmap-1`
+  is transferred (proposed for 2026-11-21).
 - In a Claude Code cloud session, execution runs on `execute/main`, merged
   into `main` with a plain merge, both pushed. No commit while a build
   runs over the tree.

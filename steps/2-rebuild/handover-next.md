@@ -4,7 +4,8 @@ Read, in this order: `CLAUDE.md` (what is here, how to validate); then
 `haiccing/base-docs-hdlc/README.md` (how work is done) and
 `haiccing/base-docs-haicc/README.md` (the platform and our terms); then
 `tasks.md` here (the open scheduled work); then the designs in
-discussion: `xpath.md`, `splectral.md`, `distributed-applications.md`.
+discussion: `xpath.md`, `splectral.md`, `distributed-applications.md`,
+`model-shaping.md`.
 What is built is documented in the packages; the history is git's.
 
 ## Starting a session
@@ -59,6 +60,32 @@ What is open, all of it in `tasks.md`:
   (`haiccing/base-package-help`, `pear-full-square/mrepo-base-help`,
   holding the old help package and module of 2026-11-17): a push
   replaces them; pushed when the human asks.
+- **Tomorrow, 2026-11-21, the work starts**: first the session with the
+  human, `splectrum/roadmap-1` transferred into the doc packages, a
+  "Roadmap" section in `base-docs-vision` (the priorities, the current
+  phase, the home swarms; the detailed schedule stays in `tasks.md`).
+- **`haiccing/base-docs-vision` to be private** (the human, 2026-11-20:
+  "so we can put specific roadmap planning stuff in there that is not
+  for public consumption. Keep that in mind."). To settle with it: its
+  bundle is released publicly today, named in haiccing's public
+  manifest, downloaded by every install (`haicc sources download
+  haiccing`) and read in every docs mrepo (`documents: sources`): a
+  private repository's releases cannot be downloaded by a public
+  install. Settled (the human, 2026-11-20): "yes, keep the vision out of
+  the public releases. We have time for that, we are still the only
+  users": the vision out of the public manifest and the releases, in the
+  sources of our own installs only; not urgent.
+- **The plan** (agreed 2026-11-20): three weeks, two tracks, in
+  `tasks.md`, "The plan": Track A, the home swarm (ready by about
+  2026-12-11: Raspberry Pis and larger machines, test runs in the cheap
+  hours); Track B, model shaping, data first.
+- **Next with the human** (2026-11-21, proposed by the human): a session
+  to make sure all of `splectrum/roadmap-1` is in the doc packages; no
+  more reporting back to it.
+- **Model shaping** (the human, 2026-11-20, to determine the roadmap's
+  priorities): small open models tuned for specific tasks, `hc` as
+  haicc's operator first (`base-docs-vision`, "Model shaping"); the
+  order proposed, data and evaluation first, in `model-shaping.md`.
 - **With the human next**: Splectral after its proof of concept
   (`splectral.md`, "Open, one at a time"): the family's documentation
   package, the repositories the human creates for the new Splectral

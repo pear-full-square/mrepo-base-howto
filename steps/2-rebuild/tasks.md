@@ -36,6 +36,51 @@ autonomy) and tackling the D&I process using haicc": `claude-headless`,
 then `dev-on-haicc`. D&I: "design and development, which will then
 become HDLC afterwards (haicc (software) development lifecycle)".
 
+## The plan: three weeks, two tracks (agreed 2026-11-20)
+
+The human: "yes, both tracks in parallel, write it into tasks.md. There
+is local and cloud to use." Three weeks (to about 2026-12-11) before the
+human is home to set up home-based swarms: "At home I have plenty of
+small platforms we can use - raspberry pi with some larger ones. So we
+can set up swarms for testing and such with dedicated nodes and run
+them during cheap electricity hours (7 hours at night, during the day
+with enough battery capacity)." Track A must be ready by then; Track B
+runs beside it (`model-shaping.md`).
+
+**Track A: the home swarm**
+
+| week | label | what is done when it is done |
+|---|---|---|
+| 1 | `base-solution-haicc` | one command installs host, docs and Splectral on a fresh machine, from the releases |
+| 1 | `arm64` | the sources for `linux-arm64` too (Bare's runtime, every native addon), the installer choosing by machine: a Raspberry Pi installs and boots |
+| 1-2 | `swarm-cluster` | the nodes of a swarm on different machines find each other on a private DHT: the `swarm` protocol, `join`, `leave`, `status`; a node says its peers |
+| 2 | `windows-wsl` | haicc installed and tested in WSL on a Windows laptop |
+| 2-3 | `night-runs` | a swarm's test runs scheduled on dedicated nodes, in the cheap hours; their reports collected |
+| 3 | `home-rehearsal` | the local machine runs a swarm of two machines from the releases, step by step: the how-to followed at home |
+
+**Track B: model shaping, data first**
+
+| week | label | what is done when it is done |
+|---|---|---|
+| 1 | `runnable-howtos` | every how-to with its script and what each step answers, run in the validation: the benchmark |
+| 1 | `haici-feedback` | `--flags feedback ...` on any command, recorded, read back (`help-mvp`'s remainder) |
+| 2 | `trace-export` | a tool: an install's requests and their feedback as a set (JSONL) |
+| 2-3 | `claude-headless` | `howto/plan` and `howto/explore` with headless Claude in them, run by the local agent: the baseline and the first traces of planning |
+| 3 | `model-node` | a package that runs a small open model as a service (an inference runtime) and answers requests; a tiny model in the cloud, 3 to 4 billion on the laptop, measured on the benchmark |
+
+**How it is worked** (ours, agreed with the plan)
+
+- A batch of changes to the shared base modules at a time, validated
+  once, in the background, while the next piece is designed: one full
+  validation costs about an hour.
+- Cloud sessions in parallel only on separate packages (a track each),
+  one build on `sources/` at a time, merged into `main` in turn.
+- The local machine: a test run after each milestone, a release at the
+  end of each week; at home, the swarms' nodes.
+- Each item, once agreed, built through to its end and reported; the
+  human's allowances: the design-heavy items (the `swarm` protocol, the
+  benchmark's runner, the model node) first.
+
 ## The tasks by label
 
 | label | what | where it stands |
@@ -51,16 +96,16 @@ become HDLC afterwards (haicc (software) development lifecycle)".
 | `xpath-phase-2` | the union and the fan-out over shortcuts | in discussion, `xpath.md` |
 | `inbox-watcher` | the folder that only grows | to check |
 | `mrepo-registry` | the rest, for the next design round | in part |
-| `swarm-cluster` | the nodes finding each other, the `swarm` protocol | the next phase |
+| `swarm-cluster` | the nodes finding each other, the `swarm` protocol | plan, Track A, weeks 1-2 |
 | `splectral` | Splectral beyond the proof of concept | `splectral.md`, "Open" |
 | `dev-env-poc` | a proof-of-concept development environment, from this repository's structure and tools | design discussion first, with the human |
 | `platform-orgs` | three platforms on haicc, each its own packages organisation: the code and the sourcing | built; the manifests' releases, each platform's template, dependencies checked |
 | `help-mvp` | the flag unit, `help/annotate`, `haici/feedback`, `explore` and `plan` scoped | step 3 in part: the flag unit and `help/annotate` built; `haici/feedback`, `explore` and `plan` open |
 | `external-request-api` | what the outside may ask | to discuss |
 | `error-on-empty` | a flag: an empty selection fails the request | set aside by the human |
-| `base-solution-haicc` | a solution: the mrepos of an install as a script | to build |
+| `base-solution-haicc` | a solution: the mrepos of an install as a script | plan, Track A, week 1 |
 | `install-tests` | each package's tests and examples as transient installs | to build, later |
-| `runnable-howtos` | every how-to runnable, run in the validation | settled (`base-docs-hdlc`, "Working demos"), not built |
+| `runnable-howtos` | every how-to runnable, run in the validation | settled (`base-docs-hdlc`, "Working demos"); plan, Track B, week 1 |
 | `review-code` | the code changes the review found, still open | in part |
 | `composite-actions` | an action resuming after a child request; a time limit | not designed |
 | `release-signing` | bundles signed, the manifest checked against a key | deferred |
@@ -72,6 +117,14 @@ become HDLC afterwards (haicc (software) development lifecycle)".
 | `modules-tool` | a mini tool for the modules kept here | done by hand until then |
 | `runtime-status` | the runtime's status beyond "not yet operational" | to check |
 | `housekeeping` | the human's to do: repositories, a branch, the seed | to check |
+| `private-vision` | `base-docs-vision` private: out of the public manifest and releases, in our own installs' sources only (the human, 2026-11-20) | to build, not urgent |
+| `arm64` | the sources for `linux-arm64` too: a Raspberry Pi a node | plan, Track A, week 1 |
+| `windows-wsl` | haicc in WSL on a Windows laptop | plan, Track A, week 2 |
+| `night-runs` | a swarm's test runs scheduled in the cheap hours | plan, Track A, weeks 2-3 |
+| `home-rehearsal` | a swarm of two machines from the releases, step by step | plan, Track A, week 3 |
+| `haici-feedback` | the feedback flag, `haici/feedback` | plan, Track B, week 1 |
+| `trace-export` | an install's requests and feedback as a set | plan, Track B, week 2 |
+| `model-node` | a small open model as a service in an mrepo | plan, Track B, week 3 |
 
 ## `first-tests`: every package tests what it provides
 
