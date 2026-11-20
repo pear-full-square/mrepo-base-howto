@@ -70,6 +70,16 @@ needs; the sizes as they stand (small models, 1 to 8 billion parameters):
   machines, so our own data only); then one Linux machine with a GPU
   of 24 to 32 GB, a node of the swarm with the platform for it.
   Current models and prices to be looked up when it is decided.
+- **The human** (2026-11-20): "I am happy to buy a decent NVidia setup,
+  costing a few thousand pounds." UK prices looked up the same day,
+  volatile: an RTX 5090 (32 GB) new about £4,500 to £6,000 (its list
+  price about £1,800); a DGX Spark (128 GB unified, much slower than a
+  5090 on what fits both) about £5,100; a used RTX 4090 (24 GB) the
+  value for shaping models of 7 to 13 billion. Ours: a Linux desktop
+  around a used RTX 4090 now (the whole about £3,000 to £4,000), or wait
+  for the 5090 to come back towards its list price; not the Spark (its
+  strength, large models, not our aim). Nothing needs a GPU before the
+  first adapter (step 4): no rush.
 
 ## Open
 
