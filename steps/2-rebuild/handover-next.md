@@ -71,8 +71,10 @@ What is open, all of it in `tasks.md`:
   manifest, downloaded by every install (`haicc sources download
   haiccing`) and read in every docs mrepo (`documents: sources`): a
   private repository's releases cannot be downloaded by a public
-  install. Ours: the vision out of the public manifest and the releases,
-  in the sources of our own installs only.
+  install. Settled (the human, 2026-11-20): "yes, keep the vision out of
+  the public releases. We have time for that, we are still the only
+  users": the vision out of the public manifest and the releases, in the
+  sources of our own installs only; not urgent.
 - **The plan** (agreed 2026-11-20): three weeks, two tracks, in
   `tasks.md`, "The plan": Track A, the home swarm (ready by about
   2026-12-11: Raspberry Pis and larger machines, test runs in the cheap

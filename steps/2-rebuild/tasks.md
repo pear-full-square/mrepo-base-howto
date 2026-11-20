@@ -117,6 +117,7 @@ runs beside it (`model-shaping.md`).
 | `modules-tool` | a mini tool for the modules kept here | done by hand until then |
 | `runtime-status` | the runtime's status beyond "not yet operational" | to check |
 | `housekeeping` | the human's to do: repositories, a branch, the seed | to check |
+| `private-vision` | `base-docs-vision` private: out of the public manifest and releases, in our own installs' sources only (the human, 2026-11-20) | to build, not urgent |
 | `arm64` | the sources for `linux-arm64` too: a Raspberry Pi a node | plan, Track A, week 1 |
 | `windows-wsl` | haicc in WSL on a Windows laptop | plan, Track A, week 2 |
 | `night-runs` | a swarm's test runs scheduled in the cheap hours | plan, Track A, weeks 2-3 |
