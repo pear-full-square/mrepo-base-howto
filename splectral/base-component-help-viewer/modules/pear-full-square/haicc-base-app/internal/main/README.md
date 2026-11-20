@@ -38,6 +38,8 @@ The exit code, a number.
   <argument>...`: written into the root mrepo's inbox folder; the
   response record printed whole, unpacked across lines; exit 0 when its
   completed form holds an output, 1 an error, which is also said on
+  stderr; 1 too for a command its flags kept from being run (its output
+  `run: false`, completed, not failed), `not run:` and why said on
   stderr.
 - **A continuation**: a response that answers with a script to go on
   with is followed: each of its commands sent from the position it is

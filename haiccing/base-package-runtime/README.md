@@ -24,6 +24,7 @@ bare <dir>/packages/haiccing/base-package-runtime.bundle <dir>
 ## Included packages
 
 - [base-package-info](../base-package-info/)
+- [base-package-help](../base-package-help/)
 - [base-package-protocol](../base-package-protocol/)
 
 ## Usage

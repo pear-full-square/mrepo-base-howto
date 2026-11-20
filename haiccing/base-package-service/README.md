@@ -25,6 +25,7 @@ that deactivates it again.
 
 - [base-package-runtime](../base-package-runtime/)
 - [base-package-info](../base-package-info/)
+- [base-package-help](../base-package-help/)
 - [base-package-protocol](../base-package-protocol/)
 
 ## Config

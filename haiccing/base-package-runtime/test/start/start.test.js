@@ -69,7 +69,7 @@ test('the runtime: started, answering, stopped', { timeout: 60000 }, async (t) =
       for (const [p] of await repo.select('/request/done/*')) if (!p.endsWith('layer.json')) done.push(JSON.parse((await repo.read(p)).toString()).value.value)
       if (done.length < 2) await wait(100)
     }
-    t.alike(done.map(f => (f.command ?? []).join(' ')).sort(), ['protocol/activate . info', 'protocol/activate . protocol'], 'the runtime\'s own, then the boot hook file\'s first line: each a request of its own, done')
+    t.alike(done.map(f => (f.command ?? []).join(' ')).sort(), ['protocol/activate . help', 'protocol/activate . protocol'], 'the runtime\'s own, then the boot hook file\'s first line: each a request of its own, done')
     t.ok(done.every(f => /^no protocol: protocol \(/.test(f.error ?? '')), 'neither possible here: no package linked, said; the hook file stopped at its first line')
     t.alike(await repo.select('/protocols/*'), [], 'so nothing is active')
     // through its inbox: nothing is active by default

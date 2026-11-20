@@ -55,7 +55,7 @@ become HDLC afterwards (haicc (software) development lifecycle)".
 | `splectral` | Splectral beyond the proof of concept | `splectral.md`, "Open" |
 | `dev-env-poc` | a proof-of-concept development environment, from this repository's structure and tools | design discussion first, with the human |
 | `platform-orgs` | three platforms on haicc, each its own packages organisation: the code and the sourcing | built; the manifests' releases, each platform's template, dependencies checked |
-| `help-mvp` | the flag unit, `help/annotate`, `haici/feedback`, `explore` and `plan` scoped | step 3, not built |
+| `help-mvp` | the flag unit, `help/annotate`, `haici/feedback`, `explore` and `plan` scoped | step 3 in part: the flag unit and `help/annotate` built; `haici/feedback`, `explore` and `plan` open |
 | `external-request-api` | what the outside may ask | to discuss |
 | `error-on-empty` | a flag: an empty selection fails the request | set aside by the human |
 | `base-solution-haicc` | a solution: the mrepos of an install as a script | to build |
@@ -327,8 +327,24 @@ for dependencies"). What it is: `base-docs-haicc`, "Platforms";
 
 Step 3 of the human's order, after `info` and the package review (both
 done): the flag unit, `help/annotate` and `haici/feedback`, with
-`howto/explore` and `howto/plan` scoped. Not built. The direction:
+`howto/explore` and `howto/plan` scoped. The direction:
 `base-docs-vision`, "Help and haici".
+
+**Built** (2026-11-20, the order agreed with the human: `splectral.md`,
+"Open, one at a time", 1): the flag unit (`mrepo-base-request`,
+`flags/`: the four flags moved in unchanged, `help` added); strict, a
+command its flags keep from running completes not run (`run: false`),
+`haicc` exits 1; the `help` flag, a rewrite, last; `help/annotate` in
+`haiccing/base-package-help` (`mrepo-base-help`), linked and activated
+wherever `info` is. Their repositories, `haiccing/base-package-help` and
+`pear-full-square/mrepo-base-help`, the human's to create. Decided while
+building (ours): the strict check is at the door (`admit`), so a command
+not run never reaches its action; a rewrite whose protocol is here but
+not active meets the door's own error as it executes (`not now`), not a
+not-run answer; `help/annotate`'s `run` and `more` are written where it
+answers (`crud/read swarms` at the host), the position typed being the
+terminal's (the viewer's command box puts it in front). Still open
+below: `haici/feedback`, `explore` and `plan`.
 
 **Settled** (the human)
 

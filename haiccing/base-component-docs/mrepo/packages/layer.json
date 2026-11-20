@@ -1,10 +1,11 @@
 {
   "mode": "replicated",
-  "description": "The packages the docs mrepo is made of, in deploy order: the runtime, the protocol protocol, the info protocol, the documentation packages, this component last (no service: the docs mrepo answers as soon as it runs). Beyond the list, every package the sources offer, documented only (documents: sources).",
+  "description": "The packages the docs mrepo is made of, in deploy order: the runtime, the protocol protocol, the info protocol, the help protocol, the documentation packages, this component last (no service: the docs mrepo answers as soon as it runs). Beyond the list, every package the sources offer, documented only (documents: sources).",
   "packages": [
     "haiccing/base-package-runtime",
     "haiccing/base-package-protocol",
     "haiccing/base-package-info",
+    "haiccing/base-package-help",
     "haiccing/base-docs-haicc",
     "haiccing/base-docs-hdlc",
     "haiccing/base-docs-package",

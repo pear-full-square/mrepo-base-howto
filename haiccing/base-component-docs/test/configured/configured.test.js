@@ -25,6 +25,7 @@ const LIST = [
   'haiccing/base-package-runtime',
   'haiccing/base-package-protocol',
   'haiccing/base-package-info',
+  'haiccing/base-package-help',
   'haiccing/base-docs-haicc',
   'haiccing/base-docs-hdlc',
   'haiccing/base-docs-package',
@@ -36,13 +37,14 @@ const LIST = [
 // Each hook named here with its command: what the docs mrepo offers from
 // its boot, and its info extracted.
 const HOOKS = {
-  'boot/1': ['protocol/activate', '.', 'info'],
-  'boot/2': ['protocol/activate', '.', 'runtime'],
-  'boot/3': ['info/extract']
+  'boot/1': ['protocol/activate', '.', 'help'],
+  'boot/2': ['protocol/activate', '.', 'info'],
+  'boot/3': ['protocol/activate', '.', 'runtime'],
+  'boot/4': ['info/extract']
 }
 
 test('its list of packages, in deploy order, itself last', (t) => {
-  t.alike(json('mrepo', 'packages', 'layer.json').packages, LIST, 'the runtime, the protocol protocol, info, the documentation, the component')
+  t.alike(json('mrepo', 'packages', 'layer.json').packages, LIST, 'the runtime, the protocol protocol, info, help, the documentation, the component')
 })
 
 test('its hooks, file by file; no service', (t) => {
@@ -70,10 +72,11 @@ test('the packages it lists: each in the sources, the protocols they provide', (
   t.ok(sources, 'SOURCES: the sources folder, the listed packages\' bundles in it')
   t.alike(missing, [], 'every package of the list has its bundle there')
   t.alike(Object.fromEntries(Object.entries(provided).map(([p, c]) => [p, c.from]).sort()), {
+    help: 'haiccing/base-package-help',
     info: 'haiccing/base-package-info',
     protocol: 'haiccing/base-package-protocol',
     runtime: 'haiccing/base-package-runtime'
-  }, 'three protocols, one a package; the documentation and the component provide none')
+  }, 'four protocols, one a package; the documentation and the component provide none')
 })
 
 test('every hook names a protocol and an action a listed package provides', (t) => {
@@ -115,11 +118,11 @@ function world () {
   return { exec, commands, active }
 }
 
-test('what its hooks do: the boot opens info and runtime, and extracts the info', async (t) => {
+test('what its hooks do: the boot opens help, info and runtime, and extracts the info', async (t) => {
   const w = world()
   // the boot: the runtime places these as its own, in name order
   for (const name of Object.keys(brought).sort()) await w.exec.run(brought[name])
-  t.alike(w.active(), ['info', 'runtime'], 'after the boot: info, and the runtime\'s')
+  t.alike(w.active(), ['help', 'info', 'runtime'], 'after the boot: help, info, and the runtime\'s')
   t.absent(w.active().includes('protocol'), 'the protocol protocol: not a hook\'s, the runtime opens it itself')
   t.ok(w.commands.includes('info/extract'), 'its info extracted, by its hook')
   const ran = Object.entries(brought).filter(([, c]) => w.commands.includes(c.join(' '))).map(([n]) => n).sort()

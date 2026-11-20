@@ -11,8 +11,8 @@ The runtime's part of every mrepo's structure, laid in when an mrepo is deployed
 Deployed as the target, the runtime package makes an mrepo with a runtime
 and its info, and no other protocol:
 
-- **Its packages** (`packages/layer.json`): the info protocol, the
-  protocol protocol, and itself last.
-- **Its hooks** (`runtime/hooks/boot/`): `info` and `runtime` activated,
+- **Its packages** (`packages/layer.json`): the info protocol, the help
+  protocol, the protocol protocol, and itself last.
+- **Its hooks** (`runtime/hooks/boot/`): `help`, `info` and `runtime` activated,
   its info extracted. Runtime config: laid in only when this package is
   the one deployed.
