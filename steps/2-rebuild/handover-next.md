@@ -60,6 +60,10 @@ What is open, all of it in `tasks.md`:
   (`haiccing/base-package-help`, `pear-full-square/mrepo-base-help`,
   holding the old help package and module of 2026-11-17): a push
   replaces them; pushed when the human asks.
+- **The plan** (agreed 2026-11-20): three weeks, two tracks, in
+  `tasks.md`, "The plan": Track A, the home swarm (ready by about
+  2026-12-11: Raspberry Pis and larger machines, test runs in the cheap
+  hours); Track B, model shaping, data first.
 - **Next with the human** (2026-11-21, proposed by the human): a session
   to make sure all of `splectrum/roadmap-1` is in the doc packages; no
   more reporting back to it.
