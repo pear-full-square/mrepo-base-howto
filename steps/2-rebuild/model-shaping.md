@@ -80,6 +80,14 @@ needs; the sizes as they stand (small models, 1 to 8 billion parameters):
   for the 5090 to come back towards its list price; not the Spark (its
   strength, large models, not our aim). Nothing needs a GPU before the
   first adapter (step 4): no rush.
+- **Settled** (the human, 2026-11-20): second hand, platforms others
+  discard, grown into gradually, the first buys staying in the work
+  (`base-docs-vision`, "Model shaping"). Ours, the first buy: a used
+  RTX 3090 (24 GB, the cheapest card that shapes a model of 7 to 8
+  billion, many on the market), in a used workstation with room for
+  more cards later (slots, power, memory); checked before buying (its
+  memory tested, not worn out by mining); later a bigger card, the 3090
+  staying to run models and evaluations.
 
 ## Open
 

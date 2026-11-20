@@ -586,6 +586,14 @@ it is; the rest is ours, put to the human.
   its runtime), asked from any node by a request; its weights and
   adapters objects on Hyperdrive, replicated. One base model, several
   small adapters, each a task.
+- **Hardware, grown into** (the human, 2026-11-20): "we are not in a
+  hurry and probably can work with platforms that other discard. So we
+  may get a good second hand price. I want to evolve into it, So start
+  small and move up gradually with initial buys still taking part in
+  the work load." What follows (ours): a swarm of unequal nodes, each
+  taking the work its hardware suits: an older GPU runs the small
+  models and the evaluations, a bigger one, bought later, shapes them;
+  a node's capacity is part of what places a model on it.
 - **Kept apart** (ours): the training itself, a job outside haicc's
   runtime (its own stack), given a frozen export of a set and giving
   back an adapter and its metrics as records; the evaluation items in
