@@ -3,9 +3,10 @@
 Read, in this order: `CLAUDE.md` (what is here, how to validate); then
 `haiccing/base-docs-hdlc/README.md` (how work is done) and
 `haiccing/base-docs-haicc/README.md` (the platform and our terms); then
-`tasks.md` here (the open scheduled work); then the designs in
-discussion: `xpath.md`, `splectral.md`, `distributed-applications.md`,
-`model-shaping.md`.
+the roadmap and the scheduled work, `splectrum/roadmap-2` (private;
+attached with `add_repo`, push, cloned beside this one): its
+`README.md`, `roadmap/` (the priorities, the phases, the plan) and
+`tasks/` (one folder a task, the designs in discussion beside theirs).
 What is built is documented in the packages; the history is git's.
 
 ## Starting a session
@@ -30,6 +31,8 @@ container. Without a daemon those tests fail, they do not skip.
 - **Work on `execute/main`**, merged into `main` with a plain merge, both
   pushed (a cloud session may be given a branch of its own: it is not
   used for the work).
+- **`splectrum/roadmap-2`** is attached (`add_repo`, with push) and
+  cloned beside this one; its commits as hdlc's "Branches".
 - **The product repositories** are pushed from here, so a cloud session
   attaches them first (`add_repo`, with push): the modules, each
   `pear-full-square/<module>` for a folder of `pear-full-square/`
@@ -51,56 +54,29 @@ container. Without a daemon those tests fail, they do not skip.
 
 ## Right now
 
-What is open, all of it in `tasks.md`:
+What is open is in `splectrum/roadmap-2`: the plan (`roadmap/plan/`),
+the tasks (`tasks/`). What is this environment's own:
 
-- **Building now** (agreed 2026-11-20, `splectral.md`, "Open, one at a
-  time", 1): the help viewer's navigation, built; the flag unit with
-  `help/annotate` (`help-mvp`, step 3), built; the command box in the viewer on
-  `--flags help`, built. Their repositories exist already
-  (`haiccing/base-package-help`, `pear-full-square/mrepo-base-help`,
-  holding the old help package and module of 2026-11-17): a push
-  replaces them; pushed when the human asks.
-- **Tomorrow, 2026-11-21, the work starts**: first the session with the
-  human, `splectrum/roadmap-1` transferred into the doc packages, a
-  "Roadmap" section in `base-docs-vision` (the priorities, the current
-  phase, the home swarms; the detailed schedule stays in `tasks.md`).
-- **`haiccing/base-docs-vision` to be private** (the human, 2026-11-20:
-  "so we can put specific roadmap planning stuff in there that is not
-  for public consumption. Keep that in mind."). To settle with it: its
-  bundle is released publicly today, named in haiccing's public
-  manifest, downloaded by every install (`haicc sources download
-  haiccing`) and read in every docs mrepo (`documents: sources`): a
-  private repository's releases cannot be downloaded by a public
-  install. Settled (the human, 2026-11-20): "yes, keep the vision out of
-  the public releases. We have time for that, we are still the only
-  users": the vision out of the public manifest and the releases, in the
-  sources of our own installs only; not urgent.
-- **The plan** (agreed 2026-11-20): three weeks, two tracks, in
-  `tasks.md`, "The plan": Track A, the home swarm (ready by about
-  2026-12-11: Raspberry Pis and larger machines, test runs in the cheap
-  hours); Track B, model shaping, data first.
-- **Next with the human** (2026-11-21, proposed by the human): a session
-  to make sure all of `splectrum/roadmap-1` is in the doc packages; no
-  more reporting back to it.
-- **Model shaping** (the human, 2026-11-20, to determine the roadmap's
-  priorities): small open models tuned for specific tasks, `hc` as
-  haicc's operator first (`base-docs-vision`, "Model shaping"); the
-  order proposed, data and evaluation first, in `model-shaping.md`.
-- **With the human next**: Splectral after its proof of concept
-  (`splectral.md`, "Open, one at a time"): the family's documentation
-  package, the repositories the human creates for the new Splectral
-  packages and modules (nothing pushed to them yet), today's page as a
-  component, info views on every mrepo.
-  Then a proof-of-concept development environment, from this
-  repository's structure (or similar) and its tools: design discussion
-  first (`dev-env-poc`).
-- **To build**: `base-solution-haicc` (host, docs and Splectral as one
-  install); `help-mvp`, step 3 (the flag unit, `help/annotate`,
-  `haici/feedback`); `install-tests` with `runnable-howtos`, after the
-  proof of concept's fixes (`distributed-applications.md`, "What comes
-  of it").
-- **The next phase**: the nodes of a swarm finding each other
-  (`swarm-cluster`); then `claude-headless` and `dev-on-haicc`.
+- **The roadmap-1 transfer** (with the human, 2026-11-20), in progress.
+  Done: `splectrum/roadmap-2` made (the human: two containers, the
+  vision and roadmap-2; task folders), the scheduled work and the
+  designs moved into it from `steps/`, roadmap-1's aim, product, phases,
+  Later and Horizon in its `roadmap/`. Still to do, as proposed to the
+  human: roadmap-1's directions and research into `base-docs-vision`
+  (connectivity, private data, post-quantum, the phone); its principles
+  and "Always discussed" into `base-docs-hdlc`, each checked against
+  what is built; hdlc's "From vision to work" with the roadmap between
+  them; whether home automation still stands as the first application
+  (`roadmap/product/`, asked, not answered); then roadmap-1 archived
+  (`tasks/cleanup/`). Its request to the site,
+  `pending/world-engineering-section`: done or open, to ask.
+- **Building now** (agreed 2026-11-20, `tasks/splectral/design.md`,
+  "Open, one at a time", 1): the help viewer's navigation, the flag unit
+  with `help/annotate`, the command box on `--flags help`: built. Their
+  repositories exist already (`haiccing/base-package-help`,
+  `pear-full-square/mrepo-base-help`, holding the old help package and
+  module of 2026-11-17): a push replaces them; pushed when the human
+  asks.
 - **The local agent**: its prompt and its last note, `local-note.md`;
   its instructions, `handover-local.md`. The next run (2026-11-20):
   test only, the help viewer's navigation, the flag unit, help and the
@@ -109,13 +85,5 @@ What is open, all of it in `tasks.md`:
   human, 2026-11-19); everything builds and runs from this repository
   (`tools/release.js`, `haicc sources link`). Pushed only when the human
   asks; one behind is no fault. Last pushed 2026-11-19, before the
-  Splectral site. Not created yet: `splectral/base-docs-splectral`
-  (`splectral.md`, step 2).
-- **Designs, for reading and comment**: distributed applications, the doc
-  "Distributed applications on haicc"
-  (https://claude.ai/artifact/73tvSUZoir4CsYdTCpiVxx), its settled points
-  in the vision (`base-docs-vision`, "Distributed applications",
-  "Pipelines"); `distributed-applications.md` here.
-- **Waiting on the human** (in `tasks.md`): the readings of
-  `runnable-howtos` (setting the scene, an intention: a command or
-  inferred); the open questions of `distributed-applications.md`.
+  Splectral site. Not pushed since: `pear-full-square/.github` (its
+  profile no longer links this repository, 2026-11-20).
