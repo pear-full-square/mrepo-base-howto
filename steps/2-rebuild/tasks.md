@@ -337,7 +337,8 @@ command its flags keep from running completes not run (`run: false`),
 `haicc` exits 1; the `help` flag, a rewrite, last; `help/annotate` in
 `haiccing/base-package-help` (`mrepo-base-help`), linked and activated
 wherever `info` is. Their repositories, `haiccing/base-package-help` and
-`pear-full-square/mrepo-base-help`, the human's to create. Decided while
+`pear-full-square/mrepo-base-help`, exist already (the old help package
+and module, last pushed 2026-11-17): a push replaces them. Decided while
 building (ours): the strict check is at the door (`admit`), so a command
 not run never reaches its action; a rewrite whose protocol is here but
 not active meets the door's own error as it executes (`not now`), not a
@@ -418,7 +419,7 @@ below: `haici/feedback`, `explore` and `plan`.
 - Where `howto/explore` and `howto/plan` live, now that the `howto`
   package is gone. `help/annotate`: in `haiccing/base-package-help`, a
   package of its own (ours; the human, 2026-11-20: "Please go ahead with
-  your proposed order"), its repository the human's to create; linked
+  your proposed order"), its repository there already; linked
   wherever `info` is.
 - For `explore` and `plan`: the call to headless Claude built now, or
   scoped only (ours: scoped only; the call, the runtime starting `claude
