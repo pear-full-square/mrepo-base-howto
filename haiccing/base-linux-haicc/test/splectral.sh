@@ -99,6 +99,13 @@ raw=$(awk '{ a = a $0 "\n" } END { o = "<pre class=&quot;raw&quot;><code>"; s = 
 tail_of () { printf '%s\n' "$1" | sed -n '/^      "output": /,$p'; }
 [ -n "$(tail_of "$cli")" ] && [ "$(tail_of "$cli")" = "$(tail_of "$raw")" ] && ok "raw: its output printed line for line as the command line prints it" || no "raw: like for like" "$(printf '%s' "$raw" | head -c 300)"
 has "$raw" '"command": ["haicc","docs","info/get","hdlc/validation"]' "raw: the command as a terminal sends it"
+# the command box: a command as typed after haicc, answered with help where it would run, not run
+get "/help/?cmd=docs%20info%2Fget%20hdlc"; is "$code" 200 "a command typed: a page"
+has "$PAGE" 'taken here, now' "its help: the door's answer here and now"
+has "$PAGE" '<code>haicc docs info/get hdlc</code></dd>' "the command to run it, its position in front"
+has "$PAGE" '<code>haicc docs info/get hdlc --flags help</code>' "sent with the help flag: nothing of it run"
+get "/help/?cmd=.%20boot%2Fteardown%20docs"; has "$PAGE" 'taken here, now' "a teardown typed: answered"
+get /help/; is "$code" 200 "and the docs mrepo still there: nothing run"
 # the site: the URI chopped, the site serving /, Splectral's own page its first tab
 get /; has "$PAGE" '<a href="/install" class="on" aria-current="page">install</a><a href="/help/">help</a>' "the site: its own page shown, the component a tab"
 has "$PAGE" "srcdoc=" "its own page embedded in the content area"

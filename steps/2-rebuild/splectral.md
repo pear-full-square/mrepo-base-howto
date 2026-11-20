@@ -777,8 +777,10 @@ component is on another node, with nothing changed in the pattern.
    3. The flag unit with `help/annotate` (`help-mvp`, step 3): next.
       `help/annotate` in a package of its own, `haiccing/base-package-help`
       (ours, the human: "go ahead"), its repository there already.
-   4. A command box in the viewer on `--flags help`: the command typed
-      sent with the help flag, its annotation drawn. After 3.
+   4. A command box in the viewer on `--flags help`: built
+      (`splectral-base-help-viewer`, `page`, `?cmd=`); the command typed
+      sent with the help flag, its annotation drawn, `run it` with the
+      position typed in front.
    Not taken up: the address as the command; `boot/deploy` refusing an
    mrepo named like a protocol (not needed with `?at=`).
 2. The family's documentation package, `splectral/base-docs-splectral`:
