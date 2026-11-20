@@ -121,6 +121,7 @@ need it sooner rather than later".
 | `request-history` | a request's own history in its document | when wanted |
 | `modules-tool` | a mini tool for the modules kept here | done by hand until then |
 | `runtime-status` | the runtime's status beyond "not yet operational" | to check |
+| `cleanup` | the repositories nothing uses, into the private archive | the human, in progress |
 | `housekeeping` | the human's to do: repositories, a branch, the seed | to check |
 | `private-vision` | `base-docs-vision` private: out of the public manifest and releases, in our own installs' sources only (the human, 2026-11-20) | to build, not urgent |
 | `arm64` | the sources for `linux-arm64` too: a Raspberry Pi a node | plan, Track A, week 1 |
@@ -724,6 +725,42 @@ To check, each the human's:
   repository, `splectrum/dev-env-3-mrepo-native`, to be created; whether
   to update the seed to say its storage setting and boxes as layers are
   built here (one commit to `roadmap-1`).
+
+## `cleanup`: the repositories nothing uses, archived
+
+**Asked** (the human, 2026-11-20): "put a cleanup task, I am already
+cleaning up splectrum by moving old repos into private archive."
+
+What nothing in development or the sources uses (checked 2026-11-20
+against `haiccing/`, `splectral/`, `pear-full-square/`, `package.json`,
+`package-lock.json` and `sources/`; checked again before each move):
+
+- `haiccing`: `base-package-haici`, `base-package-howto`,
+  `base-package-pkgm`, `base-package-p2p`, `base-package-third-party`,
+  `package-docs-mrepo`, `base-demo-liveness`, `base-demo-other-host`,
+  `base-swarm-three-nodes`.
+- `splectral`: `base-demo-liveness`, `base-demo-other-host`,
+  `base-view-map`.
+- `pear-full-square`: `mrepo-base-howto`, `mrepo-base-haici`,
+  `haicc-base-cli`, `haicc-cli-parser`, `haicc-deployment`,
+  `docker-manager`, `p2p-docker-dev`, `hyperdrive-fuse`,
+  `mycelium-layer`, `mycelium-value`, `mycelium-container-bundle`,
+  `mycelium-container-lines`, `mycelium-topic`, `p2p-node`,
+  `p2p-node-manager`, `p2p-observe`, `p2p-rns`, `p2p-dht`,
+  `p2p-connect`, `p2p-channel`, and phase 2's Splectral modules
+  (`splectral-contract`, `-model`, `-shell`, `-transport`, `-timeline`,
+  `-replay`, `-scenario`, `-p2p-actions`, `-p2p-observer`,
+  `-p2p-watchers`). Some of them come back as the swarm is built
+  (`swarm-cluster`: `p2p-dht`, `p2p-connect`, `p2p-rns`): archived is
+  not lost.
+- `bare-for-pear`: `isomorphic-git`, `avsc`, `avsc-rpc`, `rpc-server`,
+  `git`: to check (`avsc` with AVRO).
+- `splectrum/roadmap-1`: once its transfer is done.
+
+**Not to archive**: `pear-full-square/p2p-git` is a dependency, fetched
+from GitHub by `mycelium-git` and `p2p-mrepo` (`package-lock.json`); a
+private repository breaks `tools/install.sh` on a fresh clone. Nor any
+repository of a package or module in development.
 
 ## `housekeeping-branches`
 
