@@ -16,6 +16,50 @@ wrong, it is raised.
 - [test-reports](test-reports/)
 - [modules](modules/)
 
+## Principles
+
+From the start of the work (2026-10-26), in engineering terms; each
+says where it is built.
+
+- **A request is the unit of change**: work starts as a request and
+  grows into its result by execution. What has a history of its own is
+  a repository, and its history is the record. Built: an mrepo, its
+  requests, its history.
+- **Only a request changes a repository**: nothing writes into another
+  repository; reading and use go through its API. Built: the inbox, the
+  protocols.
+- **A state change is visible through a commit**: what changed between
+  commits is a transaction in progress, not state. Built: every request
+  committed.
+- **Outcomes are data, on `main`**: results, notes, designs, decisions;
+  the request layers hold the requests and their metadata, nothing
+  more. Built: `main`, the external state.
+- **Self-contained units**: a unit carries what it needs to be
+  understood, run and verified, its instrumentation and audit included,
+  and meets its environment through its interface; done is decided
+  mechanically from execution data. Built: sealed packages, their
+  reports.
+- **A test reads execution data**: execution records; a separate reading
+  gives a verdict, a narrative or a diagnosis. In part: the test
+  reports.
+- **Execution is repeatable exactly**: a run records its invocation,
+  every state it ran on by commit, its environment and its
+  nondeterministic inputs, enough to run it again; metrics and audit are
+  then needed only at the boundary. Not built: the records lack the
+  environment and the nondeterministic inputs.
+- **Cascading links**: the link from a context down to a process is
+  authoritative, the link back up informative. Built: an mrepo's links,
+  the registry.
+- **Ids, not versions**: a validated instance gets an id; the commit
+  that records it is its place in the history, the authoritative record.
+  Built: packages pinned by commit, bundles by their content's hash.
+- **Private instance data in a repository of its own**: a unit
+  describes the private data it needs (its config schema, meaning,
+  examples) and holds none; a running instance's config, data and
+  secrets live in a private repository its operator owns, secrets
+  encrypted in it, never hidden state outside it. Not built
+  (`base-docs-vision`, "Private data").
+
 ## Autonomy
 
 - **Autonomy first.** Collaboration only where it is required: meaning,
@@ -29,6 +73,9 @@ wrong, it is raised.
 - **Natural language**, short; one question at a time, with an opinion
   and a recommendation.
 - **What is settled is recorded in the words used**, with its reason.
+- **Always discussed**: anything touching meaning, the philosophy or a
+  settled commitment; a change to the principles or the working
+  practices; anything irreversible or outward-facing.
 
 ## Collaboration
 
@@ -221,10 +268,20 @@ Before every commit:
   **proposed**, put to the team by a member and not yet agreed, agreed
   before it is built unless the task says it is ours; **where**, the code found when the task was
   discussed, a start, checked again.
-- **From vision to work**: a direction the team agreed, and the
-  order of its steps, are the vision's until they are scheduled; a step
-  designed and requested as a phase becomes scheduled work, taken up as
-  requests and reported back, and leaves the vision.
+- **Planned PRINCE2-style, as far as needed**: products first, by
+  phases, the next in detail and later ones in outline, managed by
+  exception within tolerances; a phase is entered when the one before
+  has proved itself, not by a date. No bureaucracy: the repositories
+  carry what documents would.
+- **From vision to work**, three concerns: the vision, the directions
+  not yet ordered (`base-docs-vision`); the roadmap, the order (the aim,
+  the priorities, the phases, the current phase's plan, the product);
+  the scheduled work, the items, a task each. A direction enters the
+  roadmap when it is given a place in the order, and becomes scheduled
+  work when it is designed and requested, taken up as requests and
+  reported back; it leaves the vision then. The roadmap and the
+  scheduled work are our development's private data, kept together in a
+  repository of their own, not in a package.
 
 ## Tooling
 

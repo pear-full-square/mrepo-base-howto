@@ -63,10 +63,10 @@ the tasks (`tasks/`). What is this environment's own:
   designs moved into it from `steps/`, roadmap-1's aim, product, phases,
   Later and Horizon in its `roadmap/`; home automation the first
   application, behind the local models (the human); roadmap-1's research
-  in the vision ("Connectivity", "Private data", "Devices"). Still to
-  do, as proposed to the human: its principles and "Always discussed"
-  into `base-docs-hdlc`, each checked against what is built; hdlc's
-  "From vision to work" with the roadmap between them; then roadmap-1
+  in the vision ("Connectivity", "Private data", "Devices"); its
+  principles in hdlc ("Principles", in engineering terms: the human,
+  "plainly"), "Always discussed", PRINCE2 as far as needed, and "From
+  vision to work" with the roadmap between. Still to do: roadmap-1
   archived (`tasks/cleanup/`). Its request to the site,
   `pending/world-engineering-section`: done or open, to ask.
 - **Building now** (agreed 2026-11-20, `tasks/splectral/design.md`,
