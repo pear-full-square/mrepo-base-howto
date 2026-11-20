@@ -66,8 +66,7 @@ the tasks (`tasks/`). What is this environment's own:
   (connectivity, private data, post-quantum, the phone); its principles
   and "Always discussed" into `base-docs-hdlc`, each checked against
   what is built; hdlc's "From vision to work" with the roadmap between
-  them; whether home automation still stands as the first application
-  (`roadmap/product/`, asked, not answered); then roadmap-1 archived
+  them; then roadmap-1 archived
   (`tasks/cleanup/`). Its request to the site,
   `pending/world-engineering-section`: done or open, to ask.
 - **Building now** (agreed 2026-11-20, `tasks/splectral/design.md`,
