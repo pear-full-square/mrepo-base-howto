@@ -4,7 +4,8 @@ Read, in this order: `CLAUDE.md` (what is here, how to validate); then
 `haiccing/base-docs-hdlc/README.md` (how work is done) and
 `haiccing/base-docs-haicc/README.md` (the platform and our terms); then
 `tasks.md` here (the open scheduled work); then the designs in
-discussion: `xpath.md`, `splectral.md`, `distributed-applications.md`.
+discussion: `xpath.md`, `splectral.md`, `distributed-applications.md`,
+`model-shaping.md`.
 What is built is documented in the packages; the history is git's.
 
 ## Starting a session
@@ -59,6 +60,10 @@ What is open, all of it in `tasks.md`:
   (`haiccing/base-package-help`, `pear-full-square/mrepo-base-help`,
   holding the old help package and module of 2026-11-17): a push
   replaces them; pushed when the human asks.
+- **Model shaping** (the human, 2026-11-20, to determine the roadmap's
+  priorities): small open models tuned for specific tasks, `hc` as
+  haicc's operator first (`base-docs-vision`, "Model shaping"); the
+  order proposed, data and evaluation first, in `model-shaping.md`.
 - **With the human next**: Splectral after its proof of concept
   (`splectral.md`, "Open, one at a time"): the family's documentation
   package, the repositories the human creates for the new Splectral

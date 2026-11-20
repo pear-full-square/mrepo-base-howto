@@ -545,6 +545,54 @@ it is; what is marked ours is not agreed.
   enhanced help as its third stage) and HAICC, human–AI creative
   collaboration (above). The howto is new: not designed.
 
+## Model shaping
+
+Discussed with the human, 2026-11-20. What the human said is stated as
+it is; the rest is ours, put to the human.
+
+- **The direction** (the human): "I would like to use smallish open
+  models tuned on specific that I am sure we can apply." "The more AI
+  autonomy we can have the better. Small local models that take a set
+  of specific task out of the main loop are very useful and once we
+  have the p2p swarms these can run at specific side on specific
+  platform but used throughout the swarm." It should determine the
+  roadmap's priorities.
+- **The first: `hc` as haicc's operator** (agreed, 2026-11-20): a small
+  model that turns an intention into `haicc` commands and continuation
+  scripts, explains them, and works the help and the how-tos; exact on
+  commands rather than broad. Its slots: `howto/plan` and
+  `howto/explore` (`help-mvp`), headless Claude their placeholder.
+- **Shaping, not building** (ours): an open model's weights taken as
+  they are, tuned (an adapter) for one task; what we own is the data,
+  its lineage and the evaluation, not the training.
+- **What mycelium brings** (ours): its aim fits the data side of it.
+  - The raw material in topics, records with offsets: a slice of it
+    ("up to offset N") is exact and can be taken again.
+  - The examples typed (AVRO: an instruction and its answer, a
+    preference, a trace of commands, an evaluation item), validated as
+    they enter (`myctral`).
+  - A set made by a pipeline (`myctrans`): filtered, deduplicated,
+    scrubbed, formatted, split, a larger model's answers taken in where
+    allowed; run again whenever its input moves.
+  - Reviewed by a person in Splectral: each choice a record.
+  - A set released as a commit with its manifest and hashes; a model's
+    record names the set, by commit and offsets, it was shaped on.
+  - `haici` the loop: feedback on commands becomes candidate examples,
+    the next adapter, new traces.
+  - The runnable how-tos, each step with what it answers, an
+    evaluation set as they are.
+- **Placed in the swarm, used throughout it** (the human, above): a
+  model a component on the node that has the platform for it (its GPU,
+  its runtime), asked from any node by a request; its weights and
+  adapters objects on Hyperdrive, replicated. One base model, several
+  small adapters, each a task.
+- **Kept apart** (ours): the training itself, a job outside haicc's
+  runtime (its own stack), given a frozen export of a set and giving
+  back an adapter and its metrics as records; the evaluation items in
+  their own topics, never in a training set; each record's consent and
+  licence in its headers; a larger model as teacher only where its
+  terms allow its answers to be trained on.
+
 ## Continuations
 
 Said 2026-11-16, once a command could answer with a continuation (a
