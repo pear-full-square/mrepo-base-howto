@@ -61,13 +61,13 @@ the tasks (`tasks/`). What is this environment's own:
   Done: `splectrum/roadmap-2` made (the human: two containers, the
   vision and roadmap-2; task folders), the scheduled work and the
   designs moved into it from `steps/`, roadmap-1's aim, product, phases,
-  Later and Horizon in its `roadmap/`. Still to do, as proposed to the
-  human: roadmap-1's directions and research into `base-docs-vision`
-  (connectivity, private data, post-quantum, the phone); its principles
-  and "Always discussed" into `base-docs-hdlc`, each checked against
-  what is built; hdlc's "From vision to work" with the roadmap between
-  them; then roadmap-1 archived. Done since: the directions and research in the vision ("Connectivity", "Private data", "Devices")
-  (`tasks/cleanup/`). Its request to the site,
+  Later and Horizon in its `roadmap/`; home automation the first
+  application, behind the local models (the human); roadmap-1's research
+  in the vision ("Connectivity", "Private data", "Devices"). Still to
+  do, as proposed to the human: its principles and "Always discussed"
+  into `base-docs-hdlc`, each checked against what is built; hdlc's
+  "From vision to work" with the roadmap between them; then roadmap-1
+  archived (`tasks/cleanup/`). Its request to the site,
   `pending/world-engineering-section`: done or open, to ask.
 - **Building now** (agreed 2026-11-20, `tasks/splectral/design.md`,
   "Open, one at a time", 1): the help viewer's navigation, the flag unit
