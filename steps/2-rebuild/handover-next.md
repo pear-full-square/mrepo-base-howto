@@ -60,6 +60,9 @@ What is open, all of it in `tasks.md`:
   (`haiccing/base-package-help`, `pear-full-square/mrepo-base-help`,
   holding the old help package and module of 2026-11-17): a push
   replaces them; pushed when the human asks.
+- **Next with the human** (2026-11-21, proposed by the human): a session
+  to make sure all of `splectrum/roadmap-1` is in the doc packages; no
+  more reporting back to it.
 - **Model shaping** (the human, 2026-11-20, to determine the roadmap's
   priorities): small open models tuned for specific tasks, `hc` as
   haicc's operator first (`base-docs-vision`, "Model shaping"); the

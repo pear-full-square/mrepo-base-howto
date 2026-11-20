@@ -47,14 +47,35 @@ myctrans, the swarm) replace the stopgaps as they land.
 
 What it moves (ours): `runnable-howtos`, `haici/feedback` and
 `claude-headless` ahead of the rest of `tasks.md`; `swarm-cluster` as
-it is, the next phase; the reporting back to `splectrum/roadmap-1`
-once agreed.
+it is, the next phase. Nothing reported to `splectrum/roadmap-1` (the
+human, 2026-11-20: "our doc packages should have all").
+
+## Hardware (proposed, ours)
+
+The human: "I guess we can do with some appropriate hardware to do this
+model work?" Ours: yes, but bought once a first adapter shows what it
+needs; the sizes as they stand (small models, 1 to 8 billion parameters):
+
+- **Running a model** (inference): quantised, a small model runs on a
+  GPU of 8 to 16 GB, or on a machine with large unified memory; on a
+  CPU alone, slowly.
+- **Shaping it** (an adapter, LoRA or QLoRA): up to about 8 billion
+  parameters on one GPU of 24 GB or more; a full fine-tune (far more
+  memory) is not what we need.
+- **NVIDIA for the training** (its stack the most mature); a machine
+  with large unified memory good for running models, slower for
+  shaping them.
+- **The order**: the first experiments on rented GPUs by the hour (a
+  small set, a run of hours, nothing bought; but the data leaves our
+  machines, so our own data only); then one Linux machine with a GPU
+  of 24 to 32 GB, a node of the swarm with the platform for it.
+  Current models and prices to be looked up when it is decided.
 
 ## Open
 
 - The order above.
-- Where the training runs: the local machine's hardware (a GPU?), or
-  elsewhere.
+- Where the training runs: what the local machine has today (its GPU,
+  its memory).
 - The base models: open weights under a licence that allows it, small
   enough for the nodes that run them.
 - Data beyond our own installs: consent, and what a record says of it.
