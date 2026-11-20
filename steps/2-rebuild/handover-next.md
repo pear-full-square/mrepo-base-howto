@@ -60,6 +60,19 @@ What is open, all of it in `tasks.md`:
   (`haiccing/base-package-help`, `pear-full-square/mrepo-base-help`,
   holding the old help package and module of 2026-11-17): a push
   replaces them; pushed when the human asks.
+- **Tomorrow, 2026-11-21, the work starts**: first the session with the
+  human, `splectrum/roadmap-1` transferred into the doc packages, a
+  "Roadmap" section in `base-docs-vision` (the priorities, the current
+  phase, the home swarms; the detailed schedule stays in `tasks.md`).
+- **`haiccing/base-docs-vision` to be private** (the human, 2026-11-20:
+  "so we can put specific roadmap planning stuff in there that is not
+  for public consumption. Keep that in mind."). To settle with it: its
+  bundle is released publicly today, named in haiccing's public
+  manifest, downloaded by every install (`haicc sources download
+  haiccing`) and read in every docs mrepo (`documents: sources`): a
+  private repository's releases cannot be downloaded by a public
+  install. Ours: the vision out of the public manifest and the releases,
+  in the sources of our own installs only.
 - **The plan** (agreed 2026-11-20): three weeks, two tracks, in
   `tasks.md`, "The plan": Track A, the home swarm (ready by about
   2026-12-11: Raspberry Pis and larger machines, test runs in the cheap
