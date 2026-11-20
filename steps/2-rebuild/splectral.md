@@ -776,7 +776,7 @@ component is on another node, with nothing changed in the pattern.
       until the install changes (the structure's `version`).
    3. The flag unit with `help/annotate` (`help-mvp`, step 3): next.
       `help/annotate` in a package of its own, `haiccing/base-package-help`
-      (ours, the human: "go ahead"), its repository the human's.
+      (ours, the human: "go ahead"), its repository there already.
    4. A command box in the viewer on `--flags help`: the command typed
       sent with the help flag, its annotation drawn. After 3.
    Not taken up: the address as the command; `boot/deploy` refusing an

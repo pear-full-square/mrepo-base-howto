@@ -55,9 +55,10 @@ What is open, all of it in `tasks.md`:
 - **Building now** (agreed 2026-11-20, `splectral.md`, "Open, one at a
   time", 1): the help viewer's navigation, built; the flag unit with
   `help/annotate` (`help-mvp`, step 3), built; next a command box in the
-  viewer on `--flags help`. New repositories for the human to create
-  (not in use yet): `haiccing/base-package-help`,
-  `pear-full-square/mrepo-base-help`.
+  viewer on `--flags help`. Their repositories exist already
+  (`haiccing/base-package-help`, `pear-full-square/mrepo-base-help`,
+  holding the old help package and module of 2026-11-17): a push
+  replaces them; pushed when the human asks.
 - **With the human next**: Splectral after its proof of concept
   (`splectral.md`, "Open, one at a time"): the family's documentation
   package, the repositories the human creates for the new Splectral
