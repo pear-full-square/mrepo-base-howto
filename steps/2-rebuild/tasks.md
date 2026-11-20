@@ -81,6 +81,10 @@ runs beside it (`model-shaping.md`).
   human's allowances: the design-heavy items (the `swarm` protocol, the
   benchmark's runner, the model node) first.
 
+**A sideline** (the human, 2026-11-20): `hdlc-protocol`, "we will do it
+on a sideline, time permitting, while the main streams are busy"; "we
+need it sooner rather than later".
+
 ## The tasks by label
 
 | label | what | where it stands |
@@ -98,6 +102,7 @@ runs beside it (`model-shaping.md`).
 | `mrepo-registry` | the rest, for the next design round | in part |
 | `swarm-cluster` | the nodes finding each other, the `swarm` protocol | plan, Track A, weeks 1-2 |
 | `splectral` | Splectral beyond the proof of concept | `splectral.md`, "Open" |
+| `hdlc-protocol` | the transient rule refusing this repository's tools; the tools as packages, an `hdlc` protocol | a sideline, time permitting; the package to settle |
 | `dev-env-poc` | a proof-of-concept development environment, from this repository's structure and tools | design discussion first, with the human |
 | `platform-orgs` | three platforms on haicc, each its own packages organisation: the code and the sourcing | built; the manifests' releases, each platform's template, dependencies checked |
 | `help-mvp` | the flag unit, `help/annotate`, `haici/feedback`, `explore` and `plan` scoped | step 3 in part: the flag unit and `help/annotate` built; `haici/feedback`, `explore` and `plan` open |
@@ -354,6 +359,43 @@ for the team to discuss. Not designed, not built.
 (`haiccing/`, `splectral/`, `pear-full-square/`, `tools/`, `steps/`;
 `CLAUDE.md`, "What is here") and its tools (`tools/`, `base-docs-hdlc`,
 "Tooling"); the priority it may serve, `dev-on-haicc` (P8).
+
+## `hdlc-protocol`: the tools out of this repository, into packages
+
+**Asked** (the human, 2026-11-20), on a reference to this repository
+found in `pear-full-square`'s profile (removed): it "breaks the
+self-containment rule"; "you may have to update the rule. And likewise
+for the tools packages that are part of transient repos. We need to
+implement them in the hdlc repo. hdlc is in progress, I don't know where
+it is on the schedule. But we need it sooner rather than later." "We
+will do it on a sideline, time permitting, while the main streams are
+busy."
+
+**Proposed** (ours, put to the human, not yet agreed):
+
+1. **The rule**: the `transient` rule (`pkgm-base-check`,
+   `mrepo-base-info`) refuses this repository's tool paths too
+   (`tools/<name>.js|sh`, `tools/bare`), and the organisations' profiles
+   (`pear-full-square/.github/profile/`) are checked as well. Until the
+   protocol is there, `base-docs-hdlc`'s "Tooling" says each tool by its
+   concern, and `base-docs-package`'s how-tos name the step ("the
+   package's pre-release"), not the command; the commands stay in
+   `CLAUDE.md`.
+2. **The tools as packages**: `release`, `package-test`,
+   `package-template`, `info-extract`, `code-check`, `info-view`,
+   `products`, `packages`, as an `hdlc` protocol, `haicc <position>
+   hdlc/<action>`, their modules in `pear-full-square`; the how-tos then
+   run `haicc` commands, as `runnable-howtos` needs.
+
+**To settle**: "the hdlc repo": `haiccing/base-docs-hdlc` itself, or a
+new protocol package (ours: `haiccing/base-package-hdlc`, one package
+one protocol, `base-docs-hdlc` staying the documentation; a repository
+the human creates).
+
+**Where** (a start, checked again): `tools/`, `tools/lib/`;
+`base-docs-hdlc`, "Tooling"; `base-docs-package/howto/`; the rule in
+`pear-full-square/pkgm-base-check/internal/rules/` and
+`pear-full-square/mrepo-base-info/internal/info/`.
 
 ## `platform-orgs`: three platforms, each its own organisation
 
