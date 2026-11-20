@@ -75,10 +75,9 @@ What is open, all of it in `tasks.md`:
 - **The next phase**: the nodes of a swarm finding each other
   (`swarm-cluster`); then `claude-headless` and `dev-on-haicc`.
 - **The local agent**: its prompt and its last note, `local-note.md`;
-  its instructions, `handover-local.md`. The next run (2026-11-19):
-  build, test and release haiccing's packages (Splectral's waits for
-  `splectral/base-docs-splectral`), the release checked by a fresh
-  install that downloads it.
+  its instructions, `handover-local.md`. The next run (2026-11-20):
+  test only, the help viewer's navigation, the flag unit, help and the
+  command box, and the help viewer set up for the human to try.
 - **Product repositories**: not in use yet, our private use only (the
   human, 2026-11-19); everything builds and runs from this repository
   (`tools/release.js`, `haicc sources link`). Pushed only when the human
