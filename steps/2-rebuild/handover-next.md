@@ -57,18 +57,11 @@ container. Without a daemon those tests fail, they do not skip.
 What is open is in `splectrum/roadmap-2`: the plan (`roadmap/plan/`),
 the tasks (`tasks/`). What is this environment's own:
 
-- **The roadmap-1 transfer** (with the human, 2026-11-20), in progress.
-  Done: `splectrum/roadmap-2` made (the human: two containers, the
-  vision and roadmap-2; task folders), the scheduled work and the
-  designs moved into it from `steps/`, roadmap-1's aim, product, phases,
-  Later and Horizon in its `roadmap/`; home automation the first
-  application, behind the local models (the human); roadmap-1's research
-  in the vision ("Connectivity", "Private data", "Devices"); its
-  principles in hdlc ("Principles", in engineering terms: the human,
-  "plainly"), "Always discussed", PRINCE2 as far as needed, and "From
-  vision to work" with the roadmap between. Still to do: roadmap-1
-  archived (`tasks/cleanup/`). Its request to the site,
-  `pending/world-engineering-section`: done or open, to ask.
+- **The roadmap-1 transfer**: done (with the human, 2026-11-20): the
+  roadmap and the scheduled work in `splectrum/roadmap-2`; the research
+  in the vision; the principles in hdlc. roadmap-1 ready for the human
+  to archive (`tasks/cleanup/`); its request to the site is open but
+  not here (the human).
 - **Building now** (agreed 2026-11-20, `tasks/splectral/design.md`,
   "Open, one at a time", 1): the help viewer's navigation, the flag unit
   with `help/annotate`, the command box on `--flags help`: built. Their
