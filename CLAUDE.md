@@ -22,8 +22,8 @@ only this repository's.
   alone; discuss first, write what has settled.
 - **Worked from the packages:** what settles goes into the packages'
   documentation and is kept there as the implementation goes on
-  (`base-docs-hdlc`, "Documentation"); `steps/` holds only what is
-  current (open work, designs in discussion); the history is git's.
+  (`base-docs-hdlc`, "Documentation"); the open work and the designs in
+  discussion are `splectrum/roadmap-2`'s; the history is git's.
 
 ## What is here
 
@@ -56,16 +56,17 @@ history, and each package and module has its own repository).
   "Platforms"); a package named `<org>/<package>` always. `sources/`
   and `node_modules/` are ignored by git: a fresh clone needs
   `sh tools/install.sh`, then `tools/bare tools/release.js`.
-- `steps/`: what is current, nothing else (the history is git's: the
-  human, 2026-11-18, "we don't want history lying around, that is what
-  git is for"). After a context reset: `steps/2-rebuild/handover-next.md`.
-  The open scheduled work: `steps/2-rebuild/tasks.md`. Designs in
-  discussion: `steps/2-rebuild/xpath.md`, Splectral's server and package
-  template `steps/2-rebuild/splectral.md`, distributed applications
-  `steps/2-rebuild/distributed-applications.md`, small open models
-  shaped for specific tasks `steps/2-rebuild/model-shaping.md`. The local runs: the
-  prompt and the last note, `steps/2-rebuild/local-note.md`; the local
-  agent's instructions, `steps/2-rebuild/handover-local.md`.
+- `steps/`: what is current of this environment, nothing else (the
+  history is git's: the human, 2026-11-18, "we don't want history lying
+  around, that is what git is for"). After a context reset:
+  `steps/2-rebuild/handover-next.md`. The local runs: the prompt and the
+  last note, `steps/2-rebuild/local-note.md`; the local agent's
+  instructions, `steps/2-rebuild/handover-local.md`.
+- **The roadmap and the scheduled work** are not here: `splectrum/roadmap-2`
+  (private), attached and cloned beside this one: the priorities, the
+  phases and the plan (`roadmap/`), one folder a task, the designs in
+  discussion beside their tasks (`tasks/`). The direction is the
+  vision's (`base-docs-vision`).
 
 ## Validation, the commands
 

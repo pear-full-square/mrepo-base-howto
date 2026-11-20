@@ -203,8 +203,8 @@ tar; Docker, its daemon running; a browser for step 6, or Playwright).
 note in the repo to test it"): no release, no product repository, no
 `gh`.
 
-What is new since the last run (`splectral.md`, "Open, one at a time",
-1; `tasks.md`, `help-mvp`), the order agreed with the human after their
+What is new since the last run (`splectrum/roadmap-2`: `tasks/splectral/design.md`, "Open, one at a time",
+1; `tasks/help-mvp/`), the order agreed with the human after their
 manual test of the help viewer:
 
 - **The help viewer's navigation**: a drop-down the mrepo (the
