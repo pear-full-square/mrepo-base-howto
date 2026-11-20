@@ -74,8 +74,15 @@ needs; the sizes as they stand (small models, 1 to 8 billion parameters):
 ## Open
 
 - The order above.
-- Where the training runs: what the local machine has today (its GPU,
-  its memory).
+- Where the training runs: rented GPUs (proposed, above).
+- **The human's laptop** (2026-11-20): Windows, Intel Core Ultra, its
+  GPU integrated (Arc 130T), 32 GB shared. Ours: a node to run and
+  measure models, not to shape them: 3 to 8 billion parameters,
+  quantised, about 14 its ceiling, modest speed (a guess: 10 to 20
+  tokens a second at 3 to 4 billion, 5 to 10 at 8), by an inference
+  runtime that serves Intel's GPUs (llama.cpp with Vulkan or SYCL,
+  Intel's Ollama, OpenVINO), on Windows, haicc in WSL asking it over a
+  local port. Shaping on it: not practical.
 - The base models: open weights under a licence that allows it, small
   enough for the nodes that run them.
 - Data beyond our own installs: consent, and what a record says of it.
