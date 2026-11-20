@@ -91,7 +91,8 @@ needs; the sizes as they stand (small models, 1 to 8 billion parameters):
 
 ## Open
 
-- The order above.
+- The order above: agreed as Track B of the plan (`tasks.md`, "The
+  plan", 2026-11-20).
 - Where the training runs: rented GPUs (proposed, above).
 - **The human's laptop** (2026-11-20): Windows, Intel Core Ultra, its
   GPU integrated (Arc 130T), 32 GB shared. Ours: a node to run and
