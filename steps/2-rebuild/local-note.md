@@ -191,42 +191,48 @@ for the installer released before).
 | `base-package-splectral` | `base-package-splectral-addons.tar` | 17,397,760 | `b12456a5bf93a4776212cc1dd8ff58a63322d9fdbf9ecb176aa05876fe8dcea3` |
 | `base-package-splectral` | `base-package-splectral.bundle` | 4,653,373 | `3a6e5e8cc86233e8a1db5186ea6f8ec177433d6f7b5428bf911d0681049704b4` |
 
-## The next run (2026-11-19, from the cloud session): read this first
+## The next run (2026-11-20, from the cloud session): read this first
 
 The prompt for this run, here so it is read with the notes. Write your
 own section above this one, as always; this one stays until the next
 prompt replaces it.
 
 What it needs on the local machine: as before (Linux x86-64; git, curl,
-tar; Docker, its daemon running; `gh`, logged in, allowed to create
-releases on `haiccing/*`; a browser for step 6, or Playwright).
-**Build, test and release** (the human, 2026-11-19: "leave a note for
-local, for doing the build, test and release"): release only once every
-test of steps 3 to 5 passed on the commit; the product repositories'
-content is not written (the cloud session's, when the human asks).
+tar; Docker, its daemon running; a browser for step 6, or Playwright).
+**Test only** (the human, 2026-11-20: "write the next local run prompt
+note in the repo to test it"): no release, no product repository, no
+`gh`.
 
-What is new since the last run (`base-docs-haicc`, "Platforms";
-`splectral.md`): three platforms on haicc, each its own organisation,
-packages named `<org>/<package>` always (`haicc boot/deploy docs
-haiccing/base-component-docs`, the package alone refused); an
-organisation's manifest released with its documentation package
-(haiccing's on `haiccing/base-docs-haicc`); Splectral's help viewer one
-package, `splectral/base-component-help-viewer`, and the Splectral site,
-a tab each (`/help/...`).
+What is new since the last run (`splectral.md`, "Open, one at a time",
+1; `tasks.md`, `help-mvp`), the order agreed with the human after their
+manual test of the help viewer:
 
-> Build the sources from `main`, test them, release haiccing's packages,
-> and check the release by downloading it into a fresh install.
+- **The help viewer's navigation**: a drop-down the mrepo (the
+  install's, from Splectral's server), one a level of keywords, each
+  level's choices its parent's `info/get` answer; `?raw`, the response
+  as the terminal prints it; answers kept until the install changes.
+- **The flag unit** (`mrepo-base-request`, `flags/`): strict now, a
+  flag that is none, or a value it does not take, and nothing of the
+  command runs (`{"run":false,...}`, `haicc` exits 1).
+- **Help**: `--flags help` on any command answers it where it would
+  run, nothing executed (`help/annotate`, a new package,
+  `haiccing/base-package-help`, in every mrepo that has `info`).
+- **The command box** in the help viewer: a command typed as after
+  `haicc` answered with its help, never run.
+- The server's test that failed once in your last run: the test's own
+  fault (two files given the same name one time in 16), fixed.
+
+> Build the sources from `main`, test them, and set up the help viewer
+> for the human to try.
 >
 > 1. **Update the clone.** Check out `main` and pull. Write down the
->    commit (`<commit>` below, its first seven characters `<c7>`).
+>    commit (`<commit>` below).
 > 2. **Install the dependencies, build the sources.** `sh
->    tools/install.sh` (one module new, `splectral-base-help-viewer`;
->    three gone: their links in `node_modules/` can be removed), then
->    `tools/bare tools/release.js`: `sources/haiccing/` (nineteen
->    bundles), `sources/splectral/` (one, `base-component-help-viewer`),
->    each with its manifest (the commit in every entry is `<commit>`).
->    `git status` must show no change after it; if it does, say so and
->    stop.
+>    tools/install.sh` (one module new, `mrepo-base-help`), then
+>    `tools/bare tools/release.js`: `sources/haiccing/` (twenty
+>    bundles, `base-package-help` new), `sources/splectral/` (one), each
+>    with its manifest, the commit in every entry `<commit>`. `git
+>    status` must show no change after it; if it does, say so and stop.
 > 3. **The checks and the reports.** `tools/bare tools/release.js
 >    --strict` (exit 0: every report `current`); `tools/bare
 >    tools/code-check.js` and `tools/bare tools/info-extract.js --files`
@@ -234,71 +240,54 @@ a tab each (`/help/...`).
 >    are the cloud session's.
 > 4. **The tests, three times each where said**: the boot's test three
 >    times (`SOURCES=$PWD/sources tools/bare
->    sources/haiccing/base-component-boot.bundle /test/validate`, `"ok":true`);
->    `sh haiccing/base-linux-haicc/test/run.sh` three times (308
->    checks), `sh haiccing/base-linux-haicc/test/splectral.sh` three
->    times (43 checks; its timings, a page's above all), `sh
+>    sources/haiccing/base-component-boot.bundle /test/validate`,
+>    `"ok":true`); `sh haiccing/base-linux-haicc/test/run.sh` three times
+>    (319 checks), `sh haiccing/base-linux-haicc/test/splectral.sh` three
+>    times (55 checks; its timings, a page's above all), `sh
 >    haiccing/base-linux-haicc/test/container.sh` and `test/pair.sh` once
->    (18 and 41). Nothing left after each: `pgrep -fa "bin/bare"`, `docker
->    ps -a --filter label=haicc.folder`. A run that hangs: look for
->    `runtime-stall.json` under its temporary folder and copy what it
->    says into your note.
+>    (18; `pair.sh` was not run in the cloud this time: its count, and
+>    any failure in full). Nothing left after each: `pgrep -fa
+>    "bin/bare"`, `docker ps -a --filter label=haicc.folder`. A run that
+>    hangs: look for `runtime-stall.json` under its temporary folder and
+>    copy what it says into your note.
 > 5. **Every bundle's own tests**, both organisations:
 >    `SOURCES=$PWD/sources tools/bare sources/<org>/<package>.bundle
->    /test/full` (exit 0, last line `"ok":true`; twenty).
-> 6. **Release haiccing's packages** (`handover-local.md`, "Releases";
->    only if 3 to 5 passed). For each package in
->    `sources/haiccing/manifest.json`, a release on its own repository,
->    tag `r-<c7>`, target `main`:
->    ```sh
->    gh release create r-<c7> --repo haiccing/<package> --target main \
->      --title "r-<c7>" --notes "Built from <commit>." \
->      sources/haiccing/<package>.bundle [<package>-addons.tar]
->    ```
->    `<package>-addons.tar`: only for a package whose manifest entry
->    names addons; a tar holding `addons/<sha256>` for each of them, from
->    `sources/addons/` (`tar -cf <package>-addons.tar -C sources
->    addons/<sha256>...`). The manifest, `sources/haiccing/manifest.json`,
->    an asset of `haiccing/base-docs-haicc`'s release `r-<c7>`, and, for
->    the installer released before, of a release `r-<c7>` on
->    `haiccing/base-linux-haicc` too, with `haicc-install.sh`
->    (`haiccing/base-linux-haicc/haicc-install.sh`). Mark none a
->    pre-release: `haicc sources download` reads `releases/latest`.
->    Splectral's is not released: its manifest's home,
->    `splectral/base-docs-splectral`, is not created yet.
-> 7. **Check the release**: a fresh install in a temporary folder,
->    downloading what you published, then a boot:
->    ```sh
->    T=$(mktemp -d)
->    curl -fsSLO https://github.com/haiccing/base-linux-haicc/releases/latest/download/haicc-install.sh
->    sh haicc-install.sh --home="$T/home" --bin="$T/bin"
->    PATH=$T/bin:$PATH haicc sources download bare haiccing
->    PATH=$T/bin:$PATH haicc prereq
->    PATH=$T/bin:$PATH haicc boot/deploy
->    PATH=$T/bin:$PATH haicc . boot/deploy docs haiccing/base-component-docs
->    PATH=$T/bin:$PATH haicc docs info/get hdlc/validation
->    PATH=$T/bin:$PATH haicc boot/teardown
->    ```
->    Every bundle fetched from `r-<c7>`, checked (sha256), the page
->    answered; nothing left; the folder removed.
-> 8. **By hand, for the human** (their install, `~/.haicc`, its sources
->    this clone's `sources/`): tear down what runs (`haicc boot/teardown`),
->    then
+>    /test/full` (exit 0, last line `"ok":true`; twenty-one), the help
+>    viewer's three times.
+> 6. **By hand, for the human** (their install, `~/.haicc`, its sources
+>    this clone's `sources/`, `haicc sources link "$PWD/sources"` if not):
+>    tear down what runs (`haicc boot/teardown`), then
 >    ```sh
 >    haicc boot/deploy
 >    haicc . boot/deploy docs haiccing/base-component-docs
+>    haicc . boot/deploy host haiccing/base-component-haicc --flags continuation=start
 >    haicc . boot/deploy splectral haiccing/base-package-splectral --flags continuation=start
 >    haicc splectral boot/deploy help haiccing/base-package-service
 >    haicc splectral splectral/install help splectral/base-component-help-viewer
 >    haicc splectral/help service/initialise
 >    haicc splectral/help service/start
 >    ```
->    Left running for the human: `http://127.0.0.1:4400/` (the site:
->    `install` and `help` tabs), `/help/hdlc/validation`. A look in a
->    browser: a page, a keyword below, the `mrepo` form (`splectral`),
->    a keyword not there, light and dark.
-> 9. **Your note**: a section at the top of this file, as always: the
->    commit, each step's result and timings, and the release record
->    (`handover-local.md`, "Record it": each repository, its tag, its
->    assets with sizes and sha256, the URL each is downloaded from).
->    Commit the note alone to `main` and push.
+>    Then, on the command line, each with its exit code:
+>    ```sh
+>    haicc host crud/read swarms --flags help
+>    haicc . boot/teardown docs --flags help
+>    haicc host crud/update swarms --flags help
+>    haicc host crud/read swarms --flags nope
+>    haicc host --flags help -- crud/read swarms
+>    ```
+>    (help answered, nothing run, exit 0; refused at the door, said; a
+>    flag that is none, not run, exit 1; help not on the last command,
+>    not run, exit 1). Left running for the human:
+>    `http://127.0.0.1:4400/help/`. A look in a browser, light and dark,
+>    and at a 390 px window: the drop-downs (the mrepo: `.`, `docs`,
+>    `host`, `splectral`, `help`; a level chosen, one gone back up with
+>    `–`); `raw` and back; a page at another mrepo (`host`, `.`); the
+>    command box with `host crud/read swarms`, `. boot/teardown docs`
+>    (answered, the docs mrepo still there after), `host crud/update x`
+>    (refused, red), `host crud/read x --flags nope` (not run), a
+>    `read more` link followed. How long a page takes the first time and
+>    the second (answers kept).
+> 7. **Your note**: a section at the top of this file, as always: the
+>    commit, each step's result and timings, what you saw in step 6 and
+>    anything that looked wrong or slow. Commit the note alone to `main`
+>    and push.
