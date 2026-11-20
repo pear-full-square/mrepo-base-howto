@@ -22,6 +22,7 @@ here.
 - [base-package-runtime](../base-package-runtime/)
 - [base-package-protocol](../base-package-protocol/)
 - [base-package-info](../base-package-info/)
+- [base-package-help](../base-package-help/)
 - [base-docs-haicc](../base-docs-haicc/)
 - [base-docs-hdlc](../base-docs-hdlc/)
 - [base-docs-package](../base-docs-package/)
@@ -65,7 +66,7 @@ pattern (written where packages are built: `package howto package`).
 
 By the boot mrepo, with a command at the root: it is not deployed with
 the boot, you deploy it. No service: its boot hooks activate `info` and
-extract it.
+`help`, and extract the info.
 
 ```
 haicc . boot/deploy docs haiccing/base-component-docs

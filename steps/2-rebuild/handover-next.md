@@ -53,10 +53,11 @@ container. Without a daemon those tests fail, they do not skip.
 What is open, all of it in `tasks.md`:
 
 - **Building now** (agreed 2026-11-20, `splectral.md`, "Open, one at a
-  time", 1): the help viewer's navigation is built; next the flag unit
-  with `help/annotate` (`help-mvp`, step 3; `haiccing/base-package-help`,
-  its repository the human's), then a command box in the viewer on
-  `--flags help`.
+  time", 1): the help viewer's navigation, built; the flag unit with
+  `help/annotate` (`help-mvp`, step 3), built; next a command box in the
+  viewer on `--flags help`. New repositories for the human to create
+  (not in use yet): `haiccing/base-package-help`,
+  `pear-full-square/mrepo-base-help`.
 - **With the human next**: Splectral after its proof of concept
   (`splectral.md`, "Open, one at a time"): the family's documentation
   package, the repositories the human creates for the new Splectral

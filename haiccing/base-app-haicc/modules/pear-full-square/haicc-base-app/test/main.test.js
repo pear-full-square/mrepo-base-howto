@@ -113,7 +113,7 @@ test('haicc sources: printed a line a source', async (t) => {
   } finally { s.remove() }
 })
 
-test('a command for the mrepos: its response printed unpacked, as stored, or its output alone; an error, exit 1; no completed form, exit 5; none in time, exit 4', async (t) => {
+test('a command for the mrepos: its response printed unpacked, as stored, or its output alone; an error, exit 1; not run, exit 1; no completed form, exit 5; none in time, exit 4', async (t) => {
   const s = setup()
   try {
     mkdirSync(join(s.root, 'inbox'), { recursive: true }); mkdirSync(join(s.root, 'outbox'))
@@ -174,6 +174,10 @@ test('a command for the mrepos: its response printed unpacked, as stored, or its
     a = answer(s.root, { error: 'deployed already: /host' })
     t.is(await s.run(['--output', '.', 'boot/deploy', 'host', 'x']), 1); await a
     t.alike([s.out, s.err], [[], ['haicc: deployed already: /host']], '--output: the error alone')
+
+    a = answer(s.root, { output: { run: false, command: 'crud/read x --flags nope', why: ['no flag: nope'] } })
+    t.is(await s.run(['.', 'crud/read', 'x', '--flags', 'nope']), 1, 'not run (its flags kept it from it): exit 1'); await a
+    t.alike([s.out.length, s.err], [1, ['haicc: not run: no flag: nope']], 'the record printed; not run, and why, on stderr')
 
     a = answer(s.root, null)
     t.is(await s.run(['.', 'help/get']), 5, 'a response with no completed form: exit 5'); await a

@@ -2,6 +2,7 @@
 protocol/activate . boot
 protocol/activate . crud
 protocol/activate . haicc
+protocol/activate . help
 protocol/activate . info
 protocol/activate . runtime
 info/extract

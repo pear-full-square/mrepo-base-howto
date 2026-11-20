@@ -213,7 +213,7 @@ out=$(haicc host boot/deploy 2>&1 >/dev/null); is "$out" "haicc: missing argumen
 out=$(haicc host 2>&1); is $? 2 "haicc host, no command: exit 2 at the command line"
 is "$(haicc --output . protocol/activate . crud 2>&1)" '{"activated":"crud"}' "the protocol protocol open from outside: the restrictions lifted for base"
 out=$(haicc . deploy/teardown host 2>&1 >/dev/null); is $? 1 "a protocol that is not there: exit 1"
-is "$out" "haicc: no protocol: deploy (boot, crud, haicc, info, protocol, runtime)" "said, with the protocols there"
+is "$out" "haicc: no protocol: deploy (boot, crud, haicc, help, info, protocol, runtime)" "said, with the protocols there"
 out=$(haicc . boot/remove host 2>&1 >/dev/null); is "$out" "haicc: no action: boot remove (deploy, redeploy, teardown)" "an action that is not there: said, with the protocol's actions"
 
 # 9. a node inside the host; commands chained through both
@@ -238,6 +238,20 @@ out=$(haicc --output host info/get boot 2>&1); is $? 0 "haicc --output: the outp
 case "$out" in *'"topic":'*) no "no record around it" "$out" ;; *) ok "no record around it" ;; esac
 out=$(HAICC_OUTPUT=1 haicc host info/get boot 2>&1); is $? 0 "HAICC_OUTPUT=1: the same"
 case "$out" in *'"topic":'*) no "no record around it, HAICC_OUTPUT=1" "$out" ;; *) ok "no record around it, HAICC_OUTPUT=1" ;; esac
+
+# 9a. flags: --flags help on a command answers it where it would run,
+# nothing of it executed; a flag that is none, or help not on the last
+# command: nothing run, exit 1, said why
+out=$(haicc --output host crud/read swarms --flags help 2>&1); is $? 0 "haicc host crud/read swarms --flags help: answered, exit 0"
+has "$out" '"help":"crud/read swarms"' "the command as understood"
+has "$out" '"door":"taken here, now"' "the door's answer, here and now"
+has "$out" '"more":"info/get crud/read"' "where to read more"
+out=$(haicc --output . boot/teardown host --flags help 2>&1); has "$out" '"door":"taken here, now"' "haicc . boot/teardown host --flags help: answered"
+is "$(running | wc -l | tr -d ' ')" 3 "nothing of it executed: the host and its node still running"
+out=$(haicc --output host haicc node-1 crud/read . --flags help 2>&1); has "$out" '"door":"refused here: no protocol: crud' "through a chain: answered by the node, where it would run (no crud there)"
+out=$(haicc host crud/read swarms --flags nope 2>&1 >/dev/null); is $? 1 "a flag that is none: not run, exit 1"
+is "$out" "haicc: not run: no flag: nope (container, continuation, help, layer, log)" "said why"
+out=$(haicc host --flags help -- crud/read swarms 2>&1 >/dev/null); is "$out" "haicc: not run: help: on the last command only (it rewrites the command it is on)" "help on a command that passes its words on: not the last, not run"
 
 # 9b. structure in main: nodes created, read and deleted with crud; at the
 # root (the boot mrepo: crud active from its boot) and in the host (behind
@@ -319,12 +333,13 @@ has "$out" '"event":"info.get.index"' "log=debug through two hops: the node's in
 has "$out" '"jump":["host","node-1"]' "under both jumps, in order"
 out=$(haicc --raw . --flags log=verbose -- crud/read . 2>&1)
 has "$out" '"event":"crud.read.query"' "haicc . --flags log=verbose -- crud/read .: at the root too"
-out=$(haicc --raw . crud/read . --flags nope log=loud 2>&1); is "$?" "0" "a flag that is none, a value its flag does not take: the request done all the same"
-has "$out" '"event":"request.flag"' "each ignored, with a warning in its log"
-hasnt "$out" '"level":"verbose"' "and the log at info"
-out=$(haicc --raw host --flags nope log=verbose -- crud/read . 2>&1); is "$?" "0" "a flag there is none of, before the --: the request done all the same"
-has "$out" '"event":"request.flag"' "ignored, with a warning in the log"
-has "$out" '"event":"crud.read.query"' "the others in force"
+out=$(haicc --raw . crud/read . --flags nope log=loud 2>&1); is "$?" "1" "a flag that is none, a value its flag does not take: nothing of it run, exit 1 (strict)"
+has "$out" '"run":false' "completed, not failed: not run"
+has "$out" '"event":"request.flag"' "each reason a warning in its log"
+hasnt "$out" '"event":"crud.read.' "nothing of the command executed"
+out=$(haicc --raw host --flags nope log=verbose -- crud/read . 2>&1); is "$?" "1" "a flag there is none of, before the --: that step not run, exit 1"
+has "$out" '"why":["no flag: nope (container, continuation, help, layer, log)"]' "said why"
+hasnt "$out" '"event":"crud.read.' "the command after it not sent on"
 out=$(haicc host --flags log=debug crud/read . 2>&1 >/dev/null); is "$?" "1" "a list not closed where a command follows: exit 1"
 has "$out" "no command after the flags of haicc (-- closes a flag list, the command follows it)" "said: only -- or the end of the command closes a list"
 # the mrepo registry, in the boot mrepo: the mrepos it deployed, a node each
@@ -472,7 +487,7 @@ has "$out" '"through":["local/host","swarm-1/node-1","swarm-1/node-1/container"]
 has "$out" '"ok":false,"error":"no unique URI to make a replica by: swarm-1/node-1/container (<swarm>/<name>)"' "one that failed: its error"
 # and the install as those commands made it: a tree, a swarm node one node
 tree=$(curl -s "$splectral/structure")
-has "$tree" '{"root":"local/boot","nodes":[{"uri":"local/boot","parent":null,"at":".","package":null,"service":null,"container":null,"depth":0},{"uri":"local/host","parent":"local/boot","at":"host","package":"haiccing/base-component-haicc","service":"started","container":null,"depth":1}' "Splectral: the install's structure, folded from the commands: the root, the host below it, started"
+has "$tree" '"nodes":[{"uri":"local/boot","parent":null,"at":".","package":null,"service":null,"container":null,"depth":0},{"uri":"local/host","parent":"local/boot","at":"host","package":"haiccing/base-component-haicc","service":"started","container":null,"depth":1}' "Splectral: the install's structure, folded from the commands: the root, the host below it, started"
 has "$tree" '{"uri":"swarm-1/node-1","parent":"local/host","at":"swarms/swarm-1/node-1","package":"haiccing/base-component-haicc","service":"started","container":null,"depth":2}' "a swarm's node below the host, started; its container removed: none"
 has "$tree" '{"uri":"swarm-1/node-2","parent":"local/host","at":"swarms/swarm-1/node-2","package":"haiccing/base-component-haicc","service":"started","container":{"name":"haicc-swarm-1-node-2-' "the other: one node, its container part of it"
 has "$tree" '"state":"running","service":"started"},"depth":2}' "its container running, the replica in it in service"

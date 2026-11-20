@@ -12,12 +12,12 @@ value, then against the packages listed, read from the sources.
 - **Its hooks, file by file**: each with its transition and its command;
   no service state. A hook file not named in the test fails it.
 - **The packages it lists**: each has its bundle in the sources; the
-  three protocols they provide, one a package.
+  four protocols they provide, one a package.
 - **Every hook names what exists**: a protocol and an action a listed
   package provides; the protocol it opens is provided too.
 - **What its hooks do**: run with the listed packages' own actions, on a
-  minimal execution in memory: after the boot `info` and `runtime` are
-  open, the info extracted. Every hook file must have run.
+  minimal execution in memory: after the boot `help`, `info` and
+  `runtime` are open, the info extracted. Every hook file must have run.
 - **Nothing left closed by forgetting**: every protocol the listed
   packages provide is opened by a hook, except the protocol protocol, on
   purpose.

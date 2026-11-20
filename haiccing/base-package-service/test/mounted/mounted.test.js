@@ -91,19 +91,20 @@ test('its config in effect: a request checked on each state, allowed only where 
 test('its structure: the state it starts in, and its list of packages', (t) => {
   t.alike(json('mrepo', 'runtime', 'service.json'), { state: 'booted' }, 'an mrepo that links it starts booted')
   const list = json('mrepo', 'packages', 'layer.json').packages
-  t.alike(list, ['haiccing/base-package-runtime', 'haiccing/base-package-info', 'haiccing/base-package-protocol', 'haiccing/base-package-service'], 'deployed alone: the runtime, info, the protocol protocol, itself last')
+  t.alike(list, ['haiccing/base-package-runtime', 'haiccing/base-package-info', 'haiccing/base-package-help', 'haiccing/base-package-protocol', 'haiccing/base-package-service'], 'deployed alone: the runtime, info, help, the protocol protocol, itself last')
 })
 
 // The hooks it brings, each named here with its command: deployed alone,
 // what the mrepo offers from its boot, and what its initialise does.
 const HOOKS = {
-  'boot/1': ['protocol/activate', '.', 'info'],
-  'boot/2': ['protocol/activate', '.', 'runtime'],
-  'boot/3': ['protocol/activate', '.', 'service'],
+  'boot/1': ['protocol/activate', '.', 'help'],
+  'boot/2': ['protocol/activate', '.', 'info'],
+  'boot/3': ['protocol/activate', '.', 'runtime'],
+  'boot/4': ['protocol/activate', '.', 'service'],
   'initialise/1': ['info/extract']
 }
 
-test('its hooks, file by file: at boot info, runtime and service activated; on initialise the info extracted', (t) => {
+test('its hooks, file by file: at boot help, info, runtime and service activated; on initialise the info extracted', (t) => {
   t.alike(brought, HOOKS, 'each hook file, its transition, each line its command; none that is not named here')
   t.absent(Object.keys(brought).some(n => /^(start|stop|shutdown)\//.test(n)), 'none on start, stop or shutdown: deployed alone it has no door to open')
 })

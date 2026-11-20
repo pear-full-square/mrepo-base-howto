@@ -1,6 +1,6 @@
 # Test report: haiccing/base-package-haicc
 
-The package passed its `full` set: all 15 units, 260 of 260 tests and 1585 of 1585 asserts.
+The package passed its `full` set: all 15 units, 261 of 261 tests and 1609 of 1609 asserts.
 
 | | |
 |---|---|
@@ -8,11 +8,11 @@ The package passed its `full` set: all 15 units, 260 of 260 tests and 1585 of 15
 | Set | `full` |
 | Result | passed |
 | Units | 15 of 15 passed |
-| Tests | 260 of 260 passed |
-| Asserts | 1585 of 1585 passed |
-| Run | 2026-11-19 12:43 UTC |
+| Tests | 261 of 261 passed |
+| Asserts | 1609 of 1609 passed |
+| Run | 2026-11-20 11:24 UTC |
 | Bare | v1.36.0 |
-| Content | `15b419677fbb3f863f49bc98ece672d006761427b0a84ca21b28bf909bbd1569` |
+| Content | `e9582938edf98904948aa25c136db19fe4e3ce08b5646cba2150a62f4012e948` |
 
 ## Units
 
@@ -25,7 +25,7 @@ The package passed its `full` set: all 15 units, 260 of 260 tests and 1585 of 15
 | `/test/package` | passed | 1 of 1 | 1 of 1 |
 | `/test/modules/pear-full-square/mrepo-base-haicc` | passed | 6 of 6 | 46 of 46 |
 | `/test/modules/pear-full-square/mrepo-base-info` | passed | 9 of 9 | 60 of 60 |
-| `/test/modules/pear-full-square/mrepo-base-request` | passed | 17 of 17 | 188 of 188 |
+| `/test/modules/pear-full-square/mrepo-base-request` | passed | 18 of 18 | 212 of 212 |
 | `/test/modules/pear-full-square/mrepo-base-xpath` | passed | 5 of 5 | 52 of 52 |
 | `/test/modules/pear-full-square/mycelium-container-document` | passed | 1 of 1 | 8 of 8 |
 | `/test/modules/pear-full-square/mycelium-git` | passed | 144 of 144 | 777 of 777 |

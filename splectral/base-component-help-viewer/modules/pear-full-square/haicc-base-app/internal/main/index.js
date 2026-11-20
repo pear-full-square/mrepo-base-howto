@@ -60,6 +60,8 @@ export async function main (argv, { env = {}, bare = os.execPath(), io = CONSOLE
       if (!o) throw new Failure('the response holds no completed form', 5)
       if ('error' in o) throw new Failure(o.error, 1)
       if (print === 'output') io.out(JSON.stringify(o.output))
+      // not run (its flags kept it from it: completed, not failed): exit 1, so a continuation stops here
+      if (o.output && typeof o.output === 'object' && o.output.run === false) throw new Failure(`not run: ${(o.output.why ?? []).join('; ')}`, 1)
       return o
     }
     // haicc/script and its URI, no lines after them: the lines from stdin (a heredoc)
