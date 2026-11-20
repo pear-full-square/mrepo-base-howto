@@ -104,7 +104,7 @@ product repository.
      command typed 0.5–1.0 s every time (not kept, rightly: it is asked).
 
    The address is the mrepo (`?at=`) and the keywords, a command typed
-   `?cmd=`: as agreed (`splectral.md`, "Not taken up: the address as
+   `?cmd=`: as agreed (roadmap-2, `tasks/splectral/design.md`, "Not taken up: the address as
    the command"). As the human uses it, the command box gives the
    like for like: what is typed after `haicc` is what is answered.
 7. **This note**, committed alone to `main`.
