@@ -53,6 +53,61 @@ boundary is found, not assumed, once Hypercore is understood. Links over
 copies follow naturally from the cluster: a node holds links and loads
 lazily what it reads.
 
+## Connectivity
+
+Research, not done (2026-10-26): how nodes reach each other beyond one
+network, each option a probe, a phone on mobile data the hard case.
+
+- **Direct holepunching** between nodes over the public HyperDHT.
+- **A home node reachable from outside** (a public IP, a forwarded UDP
+  port, dynamic DNS), a private bootstrap and a blind relay. Fails under
+  CGNAT.
+- **A cheap VPS** in the same role, when the home connection cannot be
+  reached.
+- **Cloudflare at the edges only**: Tunnel and Access for remote reach of
+  a node's UI, Durable Objects as a WebSocket rendezvous, R2 for backups.
+  Cloudflare cannot host a peer: no UDP in Workers, no inbound UDP in
+  Containers, Spectrum's UDP for Enterprise only.
+
+Found so far: nodes on one network connect directly; a private DHT needs
+two persistent nodes; a cloud session cannot reach the public DHT, so a
+phone and a home node are tested from a local machine.
+
+## Private data
+
+Every application needs it: private instance repositories, replicated
+only between the owner's paired devices, encrypted, with an always-on
+blind peer for availability. Research, not done (2026-10-26):
+
+- **Holepunch's building blocks** checked against their current
+  documentation: keys and discovery keys, `encryptionKey`, the
+  Corestore's primary key, Hyperswarm's firewall, Autobase, blind
+  pairing, blind peers; where a device's primary key is kept (the OS
+  keystore, from Bare?).
+- **A probe**: a phone and a home node paired into one encrypted
+  instance repository, with a blind peer. Until storage is
+  Holepunch-based throughout, git with encryption (age or sops) fills
+  the gap.
+- **A cloud session's private data**: how it gets what it needs, and
+  whether an AI session can act as an operator.
+- **Post-quantum readiness**: Holepunch's stack is classical (Ed25519,
+  X25519), with no post-quantum plan found (2026-10-26); symmetric
+  encryption and hashing hold. The risk is harvest now, decrypt later
+  on key exchange. By default keys move out of band (pairing by QR or
+  locally). To check: whether sodium-native exposes libsodium 1.0.22's
+  ML-KEM768 or X-Wing; a post-quantum handshake inside a Hyperswarm
+  connection (the third-party `post-quantum-core` approach); WireGuard
+  with an out-of-band preshared key, or Rosenpass, between one's own
+  devices; SSH's hybrid ML-KEM for git; whether Bare's TLS negotiates
+  X25519MLKEM768 for a node's UI.
+
+## Devices
+
+A full peer on every device, the phone included (2026-10-26): Bare in an
+app, or Termux (a Termux probe agreed for later); a node's git store and
+its local UI on the phone; a real phone in the test loop, its execution
+data read like any node's.
+
 ## Values
 
 Agreed with the human, 2026-11-08: the data type, encodings and
