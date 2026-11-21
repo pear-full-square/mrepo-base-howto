@@ -30,7 +30,11 @@
     "pear-full-square/splectral-base-help-viewer",
     "pear-full-square/mrepo-base-haici",
     "pear-full-square/mrepo-base-help",
-    "pear-full-square/mrepo-base-info"
+    "pear-full-square/mrepo-base-info",
+    "pear-full-square/p2p-local",
+    "pear-full-square/p2p-topic",
+    "pear-full-square/mrepo-base-rns",
+    "pear-full-square/mrepo-base-swarm"
   ],
   "dependencies": {
     "bare-bundle": "1.11.0",

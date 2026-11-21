@@ -58,6 +58,19 @@ inspect. One line a check, the count last; exit 0 passed, 1 failed.
     removed, Bare, the sources list and the scripts kept; a second time,
     nothing there; `haicc boot/deploy` brings it back.
 
+## A swarm
+
+`sh test/swarm.sh` (`--keep` as above) tries a swarm on one host, end to
+end, in a temporary folder removed after: a host in service; a swarm
+made with a lease of three seconds, its master and its lookup db; two
+nodes deployed into it, each registered by the host; who is registered
+and active asked of the host, the master and each node; a node
+resolved; a node gone quiet once its service stopped and its lease ran
+out, seen at the master and at the other node, active again when
+started; what is refused; a node taken out; nothing left running. What
+a lease or a node's next turn brings about is asked again until it is
+there, for some seconds. Each step timed.
+
 ## In a container
 
 `sh test/container.sh`: the haicc command installed in a container as on

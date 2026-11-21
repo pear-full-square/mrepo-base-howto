@@ -5,7 +5,7 @@ The component's part of the structure: the list of the packages the haicc mrepo 
 - **Its packages** (`packages/layer.json`): the runtime, the info
   protocol, the protocol protocol, the boot protocol, the service
   protocol, the haicc protocol, the crud protocol, the container
-  protocol, and this component last.
+  protocol, the swarm protocol, and this component last.
 - **Its runtime config**: the service state and the hooks, below.
 - **Nothing else**: no protocol, no data. `main` stays empty.
 
@@ -16,10 +16,10 @@ The component's part of the structure: the list of the packages the haicc mrepo 
 - **At `boot`**: `haicc`, `haici`, `help`, `info`, `runtime` and `service` activated. A
   closed haicc mrepo can be addressed, inspected and tested.
 - **At `initialise`**: its info extracted.
-- **At `start`**: `boot`, `crud` and `container` activated. Deploying
-  mrepos, making structure in `main` and making its replica in a
-  container are what sits behind its door.
-- **At `stop`**: the three deactivated again.
+- **At `start`**: `boot`, `crud`, `container` and `swarm` activated.
+  Deploying mrepos, making structure in `main`, making its replica in a
+  container and making swarms are what sits behind its door.
+- **At `stop`**: the four deactivated again.
 
 Runtime config is laid in from the last package of a list only, the one
 that defines the mrepo. So the component states its own in full.

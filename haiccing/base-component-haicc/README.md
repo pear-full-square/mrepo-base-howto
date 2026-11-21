@@ -5,9 +5,9 @@ The haicc component: the mrepo a host or a node is managed with, a set of packag
 A component is several packages deployed together, with nothing in `main`.
 This one makes the haicc mrepo: it can deploy other mrepos, it is service
 managed, and it can be addressed at a position and pass commands on.
-Applications and demos are deployed on top of it; they bring the
-structures in `main`, such as the folders where swarms and their nodes are
-created.
+As a host it makes swarms and their nodes with the `swarm` protocol;
+applications and demos are deployed on top of it and bring the
+structures in `main`.
 
 ## Links
 
@@ -30,12 +30,14 @@ created.
 - [base-package-haicc](../base-package-haicc/)
 - [base-package-crud](../base-package-crud/)
 - [base-package-container](../base-package-container/)
+- [base-package-swarm](../base-package-swarm/)
 
 ## Deploying
 
 By the boot mrepo, with a command at the root. The mrepo starts `booted`:
-its boot protocol, its crud protocol and its container protocol are
-behind the service's door, activated by hooks on `start`. Its info is extracted by a hook on `initialise`. Each service
+its boot protocol, its crud protocol, its container protocol and its
+swarm protocol are behind the service's door, activated by hooks on
+`start`. Its info is extracted by a hook on `initialise`. Each service
 command answers what was done and the state now.
 
 ```
