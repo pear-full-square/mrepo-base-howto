@@ -101,3 +101,33 @@ for what is written from now on; checked once the schemas are there.
   (they have hyphens; an AVRO enum's symbols cannot).
 - **Documents stay plain JSON**, validated as values against their
   schema; not AVRO's JSON encoding, which wraps unions.
+
+## Core types
+
+A core type and its variants: a design principle (the human, 2026-11-21): "we mean the same thing with
+more or less detail and the detail depends on the context it is being
+used in"; "it will allow us to deal with all sorts of extensions while
+at the same type have a base type that can travel broadly. This
+constraint creates a dual namespace from a single string: core type in
+the name, variant in the namespace context."
+
+- **One string, two parts**: a type's full name is
+  `<namespace>.<name>`; the name is the core type, the namespace the
+  context of its variant. `haiccing.basePackageRns.logEntry` and
+  `splectral.baseComponentLogViewer.logEntry` are one core type,
+  `logEntry`, in two variants.
+- **A base type travels broadly**: a reader holding the base reads every
+  variant, their extra detail skipped; a variant reads the base, its own
+  detail from its defaults. AVRO resolves a record by its name without
+  the namespace, the core type, so this holds as AVRO is.
+- **More or less detail, by context**: a variant extends its core type
+  within AVRO's rules (fields added with defaults, fields left out,
+  numbers widened, unions extended); where it is read decides how much
+  detail is read.
+- **The namespace from the URI**: a schema's URI is
+  `<org>/<package>/<name>` (`haiccing/base-package-rns/log-entry`); its
+  full name by the data-name mapping, exact both ways
+  (`haiccing.basePackageRns.logEntry`).
+- **Is and is-like**: one core type, its versions and variants, is read
+  as AVRO reads it; a different core type is read as another only when
+  asked (is-like: aliases generated for that read).
