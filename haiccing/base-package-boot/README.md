@@ -39,9 +39,12 @@ it; this mrepo links it and forwards to it. Its teardown and redeploy go
 to the container's platform by its link's record.
 
 What a position means its documents say, not this config: the nearest
-node above it whose document is `{"kind":"swarm"}` makes the child that
-swarm's node (`<swarm>/<name>`); none, it is in its parent's swarm
-(`local/host`). `kind` names the type of a node's data structure; a
+node above it whose document names a namespace's kind makes the child's
+unique URI the path from there down: `{"kind":"swarm"}`, that swarm's
+node (`<swarm>/<name>`); `{"kind":"howtos"}`, the path below it
+(`haiccing/base-package-crud/howto/query/boot`); none, it is in its
+parent's namespace (`local/host`). No unique URI is a prefix of
+another's: a deploy that would make one is refused. `kind` names the type of a node's data structure; a
 schema's name, later. The node above it is there first; a position below a
 shortcut is another mrepo's, refused. A child's own children
 are not torn down with it: only the machine's `haicc boot/teardown`

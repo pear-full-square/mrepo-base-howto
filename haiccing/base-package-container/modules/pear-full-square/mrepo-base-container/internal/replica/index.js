@@ -16,7 +16,7 @@ export function replica (exec) {
   const dir = exec.runtime.dir
   if (!dir) throw new Error('no directory in the context')
   const uri = exec.runtime.uri
-  if (typeof uri !== 'string' || !/^[a-z][a-z0-9-]*\/[a-z][a-z0-9-]*$/.test(uri)) throw new Error(`no unique URI to make a replica by: ${uri} (<swarm>/<name>)`)
+  if (typeof uri !== 'string' || !/^[a-z][a-z0-9-]*(\/[a-z][a-z0-9-]*)+$/.test(uri)) throw new Error(`no unique URI to make a replica by: ${uri} (<swarm>/<name>, a path)`)
   // its own unique URI: this mrepo's, with its position behind it (two
   // mrepos, each addressed: a request and its answer name both)
   const mrepo = `${uri}/${AT}`
@@ -25,7 +25,7 @@ export function replica (exec) {
   const placed = join(exec.runtime.work ?? dirname(dir), CONTAINERS, uri)
   // its container's name: the URI, and the folder's hash: two installs on
   // one machine do not meet
-  const name = `haicc-${uri.replace('/', '-')}-${crypto.createHash('sha256').update(placed).digest('hex').slice(0, 8)}`
+  const name = `haicc-${uri.replace(/\//g, '-')}-${crypto.createHash('sha256').update(placed).digest('hex').slice(0, 8)}`
   const shortcut = async () => (await shortcutsAt(exec, AT)).find(l => l.mrepo === mrepo) ?? null
   exec.log('debug', 'replica', { at: AT, mrepo, dir: placed, container: name })
   return {
