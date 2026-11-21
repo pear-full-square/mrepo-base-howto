@@ -1,0 +1,14 @@
+{
+  "type": "record",
+  "name": "haiccing.basePackageHelp.annotateAnswer",
+  "doc": "help/annotate's answer: a command explained where it would run, not executed",
+  "fields": [
+    { "name": "help", "type": "string", "doc": "the command, as typed" },
+    { "name": "does", "type": ["null", "string"], "default": null, "doc": "what it does: its action's description, or its page's one line" },
+    { "name": "door", "type": "string", "doc": "taken here, now; or refused here, and why" },
+    { "name": "arguments", "type": "string", "doc": "the arguments its action names, against those given" },
+    { "name": "run", "type": "string", "doc": "the command to run it" },
+    { "name": "more", "type": "string", "doc": "where to read more: an info/get" },
+    { "name": "answer", "type": { "type": "array", "items": "string" }, "default": [], "doc": "the same in natural language, a line each" }
+  ]
+}

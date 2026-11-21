@@ -1,18 +1,18 @@
 # Test report: haiccing/base-package-service
 
-The package passed its `full` set: all 14 units, 253 of 253 tests and 1545 of 1545 asserts.
+The package passed its `full` set: all 15 units, 264 of 264 tests and 1616 of 1616 asserts.
 
 | | |
 |---|---|
 | Package | `haiccing/base-package-service` |
 | Set | `full` |
 | Result | passed |
-| Units | 14 of 14 passed |
-| Tests | 253 of 253 passed |
-| Asserts | 1545 of 1545 passed |
-| Run | 2026-11-21 02:44 UTC |
+| Units | 15 of 15 passed |
+| Tests | 264 of 264 passed |
+| Asserts | 1616 of 1616 passed |
+| Run | 2026-11-21 04:05 UTC |
 | Bare | v1.36.0 |
-| Content | `9a9339c020d930833db76a852cde9a3996e42c468eeb9571be6b011ce176e8a1` |
+| Content | `08a06787e631711a86152e9763f204ad99d361ae09a408738e02e53701845cd7` |
 
 ## Units
 
@@ -23,12 +23,13 @@ The package passed its `full` set: all 14 units, 253 of 253 tests and 1545 of 15
 | `/test/code` | passed | 1 of 1 | 2 of 2 |
 | `/test/mrepo` | passed | 1 of 1 | 1 of 1 |
 | `/test/package` | passed | 1 of 1 | 1 of 1 |
-| `/test/modules/pear-full-square/mrepo-base-info` | passed | 9 of 9 | 60 of 60 |
-| `/test/modules/pear-full-square/mrepo-base-request` | passed | 18 of 18 | 228 of 228 |
+| `/test/modules/pear-full-square/mrepo-base-info` | passed | 9 of 9 | 62 of 62 |
+| `/test/modules/pear-full-square/mrepo-base-request` | passed | 21 of 21 | 240 of 240 |
 | `/test/modules/pear-full-square/mrepo-base-service` | passed | 2 of 2 | 13 of 13 |
 | `/test/modules/pear-full-square/mycelium-container-document` | passed | 1 of 1 | 8 of 8 |
 | `/test/modules/pear-full-square/mycelium-git` | passed | 144 of 144 | 777 of 777 |
 | `/test/modules/pear-full-square/mycelium-uri` | passed | 21 of 21 | 195 of 195 |
+| `/test/modules/pear-full-square/mycelium-value-avro` | passed | 8 of 8 | 57 of 57 |
 | `/test/modules/pear-full-square/mycelium-value-json` | passed | 1 of 1 | 3 of 3 |
 | `/test/modules/pear-full-square/mycelium-xpath` | passed | 21 of 21 | 141 of 141 |
 | `/test/modules/pear-full-square/pkgm-base-check` | passed | 23 of 23 | 70 of 70 |
