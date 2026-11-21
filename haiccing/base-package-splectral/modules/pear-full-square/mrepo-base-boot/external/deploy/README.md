@@ -86,8 +86,8 @@ nothing of it inside this mrepo's folder.
   a how-to's path that starts with `local`, or is one name only: `not a
   unique URI`.
 - Its unique URI a prefix of another's, or another's a prefix of its
-  own (an mrepo's folder, or its registry record, above it; folders or
-  registry nodes below it): `a unique URI is never a prefix of
+  own (an mrepo's folder, or its registry record, above it; registry
+  nodes below it; a folder in its place is in the way): `a unique URI is never a prefix of
   another's`. Nothing is built.
 - The node above it not there: `no node there: <above> (crud/create
   <above>)`.

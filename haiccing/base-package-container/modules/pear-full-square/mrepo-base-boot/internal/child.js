@@ -47,8 +47,9 @@
 //             target that: refuse() throws then
 //   free      the rule, at deploy: a unique URI is never a prefix of
 //             another's, no mrepo's folder inside another's; free()
-//             throws when one is: an mrepo's folder (or its registry node)
-//             above it, or a folder (or registry nodes) below it already
+//             throws when one is: an mrepo's folder (or its registry
+//             record) above it, or registry nodes below it already (a
+//             folder in its place: in the way, said by the deploy)
 // A target is needed: main itself, or the root, is the mrepo, which one
 // cannot deploy or tear down. A position below a shortcut is another
 // mrepo's: refused.
@@ -127,8 +128,7 @@ export async function child (exec, segments) {
     }
     const below = (await exec.select(`${registryOf(mrepo)}/*`)).map(([p]) => p).filter(p => !p.endsWith(NODE))
     if (below.length) throw prefix(mrepo, below[0].replace(/^\/?main\/registry\//, ''))
-    // (its own folder an mrepo's already: in the way, said by the deploy)
-    if (existsSync(placed) && !existsSync(join(placed, '.git'))) throw new Error(`a unique URI is never a prefix of another's: ${mrepo} is a namespace here, its folder holds others' (${placed})`)
+    // (a folder in its place, whatever it holds: in the way, said by the deploy)
   }
   const shortcut = async () => (await shortcutsAt(exec, at)).find(l => l.mrepo === mrepo) ?? null
   const exists = async () => (await exec.select(`main/${at}`)).length > 0 && !(await shortcut())
