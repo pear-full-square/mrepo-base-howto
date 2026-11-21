@@ -20,6 +20,9 @@ an action sends answered in its place.
 - **`deploy`, `leave`, `status`**: a node deployed, in service, joined
   and registered at the master by this mrepo; below no swarm: refused; a
   node taken out, then torn down; the swarm asked of its master.
+- **Its core type**, `types/swarm.avsc`: named as the package registers
+  it, a `doc` on it and every field, its fields those of the document
+  `create` writes.
 - **Nothing forgotten**: the last test fails when the config names an
   action that was not run here, or one that wrote nothing into the
   request's log as it ran.

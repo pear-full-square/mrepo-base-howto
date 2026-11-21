@@ -18,6 +18,7 @@ hook.
 - [join](modules/pear-full-square/mrepo-base-rns/external/join/)
 - [register](modules/pear-full-square/mrepo-base-rns/external/register/)
 - [leave](modules/pear-full-square/mrepo-base-rns/external/leave/)
+- [types](types/)
 - [howto](howto/)
 - [test](test/)
 - [test-reports](test-reports/)

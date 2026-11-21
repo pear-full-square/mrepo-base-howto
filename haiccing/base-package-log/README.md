@@ -14,6 +14,7 @@ master's.
 
 - [read](modules/pear-full-square/mrepo-base-log/external/read/)
 - [status](modules/pear-full-square/mrepo-base-log/external/status/)
+- [types](types/)
 - [howto](howto/)
 - [test](test/)
 - [test-reports](test-reports/)

@@ -6,7 +6,14 @@
 // built. Every action the config names must be run here: the last test
 // fails when one was left out.
 import test from '../../modules/node_modules/brittle/index.js'
+import { readFileSync } from '../../modules/node_modules/bare-fs/index.js'
+import { join, dirname } from '../../modules/node_modules/bare-path/index.js'
+import { fileURLToPath } from '../../modules/node_modules/bare-url/index.js'
 import * as mounted from '../../protocol.js'
+
+// Its core type, as the package registers it: types/<name>.avsc.
+const typeOf = name => JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'types', `${name}.avsc`), 'utf8'))
+const documented = type => Boolean(type.doc) && type.fields.every(f => f.doc && (typeof f.type !== 'object' || Array.isArray(f.type) || !f.type.fields || documented(f.type)))
 
 // An execution as an action sees it: main's files by path, what it wrote,
 // the job it waits for, the command it ran here, its log.
@@ -85,6 +92,17 @@ test('deploy, leave, status: a node into the swarm and registered by this mrepo;
   await out.job()
   t.alike(o.list, ['haicc swarms/swarm-1/master rns/leave . swarm-1/node-1', 'boot/teardown swarms/swarm-1/node-1'], 'leave: out of the lookup db, then torn down')
   t.alike(await act('status', execution(SWARM), { uri: ['main', 'swarms/swarm-1'] }), { ran: ['haicc', 'swarms/swarm-1/master', 'rns/status'] }, 'status: the master\'s rns/status')
+})
+
+test('its core type: the swarm\'s node, every field documented, the fields create writes', async (t) => {
+  const type = typeOf('swarm')
+  t.is(type.name, 'haiccing.basePackageSwarm.swarm', 'named by its organisation, its package, its name')
+  t.ok(documented(type), 'a doc on it and on every field')
+  const resumed = execution({}, { output: { lease: 15000, lookup: LOOKUP } })
+  await act('create', resumed, { uri: ['main', 'swarms/swarm-1'], args: [] })
+  const written = resumed.written['main/swarms/swarm-1/.node.json']
+  t.alike(type.fields.map(f => f.name), Object.keys(written), 'its fields: those of the document as create writes it')
+  t.alike(type.fields.at(-1).type.fields.map(f => f.name), Object.keys(written.lookup), 'and its lookup\'s')
 })
 
 test('nothing forgotten: every action configured run here, each writing into the request\'s log', (t) => {
