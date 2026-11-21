@@ -109,103 +109,115 @@ product repository.
    like for like: what is typed after `haicc` is what is answered.
 7. **This note**, committed alone to `main`.
 
-## The next run (2026-11-20, from the cloud session): read this first
+## The next run (2026-11-21, from the cloud session): read this first
 
 The prompt for this run, here so it is read with the notes. Write your
 own section above this one, as always; this one stays until the next
 prompt replaces it.
 
 What it needs on the local machine: as before (Linux x86-64; git, curl,
-tar; Docker, its daemon running; a browser for step 6, or Playwright).
-**Test only** (the human, 2026-11-20: "write the next local run prompt
-note in the repo to test it"): no release, no product repository, no
-`gh`.
+tar; Docker, its daemon running). **Test only**: no release, no product
+repository, no `gh`.
 
-What is new since the last run (`splectrum/roadmap-2`: `tasks/splectral/design.md`, "Open, one at a time",
-1; `tasks/help-mvp/`), the order agreed with the human after their
-manual test of the help viewer:
+**Why this run** (`splectrum/roadmap-2`, `tasks/review/`, items 1 and
+2): the human (2026-11-21), "arm64 and feedback complete": the two
+built today are completed by a local build and test. Everything else
+merged into `main` today is under review, so this run is **not on
+`main`'s head**: it is on the commit that has these two and nothing
+after them,
 
-- **The help viewer's navigation**: a drop-down the mrepo (the
-  install's, from Splectral's server), one a level of keywords, each
-  level's choices its parent's `info/get` answer; `?raw`, the response
-  as the terminal prints it; answers kept until the install changes.
-- **The flag unit** (`mrepo-base-request`, `flags/`): strict now, a
-  flag that is none, or a value it does not take, and nothing of the
-  command runs (`{"run":false,...}`, `haicc` exits 1).
-- **Help**: `--flags help` on any command answers it where it would
-  run, nothing executed (`help/annotate`, a new package,
-  `haiccing/base-package-help`, in every mrepo that has `info`).
-- **The command box** in the help viewer: a command typed as after
-  `haicc` answered with its help, never run.
-- The server's test that failed once in your last run: the test's own
-  fault (two files given the same name one time in 16), fixed.
+    8661d0343a2d34e8308fe907c555776a204d392e   (8661d03, "arm64 merged with haici-feedback")
 
-> Build the sources from `main`, test them, and set up the help viewer
-> for the human to try.
+What is new in it since your last run (`004dbc7`):
+
+- **`haici-feedback`**: `--flags feedback <text>` on any command records
+  the text where the command would run, nothing of the command executed
+  (`haici/feedback` at the same URI, its arguments the text then the
+  command); answered in natural language with its request's id, read
+  back from the request layer (`--flags layer=request`). A new package
+  and module, `haiccing/base-package-haici`, `mrepo-base-haici`.
+- **`arm64`**: the sources for `linux-arm64` too: every bundle carries
+  both platforms' native addons, both Bare runtimes are in the sources
+  (`sources/holepunchto/`), the pins a build a platform
+  (`haiccing/base-linux-haicc/pins`), and the installer and `haicc
+  prereq` choose by machine (`uname`: `aarch64` → `linux-arm64`). The
+  development tools stay `linux-x64`. Proven in the cloud under
+  emulation up to the boot's runtime, which did not answer under
+  qemu-user (Bare's JIT, most likely); a real Pi is the proof, at home.
+
+> Build the sources from `8661d03` and test them; then try arm64 in a
+> container if this machine can emulate it.
 >
-> 1. **Update the clone.** Check out `main` and pull. Write down the
->    commit (`<commit>` below).
-> 2. **Install the dependencies, build the sources.** `sh
->    tools/install.sh` (one module new, `mrepo-base-help`), then
->    `tools/bare tools/release.js`: `sources/haiccing/` (twenty
->    bundles, `base-package-help` new), `sources/splectral/` (one), each
->    with its manifest, the commit in every entry `<commit>`. `git
->    status` must show no change after it; if it does, say so and stop.
+> 1. **The clone.** `git fetch origin`, then `git checkout --detach
+>    8661d0343a2d34e8308fe907c555776a204d392e`. Write down `git log -1`.
+>    Tear down your own install first if one runs (`haicc boot/teardown`):
+>    its sources are this clone's `sources/`, rebuilt next.
+> 2. **The dependencies, the sources.** `sh tools/install.sh` (one
+>    module new, `mrepo-base-haici`), then `tools/bare tools/release.js`:
+>    `sources/haiccing/` twenty-one bundles (`base-package-haici` new),
+>    `sources/splectral/` one, each with its manifest, every entry's
+>    commit `8661d034`; `sources/holepunchto/` both Bare tarballs,
+>    `linux-x64` and `linux-arm64`. `git status` must show no change
+>    after it; if it does, say so and stop.
 > 3. **The checks and the reports.** `tools/bare tools/release.js
->    --strict` (exit 0: every report `current`); `tools/bare
->    tools/code-check.js` and `tools/bare tools/info-extract.js --files`
->    (0 problems each). Do not run `tools/package-test.js`: the reports
->    are the cloud session's.
-> 4. **The tests, three times each where said**: the boot's test three
->    times (`SOURCES=$PWD/sources tools/bare
->    sources/haiccing/base-component-boot.bundle /test/validate`,
->    `"ok":true`); `sh haiccing/base-linux-haicc/test/run.sh` three times
->    (319 checks), `sh haiccing/base-linux-haicc/test/splectral.sh` three
->    times (55 checks; its timings, a page's above all), `sh
->    haiccing/base-linux-haicc/test/container.sh` and `test/pair.sh` once
->    (18; `pair.sh` was not run in the cloud this time: its count, and
->    any failure in full). Nothing left after each: `pgrep -fa
->    "bin/bare"`, `docker ps -a --filter label=haicc.folder`. A run that
->    hangs: look for `runtime-stall.json` under its temporary folder and
->    copy what it says into your note.
+>    --strict` (exit 0, every report `current`, `"platforms":
+>    ["linux-x64","linux-arm64"]`); `tools/bare tools/code-check.js` and
+>    `tools/bare tools/info-extract.js --files` (0 problems each). Do not
+>    run `tools/package-test.js`: the reports are the cloud session's.
+> 4. **The tests**: the boot's test three times (`SOURCES=$PWD/sources
+>    tools/bare sources/haiccing/base-component-boot.bundle
+>    /test/validate`, `"ok":true`); `sh haiccing/base-linux-haicc/test/run.sh`
+>    three times (it has new checks: every pinned platform's Bare in the
+>    sources, an `aarch64` machine choosing `linux-arm64`, the feedback
+>    flag; say its count), `sh haiccing/base-linux-haicc/test/splectral.sh`
+>    three times, `test/container.sh` and `test/pair.sh` once. Every
+>    check passing; each one's count and time. Nothing left after each:
+>    `pgrep -fa "bin/bare"`, `docker ps -a --filter label=haicc.folder`.
+>    A run that hangs: look for `runtime-stall.json` under its temporary
+>    folder and copy what it says into your note.
 > 5. **Every bundle's own tests**, both organisations:
 >    `SOURCES=$PWD/sources tools/bare sources/<org>/<package>.bundle
->    /test/full` (exit 0, last line `"ok":true`; twenty-one), the help
->    viewer's three times.
-> 6. **By hand, for the human** (their install, `~/.haicc`, its sources
->    this clone's `sources/`, `haicc sources link "$PWD/sources"` if not):
->    tear down what runs (`haicc boot/teardown`), then
+>    /test/full` (exit 0, last line `"ok":true`; twenty-two),
+>    `base-package-haici`'s and the help viewer's three times. Keep the
+>    laptop awake: last run's one failure was a sleep.
+> 6. **The feedback flag, by hand** (your install, `~/.haicc`, its
+>    sources this clone's `sources/`):
 >    ```sh
 >    haicc boot/deploy
 >    haicc . boot/deploy docs haiccing/base-component-docs
 >    haicc . boot/deploy host haiccing/base-component-haicc --flags continuation=start
->    haicc . boot/deploy splectral haiccing/base-package-splectral --flags continuation=start
->    haicc splectral boot/deploy help haiccing/base-package-service
->    haicc splectral splectral/install help splectral/base-component-help-viewer
->    haicc splectral/help service/initialise
->    haicc splectral/help service/start
+>    haicc host crud/read swarms --flags feedback the list is empty, a swarm was expected
 >    ```
->    Then, on the command line, each with its exit code:
+>    It answers "Feedback on crud/read swarms recorded: request
+>    `<id>`." and the command to read it back, as typed after the
+>    position: run it as `haicc host <that command>`. Then, each
+>    with its exit code and what it said:
 >    ```sh
->    haicc host crud/read swarms --flags help
->    haicc . boot/teardown docs --flags help
->    haicc host crud/update swarms --flags help
->    haicc host crud/read swarms --flags nope
->    haicc host --flags help -- crud/read swarms
+>    haicc --output host crud/read "done/*[value/value/protocol='haici']" --flags layer=request
+>    haicc . boot/teardown host --flags feedback do not, it is in use
+>    haicc host crud/read swarms
+>    haicc host haici/feedback swarms "asked directly" crud/read
+>    haicc host crud/read swarms --flags feedback
 >    ```
->    (help answered, nothing run, exit 0; refused at the door, said; a
->    flag that is none, not run, exit 1; help not on the last command,
->    not run, exit 1). Left running for the human:
->    `http://127.0.0.1:4400/help/`. A look in a browser, light and dark,
->    and at a 390 px window: the drop-downs (the mrepo: `.`, `docs`,
->    `host`, `splectral`, `help`; a level chosen, one gone back up with
->    `–`); `raw` and back; a page at another mrepo (`host`, `.`); the
->    command box with `host crud/read swarms`, `. boot/teardown docs`
->    (answered, the docs mrepo still there after), `host crud/update x`
->    (refused, red), `host crud/read x --flags nope` (not run), a
->    `read more` link followed. How long a page takes the first time and
->    the second (answers kept).
-> 7. **Your note**: a section at the top of this file, as always: the
->    commit, each step's result and timings, what you saw in step 6 and
->    anything that looked wrong or slow. Commit the note alone to `main`
->    and push.
+>    (every feedback there, read by protocol; the teardown not run, the
+>    host still answering after it; asked directly, the same answer; no
+>    text, not run, exit 1, said why). Then
+>    `haicc boot/teardown`, nothing left running.
+> 7. **arm64 in a container, if this machine can** (optional; no more
+>    than an hour on it). First `docker run --rm --platform linux/arm64
+>    debian:bookworm-slim uname -m`. If it does not answer `aarch64`,
+>    say what it said and stop this step: do not install binfmt or
+>    change Docker's settings. If it does: an arm64 container as
+>    `test/container.sh` makes one (read it: the sources read only at
+>    the same path, the installer mounted, `HAICC_TIMEOUT=120`), with
+>    `--platform linux/arm64`; in it the installer, `haicc sources link
+>    <the sources>`, `haicc prereq` (it says `platform: linux-arm64`),
+>    `haicc boot/deploy`, `haicc . crud/read .`. Each step's exit code,
+>    what it said and how long it took. Under emulation the boot's
+>    runtime may not answer (as in the cloud): say so, with
+>    `top`'s CPU for its `bare` while it waits, and leave it there.
+>    Remove the container after.
+> 8. **Your note**: a section at the top of this file, as always: the
+>    commit, each step's result and timings, anything that looked wrong
+>    or slow. Then `git checkout main`, `git pull`, write the note there,
+>    commit it alone to `main` and push.
