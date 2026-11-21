@@ -38,6 +38,17 @@ From the bottom:
   (files, documents, any git object) the higher, side by side in a
   repository; an object may be generated from a change log of records,
   or exist in its own right. Built up as mycelium matures.
+- **Tables in Parquet files** (the human, 2026-11-21, for the model
+  work: "parquet files", "We should add it to the mycelium patterns to
+  be implemented (I think confluent iceberg is using it)"): record data
+  read as a table (a training or evaluation set, analytics over logs) in
+  columnar Parquet files. The topic stays the source: a table is
+  materialised from a topic up to an offset, as Confluent's Tableflow
+  materialises Kafka topics as Iceberg tables (Iceberg: a table a series
+  of snapshots, each a manifest of its Parquet files, read as it was at
+  any snapshot). On mycelium (proposed): the Parquet files objects in a
+  repository, a snapshot a commit with its manifest and the offsets it
+  was taken up to, the schema AVRO's carried into Parquet's.
 
 `mycelium-uri` and `mycelium-xpath` are the shared vocabulary across all
 four. On top sit the **repository paradigms**: the dev env, the test-run
@@ -292,6 +303,13 @@ layer as cascading click and runs.
 Discussed with the human, 2026-11-13: a direction for the distant horizon.
 What the human said is stated as it is; what is marked proposed or open is
 not agreed. The practicalities are designed when the work reaches it.
+
+- **Pipelines kept with their data** (the human, 2026-11-21): "this
+  pattern may become a general pattern: have the pipeline(s) that
+  produces data associated with the data structures (mycelium repos)
+  themselves. But that is for later." Its first case: a how-to, an
+  install on the workbench whose runner produces its report from its
+  own records.
 
 ### The pipeline engine
 
