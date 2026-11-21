@@ -1,4 +1,0 @@
-# start: run as the service opens its door, a line a command
-protocol/activate . boot
-protocol/activate . container
-protocol/activate . crud

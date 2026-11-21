@@ -1,4 +1,0 @@
-# stop: run as the service closes its door, a line a command
-protocol/deactivate . boot
-protocol/deactivate . container
-protocol/deactivate . crud

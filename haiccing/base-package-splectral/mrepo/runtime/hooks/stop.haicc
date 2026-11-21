@@ -1,3 +1,0 @@
-# stop: run as the service closes its door, a line a command
-splectral/stop
-protocol/deactivate . splectral
