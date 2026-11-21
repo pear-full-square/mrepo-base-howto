@@ -15,6 +15,7 @@ theirs (`base-package-rns`).
 - [deploy](modules/pear-full-square/mrepo-base-swarm/external/deploy/)
 - [status](modules/pear-full-square/mrepo-base-swarm/external/status/)
 - [leave](modules/pear-full-square/mrepo-base-swarm/external/leave/)
+- [types](types/)
 - [howto](howto/)
 - [test](test/)
 - [test-reports](test-reports/)

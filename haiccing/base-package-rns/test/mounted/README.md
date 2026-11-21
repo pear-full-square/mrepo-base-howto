@@ -19,6 +19,9 @@ its rns served in this process.
   the node active once its own rns renewed its lease; `resolve` at the
   node; `leave`; what is the master's refused by a node; `status` with
   no program running.
+- **Its core type**, `types/lookup-entry.avsc`: named as the package
+  registers it, a `doc` on it and every field, its fields those the
+  fold reads.
 - **Nothing forgotten**: the last test fails when the config names an
   action that was not run here, or one that wrote nothing into the
   request's log as it ran.

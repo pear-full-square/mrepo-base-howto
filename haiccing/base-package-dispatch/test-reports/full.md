@@ -1,6 +1,6 @@
 # Test report: haiccing/base-package-dispatch
 
-The package passed its `full` set: all 15 units, 83 of 83 tests and 503 of 503 asserts.
+The package passed its `full` set: all 15 units, 84 of 84 tests and 505 of 505 asserts.
 
 | | |
 |---|---|
@@ -8,11 +8,11 @@ The package passed its `full` set: all 15 units, 83 of 83 tests and 503 of 503 a
 | Set | `full` |
 | Result | passed |
 | Units | 15 of 15 passed |
-| Tests | 83 of 83 passed |
-| Asserts | 503 of 503 passed |
-| Run | 2026-11-21 05:07 UTC |
+| Tests | 84 of 84 passed |
+| Asserts | 505 of 505 passed |
+| Run | 2026-11-21 05:53 UTC |
 | Bare | v1.36.0 |
-| Content | `59f095faa77b9a727a3be803337b61df2d6f550f1a39a5255dd9ab59d5ed2cc3` |
+| Content | `35c7eedc6839ff994fa6f583fdc3e47f5f3ae0283ec983b13c88137a6a082741` |
 
 ## Units
 
@@ -31,7 +31,7 @@ The package passed its `full` set: all 15 units, 83 of 83 tests and 503 of 503 a
 | `/test/modules/pear-full-square/mycelium-value-avro` | passed | 8 of 8 | 57 of 57 |
 | `/test/modules/pear-full-square/mycelium-value-json` | passed | 1 of 1 | 3 of 3 |
 | `/test/modules/pear-full-square/p2p-local` | passed | 4 of 4 | 16 of 16 |
-| `/test/modules/pear-full-square/p2p-topic` | passed | 3 of 3 | 14 of 14 |
+| `/test/modules/pear-full-square/p2p-topic` | passed | 4 of 4 | 16 of 16 |
 | `/test/modules/pear-full-square/pkgm-base-check` | passed | 23 of 23 | 70 of 70 |
 
 Written by the package's pre-release from `full.json`, beside it. The content is the hash of the bundle that was tested, its test reports left out.

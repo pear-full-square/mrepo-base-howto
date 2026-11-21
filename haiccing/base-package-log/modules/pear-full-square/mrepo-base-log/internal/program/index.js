@@ -7,6 +7,9 @@ import Corestore from 'corestore'
 import fs, { existsSync, readdirSync, readFileSync, writeFileSync, renameSync, rmSync, mkdirSync } from 'bare-fs'
 import { join } from 'bare-path'
 import { topics } from 'p2p-topic'
+// The log's records' encoding: one line to change it (its type: the log
+// package's types/log-entry.avsc).
+import * as handler from 'mycelium-value-json'
 import { socketOf, listen, request, open } from 'p2p-local'
 import { lookup } from 'mrepo-base-rns'
 import { recordOf } from '../entry/index.js'
@@ -30,7 +33,7 @@ export async function serve ({ dir, every = 500, sync = 2000, swarm = lookup(dir
   mkdirSync(side, { recursive: true })
   const store = new Corestore(join(side, 'store'))
   await store.ready()
-  const t = topics(store)
+  const t = topics(store, { handler })
   const identity = await t.keyPair('node')
   const own = await t.own(TOPIC)
   const socket = socketOf(side, SOCKET)

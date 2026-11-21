@@ -6,11 +6,16 @@
 // to each as its rns would. No mrepo is built. Every action the config
 // names must be run here: the last test fails when one was left out.
 import test from '../../modules/node_modules/brittle/index.js'
-import { mkdtempSync, mkdirSync, writeFileSync } from '../../modules/node_modules/bare-fs/index.js'
-import { join } from '../../modules/node_modules/bare-path/index.js'
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from '../../modules/node_modules/bare-fs/index.js'
+import { join, dirname } from '../../modules/node_modules/bare-path/index.js'
+import { fileURLToPath } from '../../modules/node_modules/bare-url/index.js'
 import os from '../../modules/node_modules/bare-os/index.js'
 import * as mounted from '../../protocol.js'
-import { serve } from '../../modules/pear-full-square/mrepo-base-log/index.js'
+import { serve, recordOf } from '../../modules/pear-full-square/mrepo-base-log/index.js'
+
+// Its core type, as the package registers it: types/<name>.avsc.
+const typeOf = name => JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'types', `${name}.avsc`), 'utf8'))
+const documented = type => Boolean(type.doc) && type.fields.every(f => f.doc && (typeof f.type !== 'object' || Array.isArray(f.type) || !f.type.fields || documented(f.type)))
 
 const folder = () => { const d = mkdtempSync(join(os.tmpdir(), 'log-')); mkdirSync(join(d, 'outbox')); return d }
 // An execution as an action sees it: the mrepo's folder, its log.
@@ -66,6 +71,14 @@ test('its actions: a node\'s log synced to the master, read there across nodes a
   await N.close()
   await M.close()
   t.alike(await act('status', execution(n), {}), { running: false, length: 0, collected: [] }, 'status with its program not running: said')
+})
+
+test('its core type: a log record, every field documented, the fields a record is written with', (t) => {
+  const type = typeOf('log-entry')
+  t.is(type.name, 'haiccing.basePackageLog.logEntry', 'named by its organisation, its package, its name')
+  t.ok(documented(type), 'a doc on it and on every field')
+  const written = recordOf({ key: 'k', timestamp: '2026-11-21T00:00:01.000Z', value: { topic: '/t', key: 'k', timestamp: '2026-11-21T00:00:00.000Z', value: { command: ['crud/read', '.'], output: {} } } }).value
+  t.alike(type.fields.map(f => f.name), Object.keys(written), 'its fields: those of a record as the log writes it, in order')
 })
 
 test('nothing forgotten: every action configured run here, each writing into the request\'s log', (t) => {

@@ -1,6 +1,6 @@
 # Test report: haiccing/base-package-swarm
 
-The package passed its `full` set: all 16 units, 266 of 266 tests and 1680 of 1680 asserts.
+The package passed its `full` set: all 16 units, 267 of 267 tests and 1684 of 1684 asserts.
 
 | | |
 |---|---|
@@ -8,17 +8,17 @@ The package passed its `full` set: all 16 units, 266 of 266 tests and 1680 of 16
 | Set | `full` |
 | Result | passed |
 | Units | 16 of 16 passed |
-| Tests | 266 of 266 passed |
-| Asserts | 1680 of 1680 passed |
-| Run | 2026-11-21 04:41 UTC |
+| Tests | 267 of 267 passed |
+| Asserts | 1684 of 1684 passed |
+| Run | 2026-11-21 05:54 UTC |
 | Bare | v1.36.0 |
-| Content | `01f43f761c98b88a09faa445296192b7d1bd1f49e8cb58fd8f8c3ae0c83b61ab` |
+| Content | `907132cf2acc3c5b4353787b8cb55b21ccd152aa2dbf02068ba2a6c5a074211c` |
 
 ## Units
 
 | Unit | Result | Tests | Asserts |
 |---|---|---|---|
-| `/test/mounted` | passed | 5 of 5 | 37 of 37 |
+| `/test/mounted` | passed | 6 of 6 | 41 of 41 |
 | `/test/info` | passed | 1 of 1 | 2 of 2 |
 | `/test/code` | passed | 1 of 1 | 2 of 2 |
 | `/test/mrepo` | passed | 1 of 1 | 1 of 1 |

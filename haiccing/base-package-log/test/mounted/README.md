@@ -19,6 +19,9 @@ tell it.
   it is synced; at the master, the node's topic collected; `read` at
   the master, every node's records in one view and one node's; at a
   node, its own; `status` with no program running.
+- **Its core type**, `types/log-entry.avsc`: named as the package
+  registers it, a `doc` on it and every field, its fields those of a
+  record as the log writes it.
 - **Nothing forgotten**: the last test fails when the config names an
   action that was not run here, or one that wrote nothing into the
   request's log as it ran.

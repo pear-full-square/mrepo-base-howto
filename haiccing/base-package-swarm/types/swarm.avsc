@@ -1,0 +1,58 @@
+{
+  "type": "record",
+  "name": "haiccing.basePackageSwarm.swarm",
+  "doc": "A swarm's node, its document in the main of the host that made it: its master and where its lookup db is",
+  "fields": [
+    {
+      "name": "kind",
+      "type": "string",
+      "doc": "swarm: what the node is"
+    },
+    {
+      "name": "master",
+      "type": "string",
+      "doc": "its master's name below it"
+    },
+    {
+      "name": "lease",
+      "type": "long",
+      "doc": "how long a node stays active without renewing, in milliseconds"
+    },
+    {
+      "name": "lookup",
+      "type": {
+        "type": "record",
+        "name": "haiccing.basePackageSwarm.lookup",
+        "doc": "Where a swarm's lookup db is: its master",
+        "fields": [
+          {
+            "name": "uri",
+            "type": "string",
+            "doc": "the master's unique URI"
+          },
+          {
+            "name": "machine",
+            "type": "string",
+            "doc": "its machine's name"
+          },
+          {
+            "name": "folder",
+            "type": "string",
+            "doc": "its folder there"
+          },
+          {
+            "name": "key",
+            "type": "string",
+            "doc": "its public key, hex"
+          },
+          {
+            "name": "registry",
+            "type": "string",
+            "doc": "the key of the topic the lookup db is, hex"
+          }
+        ]
+      },
+      "doc": "where its lookup db is, given to each node deployed into it"
+    }
+  ]
+}
