@@ -81,8 +81,9 @@ out (`::`), a filter inside a filter, the other functions. The parent
 - **A query stops at a shortcut**, with what is left of it: the rest, a
   query from that node as its root. A filter on the node it stops at
   goes with it.
-- **Every mrepo has a unique URI**, `<swarm>/<node>`: `local/host`, a
-  swarm's node `swarm-1/node-1`. A shortcut names the mrepo it leads to
+- **Every mrepo has a unique URI**, a path, `<namespace>/<name>`:
+  `local/host`, a swarm's node `swarm-1/node-1`, a how-to's mrepo
+  `haiccing/base-package-crud/howto/query/boot`. A shortcut names the mrepo it leads to
   by it.
 
 ## Hops

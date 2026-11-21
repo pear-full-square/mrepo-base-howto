@@ -103,6 +103,12 @@ help splectral/base-component-help-viewer`), its hooks laid by the mrepo
 itself, its package not in the mrepo's own; what `install` refuses;
 its pages asked over HTTP before and after its service started (a page
 by its keywords, another mrepo, a keyword not there), its data requests
-in the install's record; stopped, torn down, nothing left running. Each
-step timed, the pages too. It needs the splectral packages' bundles in
-the sources.
+in the install's record; stopped, torn down, nothing left running. Then
+the workbench on a fresh install, one command (`haicc . boot/deploy
+workbench haiccing/base-solution-workbench`): the workbench and, by its
+script run at the root, the docs mrepo, the host and Splectral beside
+it in the install's registry, the host and Splectral in service, its
+site and the docs answering, the workbench's `howtos` namespace; a
+second on the same install stopped at its script's first line; torn
+down, nothing left. Each step timed, the pages too. It needs the
+splectral packages' and the workbench's bundles in the sources.

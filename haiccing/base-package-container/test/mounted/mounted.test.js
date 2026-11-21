@@ -78,7 +78,7 @@ test('what create refuses before anything is made', async (t) => {
   await t.exception(act('create', there.exec), /created already: container/, 'a replica there already')
   // an mrepo without a unique URI of a swarm's kind
   const boot = execution({ '/main/layer.json': B({}) }, { name: 'boot', uri: 'boot', dir: '/w/mrepos/boot', work: '/w' })
-  await t.exception(act('create', boot.exec), /no unique URI to make a replica by: boot \(<swarm>\/<name>\)/, 'no unique URI: no replica')
+  await t.exception(act('create', boot.exec), /no unique URI to make a replica by: boot \(<swarm>\/<name>, a path\)/, 'no unique URI: no replica')
   t.alike([local.writes, there.writes, boot.writes], [[], [], []], 'nothing written by any of it')
 })
 

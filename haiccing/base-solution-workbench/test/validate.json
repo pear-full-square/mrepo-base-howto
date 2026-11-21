@@ -1,0 +1,11 @@
+{
+  "description": "The package on its own, in a floating instance: its list and its hooks as configured, and its info, its code, its mrepo side and its structure check without problems.",
+  "tests": [
+    "configured",
+    "workbench",
+    "info",
+    "code",
+    "mrepo",
+    "package"
+  ]
+}
