@@ -104,6 +104,35 @@ for what is written from now on; checked once the schemas are there.
 - **Documents stay plain JSON**, validated as values against their
   schema; not AVRO's JSON encoding, which wraps unions.
 
+## Core types
+
+A core type and its variants: a design principle (the human, 2026-11-21): "we mean the same thing with
+more or less detail and the detail depends on the context it is being
+used in"; "it will allow us to deal with all sorts of extensions while
+at the same type have a base type that can travel broadly. This
+constraint creates a dual namespace from a single string: core type in
+the name, variant in the namespace context."
+
+- **One string, two parts**: a type's full name is
+  `<namespace>.<name>`; the name is the core type, the namespace the
+  context of its variant. `haiccing.basePackageRns.logEntry` and
+  `splectral.baseComponentLogViewer.logEntry` are one core type,
+  `logEntry`, in two variants.
+- **A base type travels broadly**: a reader holding the base reads every
+  variant, their extra detail skipped; a variant reads the base, its own
+  detail from its defaults. AVRO resolves a record by its name without
+  the namespace, the core type, so this holds as AVRO is.
+- **More or less detail, by context**: a variant extends its core type
+  within AVRO's rules (fields added with defaults, fields left out,
+  numbers widened, unions extended); where it is read decides how much
+  detail is read.
+- **The namespace from the URI**: a schema's URI is
+  `<org>/<package>/<name>` (`haiccing/base-package-rns/log-entry`); its
+  full name by the data-name mapping, exact both ways
+  (`haiccing.basePackageRns.logEntry`).
+- **Is and is-like**: one core type, its versions and variants, is read
+  as AVRO reads it; a different core type is read as another only when
+  asked (is-like: aliases generated for that read).
 ## Schemas
 
 A schema's name is its URI, where it comes from; its identity its
@@ -112,12 +141,13 @@ fingerprint (`mycelium-value-avro`).
 - **Named by its URI**: `<org>/<package>/<name>`, a module's
   `<org>/<module>/<name>`: `haiccing/base-package-help/annotate-answer`.
   Each part a data name's URI form ("Data names").
-- **Its AVRO fullname by the data-name mapping**, exact both ways: the
-  namespace each part's data name, the name's the same with a capital
-  first: `haiccing.basePackageHelp.AnnotateAnswer`. A schema whose name
-  does not map is still a schema, known by its fingerprint only.
+- **Its AVRO fullname by the data-name mapping**, exact both ways, each
+  part its data name: `haiccing.basePackageHelp.annotateAnswer`; the
+  name the core type, the namespace its variant ("Core types"). A
+  schema whose name does not map is still a schema, known by its
+  fingerprint only.
 - **Its fingerprint**: the AVRO specification's CRC-64-AVRO of its
-  Parsing Canonical Form, 16 hex digits (`9a1f…`), a name: a schema
+  Parsing Canonical Form, 16 hex digits, a name: a schema
   never changes; a new version, a new fingerprint.
 - **A record names its own**: a topic is not bound to one schema; each
   record carries its schema's fingerprint (AVRO's single-object
