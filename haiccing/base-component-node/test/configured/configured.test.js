@@ -34,14 +34,16 @@ const LIST = [
   'haiccing/base-package-crud',
   'haiccing/base-package-container',
   'haiccing/base-package-rns',
+  'haiccing/base-package-log',
   'haiccing/base-component-node'
 ]
-// The rns' program, by its path in the mrepo's folder: its package as placed.
-const PROGRAM = 'packages/haiccing/base-package-rns'
+// Its programs, each by its path in the mrepo's folder: its package as placed.
+const PROGRAMS = ['packages/haiccing/base-package-rns', 'packages/haiccing/base-package-log']
 // Each hook named here with its command: what a node offers from its
 // boot, what its initialise does, and the door its service opens and
 // closes: the boot protocol, the crud protocol, the container protocol and
-// the rns protocol, its program started and ended with it.
+// the rns protocol and the log protocol, their programs started and ended
+// with them.
 const HOOKS = {
   'boot/1': ['protocol/activate', '.', 'haicc'],
   'boot/2': ['protocol/activate', '.', 'haici'],
@@ -54,16 +56,20 @@ const HOOKS = {
   'start/2': ['protocol/activate', '.', 'container'],
   'start/3': ['protocol/activate', '.', 'crud'],
   'start/4': ['protocol/activate', '.', 'rns'],
-  'start/5': ['runtime/start', '.', PROGRAM],
-  'stop/1': ['runtime/stop', '.', PROGRAM],
-  'stop/2': ['protocol/deactivate', '.', 'rns'],
-  'stop/3': ['protocol/deactivate', '.', 'boot'],
-  'stop/4': ['protocol/deactivate', '.', 'container'],
-  'stop/5': ['protocol/deactivate', '.', 'crud']
+  'start/5': ['protocol/activate', '.', 'log'],
+  'start/6': ['runtime/start', '.', PROGRAMS[0]],
+  'start/7': ['runtime/start', '.', PROGRAMS[1]],
+  'stop/1': ['runtime/stop', '.', PROGRAMS[1]],
+  'stop/2': ['runtime/stop', '.', PROGRAMS[0]],
+  'stop/3': ['protocol/deactivate', '.', 'log'],
+  'stop/4': ['protocol/deactivate', '.', 'rns'],
+  'stop/5': ['protocol/deactivate', '.', 'boot'],
+  'stop/6': ['protocol/deactivate', '.', 'container'],
+  'stop/7': ['protocol/deactivate', '.', 'crud']
 }
 
 test('its list of packages, in deploy order, itself last', (t) => {
-  t.alike(json('mrepo', 'packages', 'layer.json').packages, LIST, 'the haicc mrepo\'s, then rns, the component')
+  t.alike(json('mrepo', 'packages', 'layer.json').packages, LIST, 'the haicc mrepo\'s, then rns and log, the component')
 })
 
 test('its hooks, file by file, line by line, and the state it starts in', (t) => {
@@ -98,11 +104,12 @@ test('the packages it lists: each in the sources, the protocols they provide', (
     haici: 'haiccing/base-package-haici',
     help: 'haiccing/base-package-help',
     info: 'haiccing/base-package-info',
+    log: 'haiccing/base-package-log',
     protocol: 'haiccing/base-package-protocol',
     rns: 'haiccing/base-package-rns',
     runtime: 'haiccing/base-package-runtime',
     service: 'haiccing/base-package-service'
-  }, 'eleven protocols, one a package; the component provides none')
+  }, 'twelve protocols, one a package; the component provides none')
 })
 
 test('every hook names a protocol and an action a listed package provides', (t) => {
@@ -156,19 +163,19 @@ function world () {
 }
 const of = transition => Object.keys(brought).filter(n => n.startsWith(`${transition}/`)).sort()
 
-test('what its hooks do: the boot opens haicc, haici, help, info, runtime and service; the service\'s start opens boot, container, crud and rns and starts the rns\' program, its stop ends it and closes them', async (t) => {
+test('what its hooks do: the boot opens haicc, haici, help, info, runtime and service; the service\'s start opens boot, container, crud, rns and log and starts their programs, its stop ends them and closes them', async (t) => {
   const w = world()
   // the boot: the runtime places these as its own, in name order
   for (const name of of('boot')) await w.exec.run(brought[name])
   t.alike(w.active(), ['haicc', 'haici', 'help', 'info', 'runtime', 'service'], 'after the boot: what a node always offers')
-  t.absent(w.active().includes('boot') || w.active().includes('crud') || w.active().includes('container') || w.active().includes('rns'), 'the boot protocol, the crud protocol, the container protocol and the rns protocol are behind the service\'s door')
+  t.absent(w.active().includes('boot') || w.active().includes('crud') || w.active().includes('container') || w.active().includes('rns') || w.active().includes('log'), 'the boot protocol, the crud protocol, the container protocol, the rns protocol and the log protocol are behind the service\'s door')
   t.absent(w.active().includes('protocol'), 'the protocol protocol: not a hook\'s, the runtime opens it itself')
   t.alike(await w.exec.run(['service/initialise']), { service: 'initialised', state: 'initialised' })
   t.ok(w.commands.includes('info/extract'), 'initialise: the info extracted, by its hook')
   t.alike(w.active(), ['haicc', 'haici', 'help', 'info', 'runtime', 'service'], 'initialised: the same protocols open')
   t.alike(await w.exec.run(['service/start']), { service: 'started', state: 'started' })
-  t.alike(w.active(), ['boot', 'container', 'crud', 'haicc', 'haici', 'help', 'info', 'rns', 'runtime', 'service'], 'started: the door open, boot, container, crud and rns with the others')
-  t.alike([w.commands.at(-1), PROGRAM], [`runtime/start . ${PROGRAM}`, `packages/${LIST.at(-2)}`], 'and last, with rns open: its program started, the rns package as it is placed in the mrepo\'s folder')
+  t.alike(w.active(), ['boot', 'container', 'crud', 'haicc', 'haici', 'help', 'info', 'log', 'rns', 'runtime', 'service'], 'started: the door open, boot, container, crud, rns and log with the others')
+  t.alike([w.commands.slice(-2), PROGRAMS], [PROGRAMS.map(p => `runtime/start . ${p}`), [`packages/${LIST.at(-3)}`, `packages/${LIST.at(-2)}`]], 'and last, with both open: their programs started, the rns\' before the log\'s (the log finds its master through it), each package as it is placed in the mrepo\'s folder')
   t.alike(await w.exec.run(['service/stop']), { service: 'stopped', state: 'initialised' })
   t.alike(w.active(), ['haicc', 'haici', 'help', 'info', 'runtime', 'service'], 'stopped: the door closed again, exactly what start opened')
   t.alike(await w.exec.run(['service/shutdown']), { service: 'shut down', state: 'booted' })
@@ -183,5 +190,5 @@ test('every protocol the listed packages provide is opened by a hook, or closed 
   const closed = Object.values(brought).filter(c => c[0] === 'protocol/deactivate').map(c => c[2]).sort()
   t.alike(Object.keys(provided).filter(p => !opened.includes(p)).sort(), ['protocol'], 'only the protocol protocol is opened by no hook: the runtime opens it itself; a package added to the list without a hook for its protocol fails this')
   t.alike(closed, of('start').filter(n => brought[n][0] === 'protocol/activate').map(n => brought[n][2]).sort(), 'what start opens, stop closes: nothing left open behind a closed door')
-  t.alike(of('stop').filter(n => brought[n][0] === 'runtime/stop').map(n => brought[n][2]), of('start').filter(n => brought[n][0] === 'runtime/start').map(n => brought[n][2]), 'the program start starts, stop ends')
+  t.alike(of('stop').filter(n => brought[n][0] === 'runtime/stop').map(n => brought[n][2]), of('start').filter(n => brought[n][0] === 'runtime/start').map(n => brought[n][2]).reverse(), 'the programs start starts, stop ends, the last started first')
 })

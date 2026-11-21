@@ -34,7 +34,8 @@ docs mrepo: `haicc docs info/get <keywords>`.
   Nodes are deployed into it (`swarm/deploy swarms/<swarm>/<name>`),
   each an mrepo, `<swarm>/<name>`, registered by the host that created
   it. Every node runs `rns` on the swarm's lookup db: `rns/status` says
-  who is registered and active. A node can have a replica in a
+  who is registered and active. Every node keeps its own log, synced
+  lazily to the master: `log/read` there answers every node's. A node can have a replica in a
   container, linked as `container`; or it runs in a container on its
   own haicc install, a pair (`boot/deploy ... --flags container`).
 - **The workbench**, `local/workbench`: a solution, the development and
@@ -48,7 +49,8 @@ docs mrepo: `haicc docs info/get <keywords>`.
   Splectral side (`splectral/install`) and serves them in a browser as
   a site, a tab each, a component's section in its content area; its server is the data layer, running the commands a
   component asks for as a terminal does. Its components are packages of
-  the `splectral` organisation; the first is the help viewer.
+  the `splectral` organisation: the help viewer, the first, and the log
+  viewer, a swarm's logs as its master holds them.
 
 ## Platforms
 
@@ -157,7 +159,9 @@ organisation of its own, beside haicc's own, `haiccing`.
 - **lease**: how long a node stays active without its `rns` renewing it
   at the master; run out, the node is quiet.
 - **cell**: a node as a self-contained unit: its own haicc, its own
-  `rns`, its own identity.
+  `rns`, its own identity, its own log.
+- **log**: a node's completed requests, a record each, in a topic the
+  node alone writes; a swarm's are read together at its master.
 - **haici**: human ai continuous improvement, findings from the request
   log, fed back to the HDLC; its protocol records feedback on a command
   (`--flags feedback <text>`), the request log its store.

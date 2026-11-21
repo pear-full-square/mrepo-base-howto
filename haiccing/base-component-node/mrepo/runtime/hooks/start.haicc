@@ -3,4 +3,6 @@ protocol/activate . boot
 protocol/activate . container
 protocol/activate . crud
 protocol/activate . rns
+protocol/activate . log
 runtime/start . packages/haiccing/base-package-rns
+runtime/start . packages/haiccing/base-package-log

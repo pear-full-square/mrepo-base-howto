@@ -33,7 +33,9 @@
     "pear-full-square/p2p-local",
     "pear-full-square/p2p-topic",
     "pear-full-square/mrepo-base-rns",
-    "pear-full-square/mrepo-base-swarm"
+    "pear-full-square/mrepo-base-swarm",
+    "pear-full-square/mrepo-base-log",
+    "pear-full-square/splectral-base-log-viewer"
   ],
   "dependencies": {
     "bare-bundle": "1.11.0",

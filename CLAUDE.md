@@ -32,13 +32,14 @@ history, and each package and module has its own repository).
 
 - `haiccing/`: the packages, each at the path of its repository:
   `base-package-runtime`, `-protocol`, `-info`, `-help`, `-haici`, `-boot`,
-  `-service`, `-haicc`, `-crud`, `-container`, `-swarm`, `-rns`,
+  `-service`, `-haicc`, `-crud`, `-container`, `-swarm`, `-rns`, `-log`,
   `-splectral` (one package, one protocol); the solution
   `base-solution-workbench` (the workbench: one deploy installs the docs
   mrepo, the host and Splectral; its `howtos` namespace); the components
   `base-component-boot` (the boot mrepo and the program that puts it in
   place), `base-component-haicc` (the haicc mrepo, a host),
-  `base-component-node` (a swarm's node: the haicc mrepo with `rns`) and
+  `base-component-node` (a swarm's node: the haicc mrepo with `rns` and
+  `log`) and
   `base-component-docs` (the docs mrepo); `base-app-haicc` (the `haicc` command, an app run with Bare)
   and `base-linux-haicc` (the first step on Linux, sh scripts); the
   documentation packages `base-docs-package` (the package specification,
@@ -49,8 +50,10 @@ history, and each package and module has its own repository).
   second organisation, built and released by itself):
   `base-component-help-viewer`, the help viewer, the first component, a
   standalone first implementation (one package: its program and its
-  page in it, its module `splectral-base-help-viewer`). Brought to
-  haiccing's template.
+  page in it, its module `splectral-base-help-viewer`);
+  `base-component-log-viewer`, the log viewer, on its pattern: a
+  swarm's logs as its master holds them (`splectral-base-log-viewer`).
+  Brought to haiccing's template.
 - `pear-full-square/`: the modules those packages carry, and
   `pkgm-base-manager`, which the tools use.
 - `tools/`: today's HDLC tooling (`base-docs-hdlc`, "Tooling"); the
@@ -88,7 +91,8 @@ The rules are `base-docs-hdlc`'s "Validation"; here, how each is run.
 - Splectral as an app platform, a component installed and its pages
   served: `sh haiccing/base-linux-haicc/test/splectral.sh`.
 - A swarm on one host, its master, its nodes registered, a node gone
-  quiet: `sh haiccing/base-linux-haicc/test/swarm.sh`, several times (a
+  quiet, the logs at the master and in the log viewer:
+  `sh haiccing/base-linux-haicc/test/swarm.sh`, several times (a
   race shows one run in a few).
 - The `haicc` command installed in a container, from the host's sources:
   `sh haiccing/base-linux-haicc/test/container.sh` (Docker).
