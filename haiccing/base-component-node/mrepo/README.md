@@ -4,8 +4,8 @@ The component's part of the structure: the list of the packages a swarm's node i
 
 - **Its packages** (`packages/layer.json`): the haicc mrepo's (the
   runtime, info, help, haici, the protocol protocol, boot, service,
-  haicc, crud, container), then the rns protocol, and this component
-  last.
+  haicc, crud, container), then the rns protocol, the log protocol and
+  the dispatch protocol, and this component last.
 - **Its runtime config**: the service state and the hooks, below.
 - **Nothing else**: no protocol, no data. `main` stays empty.
 
@@ -17,12 +17,14 @@ The component's part of the structure: the list of the packages a swarm's node i
   `service` activated. A closed node can be addressed, inspected and
   tested.
 - **At `initialise`**: its info extracted.
-- **At `start`**: `boot`, `container`, `crud` and `rns` activated, then
-  the rns' program started beside the mrepo, `runtime/start .
-  packages/haiccing/base-package-rns`: from then on the node renews its
-  lease and answers from its lookup db.
-- **At `stop`**: the program ended, `runtime/stop` of the same, then the
-  four deactivated again. A node stopped goes quiet in its swarm.
+- **At `start`**: `boot`, `container`, `crud`, `rns`, `log` and
+  `dispatch` activated, then the two programs started beside the mrepo: the rns',
+  `runtime/start . packages/haiccing/base-package-rns`, from then on the
+  node renews its lease and answers from its lookup db; the log's,
+  `runtime/start . packages/haiccing/base-package-log`, from then on its
+  requests are logged and synced to the master.
+- **At `stop`**: the programs ended, `runtime/stop` of each, then the
+  six deactivated again. A node stopped goes quiet in its swarm.
 
 Runtime config is laid in from the last package of a list only, the one
 that defines the mrepo. So the component states its own in full.

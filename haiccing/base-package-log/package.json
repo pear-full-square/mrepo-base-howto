@@ -1,0 +1,20 @@
+{
+  "name": "base-package-log",
+  "description": "Package: the log protocol, a node's log as a topic of its own, synced lazily to its swarm's master and read there across nodes.",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "main": "main.js",
+  "modules": [
+    "pear-full-square/mrepo-base-log",
+    "pear-full-square/mrepo-base-info",
+    "pear-full-square/pkgm-base-check"
+  ],
+  "template": {
+    "repository": "haiccing/base-docs-package",
+    "commit": "d6d99cffc82361d9c15ae86fd723045537ba63b3"
+  },
+  "scripts": {
+    "test": "bare test/run.js"
+  }
+}

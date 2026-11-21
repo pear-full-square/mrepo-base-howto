@@ -1,0 +1,14 @@
+{
+  "name": "mrepo-base-dispatch",
+  "version": "0.1.0",
+  "description": "Module: the mrepo dispatch protocol, a command routed to the node of the swarm its unique URI names, resolved by rns.",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "brittle-bare test/*.test.js"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "brittle": "4.5.0"
+  }
+}

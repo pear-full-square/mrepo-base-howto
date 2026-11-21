@@ -1,11 +1,12 @@
 # base-component-node
 
-A swarm's node, the cell: the haicc mrepo with its swarm's lookup on it.
+A swarm's node, the cell: the haicc mrepo with its swarm's lookup, its own log and dispatch on it.
 
 A component is several packages deployed together, with nothing in
 `main`. This one makes a node of a swarm: everything the haicc mrepo is,
-and the `rns` protocol with its program, the swarm's lookup db on the
-node. A host deploys it with `swarm/create` and `swarm/deploy`, which
+the `rns` protocol with its program, the swarm's lookup db on the
+node, the `log` protocol with its program, the node's log, and the
+`dispatch` protocol, commands sent to the swarm's other nodes. A host deploys it with `swarm/create` and `swarm/deploy`, which
 also bring it into service and register it.
 
 ## Links
@@ -29,6 +30,8 @@ also bring it into service and register it.
 - [base-package-crud](../base-package-crud/)
 - [base-package-container](../base-package-container/)
 - [base-package-rns](../base-package-rns/)
+- [base-package-log](../base-package-log/)
+- [base-package-dispatch](../base-package-dispatch/)
 
 ## Deploying
 
@@ -39,13 +42,15 @@ service, told where the lookup db is and registered.
 haicc host swarm/create swarms/swarm-1
 haicc host swarm/deploy swarms/swarm-1/node-1
 haicc host/swarms/swarm-1/node-1 rns/status
+haicc host/swarms/swarm-1/node-1 haicc swarm-1/master log/read
 ```
 
 ## The cell
 
 Every node carries what it needs to stand on its own: its haicc, its
-`rns`; each node has its own identity, a keypair of its rns' store. A
-node in no swarm yet runs the same: its rns answers that it is in none.
+`rns`, its `log`, its `dispatch`; each node has its own identity, a keypair of its rns'
+store, and its own log, a topic it alone writes. A node in no swarm yet
+runs the same: its rns answers that it is in none.
 
 ## Package
 

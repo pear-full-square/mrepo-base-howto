@@ -1,0 +1,17 @@
+{
+  "name": "mrepo-base-log",
+  "version": "0.1.0",
+  "description": "Module: the mrepo log protocol, a node's log as a topic of its own, synced lazily to its swarm's master and read there across nodes.",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "brittle-bare test/*.test.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "corestore": "7.16.1"
+  },
+  "devDependencies": {
+    "brittle": "4.5.0"
+  }
+}
