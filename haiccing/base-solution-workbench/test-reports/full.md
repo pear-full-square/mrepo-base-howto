@@ -1,18 +1,18 @@
 # Test report: haiccing/base-solution-workbench
 
-The package passed its `full` set: all 23 units, 327 of 327 tests and 2146 of 2146 asserts.
+The package passed its `full` set: all 24 units, 339 of 339 tests and 2221 of 2221 asserts.
 
 | | |
 |---|---|
 | Package | `haiccing/base-solution-workbench` |
 | Set | `full` |
 | Result | passed |
-| Units | 23 of 23 passed |
-| Tests | 327 of 327 passed |
-| Asserts | 2146 of 2146 passed |
-| Run | 2026-11-21 02:50 UTC |
+| Units | 24 of 24 passed |
+| Tests | 339 of 339 passed |
+| Asserts | 2221 of 2221 passed |
+| Run | 2026-11-21 04:10 UTC |
 | Bare | v1.36.0 |
-| Content | `200847184163761553670c38643f0716e46a9eeda68b83b0a330eeb7349e10ff` |
+| Content | `94ea5aef407abe033d06ddb0d23afa9e7e4fcd5b8dee8a738a8d7e9e75bec5a5` |
 
 ## Units
 
@@ -24,17 +24,18 @@ The package passed its `full` set: all 23 units, 327 of 327 tests and 2146 of 21
 | `/test/code` | passed | 1 of 1 | 2 of 2 |
 | `/test/mrepo` | passed | 1 of 1 | 1 of 1 |
 | `/test/package` | passed | 1 of 1 | 1 of 1 |
-| `/test/modules/pear-full-square/mrepo-base-crud` | passed | 8 of 8 | 76 of 76 |
+| `/test/modules/pear-full-square/mrepo-base-crud` | passed | 9 of 9 | 80 of 80 |
 | `/test/modules/pear-full-square/mrepo-base-execute` | passed | 10 of 10 | 98 of 98 |
-| `/test/modules/pear-full-square/mrepo-base-info` | passed | 9 of 9 | 60 of 60 |
+| `/test/modules/pear-full-square/mrepo-base-info` | passed | 9 of 9 | 62 of 62 |
 | `/test/modules/pear-full-square/mrepo-base-protocol` | passed | 3 of 3 | 10 of 10 |
-| `/test/modules/pear-full-square/mrepo-base-request` | passed | 18 of 18 | 228 of 228 |
+| `/test/modules/pear-full-square/mrepo-base-request` | passed | 21 of 21 | 240 of 240 |
 | `/test/modules/pear-full-square/mrepo-base-runtime` | passed | 9 of 9 | 150 of 150 |
 | `/test/modules/pear-full-square/mrepo-base-service` | passed | 2 of 2 | 13 of 13 |
 | `/test/modules/pear-full-square/mrepo-base-xpath` | passed | 5 of 5 | 55 of 55 |
 | `/test/modules/pear-full-square/mycelium-container-document` | passed | 1 of 1 | 8 of 8 |
 | `/test/modules/pear-full-square/mycelium-git` | passed | 144 of 144 | 777 of 777 |
 | `/test/modules/pear-full-square/mycelium-uri` | passed | 21 of 21 | 195 of 195 |
+| `/test/modules/pear-full-square/mycelium-value-avro` | passed | 8 of 8 | 57 of 57 |
 | `/test/modules/pear-full-square/mycelium-value-json` | passed | 1 of 1 | 3 of 3 |
 | `/test/modules/pear-full-square/mycelium-xpath` | passed | 21 of 21 | 141 of 141 |
 | `/test/modules/pear-full-square/p2p-mrepo` | passed | 34 of 34 | 171 of 171 |

@@ -22,6 +22,7 @@ implemented with no how-to naming it (`Pattern: <name>`).
 - [documents](documents/)
 - [program](program/)
 - [platform](platform/)
+- [schemas](schemas/)
 
 ## Written where
 

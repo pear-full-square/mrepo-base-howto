@@ -10,6 +10,7 @@
     "pear-full-square/mrepo-base-boot",
     "pear-full-square/mycelium-container-document",
     "pear-full-square/mycelium-value-json",
+    "pear-full-square/mycelium-value-avro",
     "pear-full-square/mycelium-git",
     "pear-full-square/mycelium-xpath",
     "pear-full-square/mycelium-uri",

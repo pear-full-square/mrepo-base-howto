@@ -37,6 +37,7 @@ is for.
 | `modules/`, `package.json` | carries its own dependencies |
 | `mrepo/` | comes with an mrepo, by layers |
 | `scripts/` | has scripts: lists of commands to go on with after it is deployed, a file each (`<name>.haicc`, a simple command a line), answered as the deploy's continuation when asked for by name, sent on by the terminal as `haicc/script`; `solution.haicc`, with a list, makes it a solution: the mrepos an install is made of, deployed beside its own by that script, answered unasked with every deploy for the deployer's own position |
+| `schemas/` | carries schemas: AVRO, a file each (`<name>.json`), named by its URI, `<org>/<package>/<name>`, its AVRO fullname by the data-name mapping (`base-docs-uri`, "Schemas"); sealed in its bundle, registered in the install's registry when it is deployed ("Schemas") |
 | `howto/` | has how-tos: what can be done with it, a folder each (`<name>/`), its README the how-to: what it does and its steps as typed commands, each with why; a pattern's how-to names it, `Pattern: <name>`; pages of the package, read with `info` |
 | `test/` | has tests and test sets |
 | `test-reports/` | holds the proof that its tests passed: the report of its last pre-release |
@@ -131,6 +132,29 @@ with `info/get` by its keywords. Its shape:
 
 The generic `info` test checks them in every package
 (`mrepo-base-info`).
+
+## Schemas
+
+A package's types, carried with it and registered where it is deployed
+(`mycelium-value-avro`).
+
+- **Where**: `schemas/<name>.json`, one AVRO schema a file, in the
+  package; a module's in its own `schemas/` (`modules/<org>/<module>/schemas/`),
+  named by the module's place (`pear-full-square/<module>/<name>`). A
+  `README.md` beside them, a line each.
+- **Its name its URI**: the file's name is the name's last part, and the
+  schema's AVRO `name` its fullname by the data-name mapping:
+  `haiccing/base-package-help/schemas/annotate-answer.json` is
+  `haiccing.basePackageHelp.annotateAnswer`.
+- **Its identity its fingerprint**: a schema never changes; a new version
+  is a new schema, a new fingerprint, kept beside the old.
+- **Registered at deploy**: placing a package registers every schema its
+  bundle carries, its own and its modules', in the install's registry:
+  the creator registers. An index, not a gatekeeper: a valid schema is
+  never refused; one that is not valid AVRO stops the deploy.
+- **Read with `info`**: `info/get schemas`, every schema an mrepo's
+  packages carry, by URI and fingerprint; a binary record is decoded by
+  `crud/read`.
 
 ## Modules
 

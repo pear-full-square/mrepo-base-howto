@@ -12,6 +12,7 @@ where to read more; nothing of the command is executed. Linked wherever
 
 - [annotate](modules/pear-full-square/mrepo-base-help/external/annotate/)
 - [howto](howto/)
+- [schemas](schemas/)
 - [test](test/)
 - [test-reports](test-reports/)
 - [modules](modules/)
@@ -28,4 +29,6 @@ The `help` protocol's, in `protocol.js`; no state.
 
 - `protocol.js`: the `help` protocol, its config and its actions, from
   `mrepo-base-help`.
+- `schemas/`: its schemas, `annotate-answer`, `help/annotate`'s answer,
+  registered when it is deployed.
 - `main.js`: the dispatcher, the bundle's main, generated.

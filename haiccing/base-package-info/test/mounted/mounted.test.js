@@ -95,7 +95,7 @@ test('extract, then get: the layer from the packages, read by keywords', async (
     t.alike([(await act('extract', exec, { uri: ['.'] })).changed, writes.length], [false, n], 'again: nothing changed, nothing written')
     await t.exception(act('extract', exec, { uri: ['main', 'x'] }), /info extract: the whole mrepo only/)
     const top = await act('get', exec, {})
-    t.alike([top.choices[0].title, top.choices[0].below.map(b => b.keyword)], ['base-component-two', ['one', 'modules', 'third-party']], 'the top: the mrepo\'s own package, its included package by its name without the prefix, the pages made here')
+    t.alike([top.choices[0].title, top.choices[0].below.map(b => b.keyword)], ['base-component-two', ['one', 'modules', 'third-party', 'schemas']], 'the top: the mrepo\'s own package, its included package by its name without the prefix, the pages made here')
     const go = await act('get', exec, { uri: ['main', 'one/go'] })
     t.alike([go.choices[0].title, go.choices[0].oneliner], ['go', 'Goes.'], 'an action, reached by a jump into its module')
     await t.exception(act('get', exec, { uri: ['main', 'one/stop'] }), /no one\/stop here: nearest one, below it go/, 'not there: the nearest, and what is below it')
