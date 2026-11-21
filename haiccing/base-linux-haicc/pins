@@ -1,11 +1,16 @@
 # pins: what the haicc scripts are pinned to; sourced by them.
 # Bare's runtime, third party: the Bare the packages are built with,
-# written by their build from its lockfile.
+# written by their build from its lockfile; a build a platform
+# (BARE_<os>_<arch>_FILE, _URL, _SHA512), this machine's chosen by the
+# scripts (bin/haicc-lib.sh).
 BARE_VERSION=1.36.0
-BARE_PLATFORM=linux-x64
-BARE_FILE=holepunchto/bare-runtime-linux-x64-1.36.0.tgz
-BARE_URL=https://registry.npmjs.org/bare-runtime-linux-x64/-/bare-runtime-linux-x64-1.36.0.tgz
-BARE_SHA512=3c1cb0a7b58e3408eeaac29ce153ea966af7dc88f8ba06cd3ddff1c3693020ee8ec6c5a1453dedd8790786fc928dac6aed1e850f26de73f7ef796d04701a4a41
+BARE_PLATFORMS='linux-x64 linux-arm64'
+BARE_linux_x64_FILE=holepunchto/bare-runtime-linux-x64-1.36.0.tgz
+BARE_linux_x64_URL=https://registry.npmjs.org/bare-runtime-linux-x64/-/bare-runtime-linux-x64-1.36.0.tgz
+BARE_linux_x64_SHA512=3c1cb0a7b58e3408eeaac29ce153ea966af7dc88f8ba06cd3ddff1c3693020ee8ec6c5a1453dedd8790786fc928dac6aed1e850f26de73f7ef796d04701a4a41
+BARE_linux_arm64_FILE=holepunchto/bare-runtime-linux-arm64-1.36.0.tgz
+BARE_linux_arm64_URL=https://registry.npmjs.org/bare-runtime-linux-arm64/-/bare-runtime-linux-arm64-1.36.0.tgz
+BARE_linux_arm64_SHA512=754687f5fd84c0264e8c49b4483e472cf2ccc08103b3bd5d86af355c1ab3df2b2513184d85487679470107eba30ea31b3285e69b884d3a2bdc92e4088f6dc2ce
 # Ours: the organisation, and the app the command is: its package, run
 # with Bare from its bundle in the sources.
 HAICC_ORG=haiccing

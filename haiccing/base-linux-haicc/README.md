@@ -42,7 +42,7 @@ exits 3.
 ```
 ~/.haicc/
   bin/            the scripts
-  pins            the pinned Bare, the organisation, the app's package
+  pins            the pinned Bare (a build a platform), the organisation, the app's package
   sources.list    the sources registered, the app's list too
   sources/        what haicc sources download fetched: Bare, the packages
   bare/           Bare, unpacked by haicc prereq
@@ -57,9 +57,18 @@ exits 3.
 Only `haicc sources download` reaches the network. An install from
 a linked sources folder is offline and repeats exactly.
 
+## Platforms
+
+Two are pinned, `linux-x64` and `linux-arm64` (a Raspberry Pi, 64-bit):
+`pins` holds Bare's build for each (`BARE_<os>_<arch>_FILE`, `_URL`,
+`_SHA512`), and the scripts choose the machine's from `uname`
+(`bin/haicc-lib.sh`). `haicc sources download bare` fetches this
+machine's; `haicc prereq` puts it in place, or says the platform is not
+pinned. The packages' bundles are the same on both: each carries every
+pinned platform's native addons, and Bare loads its own.
+
 ## Not yet
 
-- One platform is pinned: `linux-x64`.
 - The app's bundle is taken from the sources as it is: not checked
   against its manifest.
 

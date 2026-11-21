@@ -108,8 +108,8 @@ HAICC_INSTALL_FILE_END
 cat > "$home/bin/haicc-lib.sh" <<'HAICC_INSTALL_FILE_END'
 # haicc-lib.sh: what the haicc scripts share; sourced, never run.
 #   HAICC_HOME   haicc's own folder: bin/, pins, sources.list, sources/, bare/
-# The pins (the pinned Bare, the organisation, the app) come from
-# $HAICC_HOME/pins.
+# The pins (the pinned Bare, a build a platform, the organisation, the
+# app) come from $HAICC_HOME/pins; this machine's Bare chosen from them.
 HAICC_HOME=${HAICC_HOME:-$(cd "$(dirname "$0")/.." && pwd)}
 . "$HAICC_HOME/pins"
 HAICC_LIST=$HAICC_HOME/sources.list
@@ -139,6 +139,12 @@ platform () {
   case "$_m" in x86_64|amd64) _m=x64 ;; aarch64|arm64) _m=arm64 ;; esac
   printf '%s-%s\n' "$_s" "$_m"
 }
+# This machine's Bare, from the pins (a file, a url and a sha512 a platform,
+# BARE_<os>_<arch>_...): BARE_PLATFORM, BARE_FILE, BARE_URL, BARE_SHA512;
+# a platform not pinned: BARE_FILE empty.
+BARE_PLATFORM=$(platform)
+case "$BARE_PLATFORM" in *[!a-z0-9-]*) _p=none ;; *) _p=$(printf '%s' "$BARE_PLATFORM" | tr - _) ;; esac
+eval "BARE_FILE=\${BARE_${_p}_FILE:-} BARE_URL=\${BARE_${_p}_URL:-} BARE_SHA512=\${BARE_${_p}_SHA512:-}"
 # What haicc sources download takes: bare, third-party, an organisation
 # (a name, <org>; a package is never downloaded alone).
 is_download () { case "$1" in bare|third-party) return 0 ;; ''|*[!a-z0-9-]*|-*) return 1 ;; [a-z]*) return 0 ;; *) return 1 ;; esac; }
@@ -151,12 +157,13 @@ cat > "$home/bin/haicc-prereq" <<'HAICC_INSTALL_FILE_END'
 #   haicc prereq --check   checked only, nothing changed
 # A line a prerequisite: ok, or missing with how to get it. Exit 0 when all
 # are there, 3 when one is missing.
-#   platform   this machine's, the one the pinned Bare is for
+#   platform   this machine's, one Bare is pinned for (the pins: a build
+#              a platform; this machine's chosen)
 #   tools      what the scripts use: tar, sha512sum
 #   sources    a folder registered that holds the app: its bundle, with its
 #              organisation's manifest
-#   bare       the pinned Bare, in haicc's folder, as pinned (its tarball's
-#              sha512 recorded beside it)
+#   bare       the pinned Bare, this platform's, in haicc's folder, as
+#              pinned (its tarball's sha512 recorded beside it)
 set -u
 . "$(dirname "$0")/haicc-lib.sh"
 check=no
@@ -168,8 +175,8 @@ ok () { printf 'ok       %s\n' "$1"; }
 miss () { printf 'missing  %s\n' "$1"; missing=1; }
 
 # platform
-if [ "$(platform)" = "$BARE_PLATFORM" ]; then ok "platform: $BARE_PLATFORM"
-else miss "platform: this is $(platform), the pinned Bare is for $BARE_PLATFORM"; fi
+if [ -n "$BARE_FILE" ]; then ok "platform: $BARE_PLATFORM"
+else miss "platform: this is $BARE_PLATFORM, Bare is pinned for $BARE_PLATFORMS"; fi
 
 # tools
 for t in tar sha512sum; do
@@ -182,7 +189,9 @@ if [ -n "$app" ] && [ -f "$(dirname "$app")/manifest.json" ]; then ok "sources: 
 else miss "sources: no folder registered holds $HAICC_ORG/$APP_PACKAGE.bundle (haicc sources link <folder>)"; fi
 
 # bare
-if [ -x "$HAICC_BARE" ] && [ -f "$HAICC_HOME/bare/tarball.sha512" ] && [ "$(cat "$HAICC_HOME/bare/tarball.sha512")" = "$BARE_SHA512" ]; then
+if [ -z "$BARE_FILE" ]; then
+  miss "bare: none pinned for $BARE_PLATFORM"
+elif [ -x "$HAICC_BARE" ] && [ -f "$HAICC_HOME/bare/tarball.sha512" ] && [ "$(cat "$HAICC_HOME/bare/tarball.sha512")" = "$BARE_SHA512" ]; then
   ok "bare: $BARE_VERSION, as pinned"
 else
   tarball=$(in_sources "$BARE_FILE")
@@ -214,7 +223,8 @@ cat > "$home/bin/haicc-sources" <<'HAICC_INSTALL_FILE_END'
 #                                     copied): our packages (<org>/<package>
 #                                     .bundle, <org>/manifest.json, addons/)
 #                                     and the third-party components
-#   haicc sources download bare       Bare's runtime fetched over https into
+#   haicc sources download bare       Bare's runtime, this machine's
+#                                     platform's, fetched over https into
 #                                     haicc's own sources folder, checked
 #                                     against its pin; that folder linked
 #                                     (third-party: the same)
@@ -257,14 +267,15 @@ fetch () {
 
 download_bare () {
   command -v curl >/dev/null 2>&1 || fail "curl is needed to download" 3
+  [ -n "$BARE_FILE" ] || fail "no Bare pinned for this machine, $BARE_PLATFORM (pinned: $BARE_PLATFORMS)" 3
   to=$own/$BARE_FILE
-  if [ -f "$to" ] && [ "$(sha512_of "$to")" = "$BARE_SHA512" ]; then echo "bare: there, as pinned ($BARE_VERSION)"; return 0; fi
+  if [ -f "$to" ] && [ "$(sha512_of "$to")" = "$BARE_SHA512" ]; then echo "bare: there, as pinned ($BARE_VERSION, $BARE_PLATFORM)"; return 0; fi
   mkdir -p "$(dirname "$to")"
   echo "bare: fetching $BARE_URL"
   fetch "$BARE_URL" "$to.part" || { rm -f "$to.part"; fail "could not fetch Bare's runtime: $BARE_URL" 3; }
   [ "$(sha512_of "$to.part")" = "$BARE_SHA512" ] || { rm -f "$to.part"; fail "Bare's runtime is not as pinned (sha512): $BARE_URL" 3; }
   mv "$to.part" "$to"
-  echo "bare: downloaded, as pinned ($BARE_VERSION)"
+  echo "bare: downloaded, as pinned ($BARE_VERSION, $BARE_PLATFORM)"
 }
 
 # Where the releases are: $HAICC_RELEASES/<org>/<package>/releases/
@@ -358,12 +369,17 @@ HAICC_INSTALL_FILE_END
 cat > "$home/pins" <<'HAICC_INSTALL_FILE_END'
 # pins: what the haicc scripts are pinned to; sourced by them.
 # Bare's runtime, third party: the Bare the packages are built with,
-# written by their build from its lockfile.
+# written by their build from its lockfile; a build a platform
+# (BARE_<os>_<arch>_FILE, _URL, _SHA512), this machine's chosen by the
+# scripts (bin/haicc-lib.sh).
 BARE_VERSION=1.36.0
-BARE_PLATFORM=linux-x64
-BARE_FILE=holepunchto/bare-runtime-linux-x64-1.36.0.tgz
-BARE_URL=https://registry.npmjs.org/bare-runtime-linux-x64/-/bare-runtime-linux-x64-1.36.0.tgz
-BARE_SHA512=3c1cb0a7b58e3408eeaac29ce153ea966af7dc88f8ba06cd3ddff1c3693020ee8ec6c5a1453dedd8790786fc928dac6aed1e850f26de73f7ef796d04701a4a41
+BARE_PLATFORMS='linux-x64 linux-arm64'
+BARE_linux_x64_FILE=holepunchto/bare-runtime-linux-x64-1.36.0.tgz
+BARE_linux_x64_URL=https://registry.npmjs.org/bare-runtime-linux-x64/-/bare-runtime-linux-x64-1.36.0.tgz
+BARE_linux_x64_SHA512=3c1cb0a7b58e3408eeaac29ce153ea966af7dc88f8ba06cd3ddff1c3693020ee8ec6c5a1453dedd8790786fc928dac6aed1e850f26de73f7ef796d04701a4a41
+BARE_linux_arm64_FILE=holepunchto/bare-runtime-linux-arm64-1.36.0.tgz
+BARE_linux_arm64_URL=https://registry.npmjs.org/bare-runtime-linux-arm64/-/bare-runtime-linux-arm64-1.36.0.tgz
+BARE_linux_arm64_SHA512=754687f5fd84c0264e8c49b4483e472cf2ccc08103b3bd5d86af355c1ab3df2b2513184d85487679470107eba30ea31b3285e69b884d3a2bdc92e4088f6dc2ce
 # Ours: the organisation, and the app the command is: its package, run
 # with Bare from its bundle in the sources.
 HAICC_ORG=haiccing

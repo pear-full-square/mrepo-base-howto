@@ -9,7 +9,11 @@
 //                                 its data) as files
 //   <out>/addons/<sha256>         its native addons, offloaded, shared: the
 //                                 bundle names each /../../addons/<sha256>
-//                                 (two levels up from the bundle file)
+//                                 (two levels up from the bundle file), for
+//                                 every platform of the release
+//                                 (tools/lib/platforms.js): an addon's
+//                                 resolution a condition a platform, Bare
+//                                 choosing its own when it runs
 //   <out>/<org>/manifest.json     each bundle: its file, its id, its sha256,
 //                                 its size, its main, its entry points, its addons, the commit it
 //                                 was made from, the Bare it was made on; and
@@ -30,6 +34,7 @@ import pack from 'bare-pack'
 import traverse from 'bare-module-traverse'
 import bundleId from 'bare-bundle-id'
 import { writeDispatcher } from './lib/dispatcher.js'
+import { PLATFORMS } from './lib/platforms.js'
 
 const dev = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const sha256 = bytes => crypto.createHash('sha256').update(bytes).digest('hex')
@@ -99,7 +104,7 @@ export async function bundlePackage ({ folder, out, org = 'haiccing' }) {
       if (lstatSync(p).isDirectory()) { for (const f of files(p)) yield pathToFileURL(join(p, f)) } else yield pathToFileURL(p)
     }
   }
-  const bundle = await pack(new URL(main, base), { base, offload: { addons: true }, resolve: traverse.resolve.bare }, readModule, listPrefix, resolveModule, writeFile)
+  const bundle = await pack(new URL(main, base), { base, hosts: PLATFORMS, offload: { addons: true }, resolve: traverse.resolve.bare }, readModule, listPrefix, resolveModule, writeFile)
   // The rest of the package as files: third-party code only as reached.
   for (const p of files(folder)) {
     if (p.startsWith('modules/node_modules/') || p.endsWith('.bare')) continue

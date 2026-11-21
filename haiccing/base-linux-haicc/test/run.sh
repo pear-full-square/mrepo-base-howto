@@ -17,7 +17,7 @@ here=$(cd "$(dirname "$0")" && pwd)
 pkg=$(cd "$here/.." && pwd)
 keep=no
 [ "${1:-}" = --keep ] && keep=yes
-. "$pkg/pins"
+HAICC_HOME=$pkg . "$pkg/bin/haicc-lib.sh"   # the pins, this machine's Bare chosen
 SOURCES=${SOURCES:-$pkg/../../sources}
 for f in "$HAICC_ORG/$APP_PACKAGE.bundle" "$HAICC_ORG/base-component-boot.bundle" "$HAICC_ORG/base-component-haicc.bundle" "$HAICC_ORG/manifest.json" "$BARE_FILE"; do
   [ -f "$SOURCES/$f" ] || { echo "skipped: no $f in $SOURCES (SOURCES: a sources folder)"; exit 0; }
@@ -87,6 +87,21 @@ is "$("$T/home/bare/bin/bare" --version 2>/dev/null)" "v$BARE_VERSION" "the pinn
 is "$(cat "$T/home/bare/tarball.sha512")" "$BARE_SHA512" "its tarball's sha512 recorded: the pin"
 out=$(haicc prereq --check); is $? 0 "haicc prereq --check: all there now"
 has "$out" "ok       bare: $BARE_VERSION, as pinned" "Bare there, as pinned: kept"
+
+# Bare chosen by machine: a build a platform pinned, each in the sources; a
+# machine of another platform (uname answering as it would) chooses its own,
+# one not pinned is said
+for p in $BARE_PLATFORMS; do
+  eval "f=\${BARE_$(printf '%s' "$p" | tr - _)_FILE:-}"
+  [ -n "$f" ] && [ -f "$SOURCES/$f" ] && ok "Bare for $p: pinned, in the sources" || no "Bare for $p: pinned, in the sources" "$f"
+done
+mkdir -p "$T/uname"
+printf '#!/bin/sh\ncase "$1" in -m) echo "$UNAME_M" ;; *) echo Linux ;; esac\n' > "$T/uname/uname"; chmod +x "$T/uname/uname"
+out=$(UNAME_M=aarch64 PATH=$T/uname:$PATH haicc prereq --check)
+has "$out" "ok       platform: linux-arm64" "an aarch64 machine: linux-arm64, pinned"
+has "$out" "missing  bare: not put in place yet" "its own Bare chosen: in the sources, not the one in place"
+out=$(UNAME_M=riscv64 PATH=$T/uname:$PATH haicc prereq --check); is $? 3 "a machine of a platform not pinned: exit 3"
+has "$out" "missing  platform: this is linux-riscv64, Bare is pinned for $BARE_PLATFORMS" "said, with the platforms pinned"
 
 # from here the command is the app, run with the Bare just put in place
 out=$(haicc --help); is $? 0 "haicc --help, Bare there"
