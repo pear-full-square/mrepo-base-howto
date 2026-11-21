@@ -9,7 +9,8 @@ package that defines the mrepo, the last of its list.
 ## Identity
 
 `mrepo.json` holds the mrepo's unique URI, `{ "uri": "local/host" }`:
-`<swarm>/<node>`, with `local` as the swarm of what the boot mrepo creates.
+a path, its namespace then its name (`<swarm>/<node>`), with `local` as
+the namespace of what the boot mrepo creates.
 It is written when the mrepo is deployed. The runtime addresses the mrepo
 by it: its inbox is `/<uri>/inbox`. Without one, the mrepo's name is used.
 

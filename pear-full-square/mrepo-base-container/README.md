@@ -31,7 +31,7 @@ haicc swarms/swarm-1/node-1 container/remove
 ## Placement
 
 A replica's folder is placed by its bridgehead's unique URI under the
-work folder's `containers/`, `<work>/containers/<swarm>/<name>`, beside `mrepos/`,
+work folder's `containers/`, `<work>/containers/<unique URI>`, beside `mrepos/`,
 where its bridgehead is. It is the one folder its container can write:
 seen inside it as `/mrepo`. The bridgehead holds a node for it in its
 `main`, a shortcut at `container`, and the link's record in its `links`
@@ -45,7 +45,7 @@ is for the mrepos on the host.
   the Bare binary it holds: the one that runs the bridgehead. It is
   built once, when no image of that name is there; the base,
   `debian:bookworm-slim`, is pulled by Docker then.
-- **Its name** is `haicc-<swarm>-<name>-<hash>`, the hash of the
+- **Its name** is `haicc-<unique URI, its slashes hyphens>-<hash>`, the hash of the
   replica's folder: two installs on one machine do not meet.
 - **What it runs**: the replica's runtime, from the replica's own
   packages, as the user who owns the folder. Its root is read only, its

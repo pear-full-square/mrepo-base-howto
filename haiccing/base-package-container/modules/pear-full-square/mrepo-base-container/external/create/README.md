@@ -32,7 +32,7 @@ What it writes in this mrepo:
 - A replica is there already: `created already`.
 - The position `container` exists locally, as data in `main`.
 - No Docker daemon answers: `no Docker`.
-- The mrepo has no unique URI of the form `<swarm>/<name>`.
+- The mrepo has no unique URI of the form `<swarm>/<name>`, a path.
 - Its packages manifest names no store, or lists no package.
 - The package lists no `base-package-runtime`: nothing to run.
 - The image is not built, or the container not made. Nothing of the

@@ -3,7 +3,9 @@
 # mrepo and Splectral; a component, the help viewer, installed in two
 # halves (boot/deploy, then splectral/install), its service started, its
 # pages asked over HTTP as a browser asks them; what it refuses; stopped,
-# torn down; nothing left. Each step timed, the pages too.
+# torn down; nothing left. Then the workbench on a fresh install, one
+# command: the docs mrepo, the host and Splectral in service. Each step
+# timed, the pages too.
 #   sh test/splectral.sh [--keep]
 #     --keep    the temporary folder left as it is, its runtimes running (printed)
 #   SOURCES     as for run.sh, the splectral packages' bundles in it too; without one: skipped
@@ -15,7 +17,7 @@ keep=no
 [ "${1:-}" = --keep ] && keep=yes
 HAICC_HOME=$pkg . "$pkg/bin/haicc-lib.sh"   # the pins, this machine's Bare chosen
 SOURCES=${SOURCES:-$pkg/../../sources}
-for f in "$HAICC_ORG/$APP_PACKAGE.bundle" "$HAICC_ORG/base-package-splectral.bundle" splectral/base-component-help-viewer.bundle "$BARE_FILE"; do
+for f in "$HAICC_ORG/$APP_PACKAGE.bundle" "$HAICC_ORG/base-package-splectral.bundle" "$HAICC_ORG/base-solution-workbench.bundle" splectral/base-component-help-viewer.bundle "$BARE_FILE"; do
   [ -f "$SOURCES/$f" ] || { echo "skipped: no $f in $SOURCES (SOURCES: a sources folder)"; exit 0; }
 done
 SOURCES=$(cd "$SOURCES" && pwd)
@@ -31,6 +33,7 @@ TIMES=$T/times
 cleanup () {
   if [ "$keep" = yes ]; then echo "kept: $T"; return; fi
   PATH=$T/bin:$PATH HAICC_HOME=$H haicc boot/teardown >/dev/null 2>&1
+  [ -x "$T/bin2/haicc" ] && PATH=$T/bin2:$PATH HAICC_HOME=$T/home2 "$T/bin2/haicc" boot/teardown >/dev/null 2>&1
   case "$T" in "${TMPDIR:-/tmp}"/haicc-splectral.*) rm -rf "$T" ;; esac
 }
 trap cleanup EXIT
@@ -124,10 +127,35 @@ label=teardown; step --output splectral boot/teardown help; has "$out" '"tornDow
 [ -e "$F" ] && no "its folder removed" || ok "its folder removed"
 get /help/; is "$code" 404 "its pages: not deployed"
 label=machine; step boot/teardown; is $? 0 "haicc boot/teardown"
-is "$(pgrep -f -- "[/]bin/bare $T/" | wc -l | tr -d ' ')" 0 "nothing of the install left running"
+is "$(pgrep -f -- "[/]bin/bare $T/home/" | wc -l | tr -d ' ')" 0 "nothing of the install left running"
+
+# the workbench: a fresh install, one command at the root; its script
+# deploys the docs mrepo, the host and Splectral beside it, in service
+H2=$T/home2
+sh "$pkg/haicc-install.sh" --home="$H2" --bin="$T/bin2" >/dev/null
+wb () { PATH=$T/bin2:$PATH HAICC_HOME=$H2 HAICC_TIMEOUT=600 "$T/bin2/haicc" "$@" 2>&1; }
+wb sources link "$SOURCES" >/dev/null; wb prereq >/dev/null
+wb boot/deploy >/dev/null; is $? 0 "a fresh install: haicc boot/deploy"
+s=$(ms); out=$(wb . boot/deploy workbench haiccing/base-solution-workbench); r=$?; echo "workbench $(( $(ms) - s ))" >> "$TIMES"
+is $r 0 "haicc . boot/deploy workbench haiccing/base-solution-workbench: the workbench, then its script, every line done"
+has "$out" '"solution": "solution"' "said a solution"
+has "$out" 'haicc . haicc/script . ...' "its script sent on for the root's own position"
+out=$(wb --output . crud/read 'registry/local/*')
+for m in workbench docs host splectral; do has "$out" "\"uri\":\"local/$m\"" "local/$m: in the install's registry, beside the workbench"; done
+is "$(wb --output host service/start)" "haicc: not now: service start (the service is started)" "the host in service"
+out=$(wb --output splectral splectral/status)
+URL=$(printf '%s' "$out" | sed -n 's/.*"url":"\([^"]*\)".*/\1/p')
+has "$URL" "http://127.0.0.1:" "Splectral in service, its server: $URL"
+get /install; is "$code" 200 "its site answers"
+has "$(wb docs info/get hdlc/validation)" "Before every commit" "the docs mrepo answers"
+has "$(wb --output workbench crud/read howtos)" '"value":{"kind":"howtos"}' "in the workbench: its howtos namespace"
+out=$(wb . boot/deploy bench-2 haiccing/base-solution-workbench); has "$out" "deployed already: docs" "a second on the same install: its script stops at the first line, said"
+wb . boot/teardown bench-2 >/dev/null
+label=machine2; s=$(ms); wb boot/teardown >/dev/null; r=$?; echo "machine2 $(( $(ms) - s ))" >> "$TIMES"; is $r 0 "haicc boot/teardown: the workbench's install"
+is "$(pgrep -f -- "[/]bin/bare $T/" | wc -l | tr -d ' ')" 0 "nothing of either install left running"
 
 echo "# timing (ms)"
-for s in boot docs splectral base install initialise start stop teardown machine; do echo "# $s $(sed -n "s/^$s //p" "$TIMES")"; done
+for s in boot docs splectral base install initialise start stop teardown machine workbench machine2; do echo "# $s $(sed -n "s/^$s //p" "$TIMES")"; done
 echo "# pages $(sed -n 's/^page //p' "$TIMES" | tr '\n' ' ')"
 echo "# checks = $((n - failed))/$n pass"
 [ "$failed" -eq 0 ] && { echo "# ok"; exit 0; }
