@@ -1,8 +1,8 @@
 {
   "package": "haiccing/base-package-swarm",
-  "content": "5f7263a907588b3e5518d69b07c37f094d7d5a920707854bd7f1c1164ceb7111",
+  "content": "b097c951913a193d14afb09e96df61d645fa50f08bf8b92a90bcf3198745e474",
   "bare": "v1.36.0",
-  "date": "2026-11-21T02:59:53.854Z",
+  "date": "2026-11-21T04:11:02.245Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -118,8 +118,8 @@
         "total": 5
       },
       "asserts": {
-        "passed": 52,
-        "total": 52
+        "passed": 55,
+        "total": 55
       },
       "failures": []
     },
@@ -196,8 +196,8 @@
         "total": 23
       },
       "asserts": {
-        "passed": 69,
-        "total": 69
+        "passed": 70,
+        "total": 70
       },
       "failures": []
     }
