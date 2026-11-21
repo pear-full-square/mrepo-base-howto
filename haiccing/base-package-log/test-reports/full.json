@@ -1,8 +1,8 @@
 {
   "package": "haiccing/base-package-log",
-  "content": "1d4c41022dbafac68eb2f29d8a750627030423fe098ffb3d16ed4747d6348f6d",
+  "content": "edbabec36b21dea062c5c03e74eba277827620066f1bc2ba125c9f95ba1dc70f",
   "bare": "v1.36.0",
-  "date": "2026-11-21T05:08:10.266Z",
+  "date": "2026-11-21T05:54:00.345Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -10,12 +10,12 @@
       "unit": "/test/mounted",
       "ok": true,
       "tests": {
-        "passed": 4,
-        "total": 4
+        "passed": 5,
+        "total": 5
       },
       "asserts": {
-        "passed": 24,
-        "total": 24
+        "passed": 27,
+        "total": 27
       },
       "failures": []
     },
@@ -179,12 +179,12 @@
       "unit": "/test/modules/pear-full-square/p2p-topic",
       "ok": true,
       "tests": {
-        "passed": 3,
-        "total": 3
+        "passed": 4,
+        "total": 4
       },
       "asserts": {
-        "passed": 14,
-        "total": 14
+        "passed": 16,
+        "total": 16
       },
       "failures": []
     },

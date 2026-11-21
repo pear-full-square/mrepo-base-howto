@@ -1,0 +1,58 @@
+{
+  "type": "record",
+  "name": "haiccing.basePackageLog.logEntry",
+  "doc": "A record of a node's log: one completed request of the node",
+  "fields": [
+    {
+      "name": "request",
+      "type": "string",
+      "doc": "the request's key"
+    },
+    {
+      "name": "sent",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "when it was sent, an ISO 8601 time"
+    },
+    {
+      "name": "ms",
+      "type": [
+        "null",
+        "long"
+      ],
+      "default": null,
+      "doc": "how long until it was completed, in milliseconds"
+    },
+    {
+      "name": "from",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "who asked: the topic its answer went to"
+    },
+    {
+      "name": "command",
+      "type": "string",
+      "doc": "the command, as typed"
+    },
+    {
+      "name": "ok",
+      "type": "boolean",
+      "doc": "whether it completed without an error"
+    },
+    {
+      "name": "error",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "the error that stopped it"
+    }
+  ]
+}

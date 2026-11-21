@@ -6,11 +6,16 @@
 // built. Every action the config names must be run here: the last test
 // fails when one was left out.
 import test from '../../modules/node_modules/brittle/index.js'
-import { mkdtempSync } from '../../modules/node_modules/bare-fs/index.js'
-import { join } from '../../modules/node_modules/bare-path/index.js'
+import { mkdtempSync, readFileSync } from '../../modules/node_modules/bare-fs/index.js'
+import { join, dirname } from '../../modules/node_modules/bare-path/index.js'
+import { fileURLToPath } from '../../modules/node_modules/bare-url/index.js'
 import os from '../../modules/node_modules/bare-os/index.js'
 import * as mounted from '../../protocol.js'
-import { serve } from '../../modules/pear-full-square/mrepo-base-rns/index.js'
+import { serve, fold, view } from '../../modules/pear-full-square/mrepo-base-rns/index.js'
+
+// Its core type, as the package registers it: types/<name>.avsc.
+const typeOf = name => JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'types', `${name}.avsc`), 'utf8'))
+const documented = type => Boolean(type.doc) && type.fields.every(f => f.doc && (typeof f.type !== 'object' || Array.isArray(f.type) || !f.type.fields || documented(f.type)))
 
 const folder = () => mkdtempSync(join(os.tmpdir(), 'rns-'))
 // An execution as an action sees it: the mrepo's folder and unique URI, its log.
@@ -74,6 +79,18 @@ test('its actions: a master, a node joined and registered, the swarm answered at
   await N.close()
   await M.close()
   t.alike(await act('status', node, {}), { running: false, joined: false, nodes: [] }, 'status with its program not running: said')
+})
+
+test('its core type: the lookup db\'s entry, every field documented, the fields the fold reads', (t) => {
+  const type = typeOf('lookup-entry')
+  t.is(type.name, 'haiccing.basePackageRns.lookupEntry', 'named by its organisation, its package, its name')
+  t.ok(documented(type), 'a doc on it and on every field')
+  t.alike(type.fields.map(f => f.name), ['op', 'uri', 'role', 'key', 'where', 'by', 'since'])
+  // an entry with every field of the type, as the fold takes it
+  const entry = { op: 'register', uri: 'swarm-1/node-1', role: 'node', key: 'k', where: { machine: 'm', folder: '/n' }, by: 'local/host', since: null }
+  t.alike(Object.keys(entry), type.fields.map(f => f.name))
+  const [node] = view(fold([{ offset: 0, timestamp: 't', value: entry }, { offset: 1, timestamp: 't2', value: { op: 'quiet', uri: 'swarm-1/node-1', since: 't1' } }]))
+  t.alike([node.uri, node.role, node.key, node.where, node.by, node.state, node.since], ['swarm-1/node-1', 'node', 'k', { machine: 'm', folder: '/n' }, 'local/host', 'quiet', 't1'], 'each field read by the fold')
 })
 
 test('nothing forgotten: every action configured run here, each writing into the request\'s log', (t) => {
