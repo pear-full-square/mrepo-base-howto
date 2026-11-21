@@ -28,6 +28,8 @@ Names the replica a container action is about: this mrepo's own, in a container.
 
 - The context names no directory.
 - The mrepo's unique URI is not a path of two names at least, `<swarm>/<name>`.
+- The mrepo is a replica itself (its unique URI ends in `/container`):
+  `a replica makes no replica of its own`.
 
 ## Also exported
 

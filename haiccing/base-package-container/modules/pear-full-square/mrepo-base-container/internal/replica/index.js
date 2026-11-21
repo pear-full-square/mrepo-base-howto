@@ -17,6 +17,8 @@ export function replica (exec) {
   if (!dir) throw new Error('no directory in the context')
   const uri = exec.runtime.uri
   if (typeof uri !== 'string' || !/^[a-z][a-z0-9-]*(\/[a-z][a-z0-9-]*)+$/.test(uri)) throw new Error(`no unique URI to make a replica by: ${uri} (<swarm>/<name>, a path)`)
+  // (a replica's own: its node's with the position behind it)
+  if (uri.endsWith(`/${AT}`)) throw new Error(`a replica makes no replica of its own: ${uri}`)
   // its own unique URI: this mrepo's, with its position behind it (two
   // mrepos, each addressed: a request and its answer name both)
   const mrepo = `${uri}/${AT}`
