@@ -24,6 +24,23 @@ From the bottom:
   one of the main components.
 - **AVRO:** objects become data structures, with schemas and typed values.
   From here up, a URI names a typed value, not stored bytes.
+- **One type system, an encoding per storage** (the team, 2026-11-21;
+  the human: "those JSON document can then have their avro schema, no?"):
+  the schema is the type; a document in git stays JSON, a record in a
+  topic AVRO's binary, a table Parquet's columns, all typed by the same
+  schema. A node's kind names its schema. The shapes JSON keeps to get
+  there: `base-docs-uri`, "Data shapes". First schemas (proposed): the
+  kinds being built (a swarm's node, the `howtos` namespace, a lookup db
+  entry, a node's log record, a trace), in a registry mrepo, named by
+  URI, checked where they enter.
+- **AVRO containers in p2p** (the human: "I guess that AVRO containers
+  will be good data containers to use in p2p."): an AVRO object
+  container file carries its schema with its records, compressed, in
+  blocks: self-describing, as a bundle is. Proposed: a container of
+  mycelium's own (beside `mycelium-container-document`), for sets that
+  move between repositories (an export, a training set, a log's
+  archived segment); inside a topic, a record in AVRO's single-object
+  encoding, its schema named by fingerprint from the registry.
 - **Kafka:** streaming and high-volume data: records and topics. On
   Hypercore, a partition is a core, an offset a block index; no central
   broker, its functions taken on by peers.

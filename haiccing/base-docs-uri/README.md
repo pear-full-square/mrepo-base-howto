@@ -76,3 +76,28 @@ that becomes an AVRO name.
   character left for an encoding, should one be needed.
 - **Other mappings later**, at the boundary, for external names that
   break these rules.
+
+## Data shapes
+
+The shapes JSON data keeps, so that every value has an AVRO schema (the
+team, 2026-11-21: "That will give us a natural flow into AVRO"). Rules
+for what is written from now on; checked once the schemas are there.
+
+- **An object is a record or a map, never both**: a record has known
+  fields; a map has data keys only, its values one type. Fixed fields
+  with open keys beside them become a field holding a map
+  (`{"size":3,"nodes":{...}}`).
+- **An array holds one type**: no tuples, no mixed items; a record with
+  named fields instead.
+- **A field has one shape**: one of a value or a record is fine; never
+  sometimes one array or map and sometimes another.
+- **Absent and `null` mean the same**: a missing field takes its
+  default; nothing hangs on the difference.
+- **Integers up to 2^53**; ids and counters beyond, strings.
+- **Free-form JSON only at named edges** (a request's arguments, open
+  headers): there, a declared `json` type (null, boolean, number,
+  string, an array or a map of it).
+- **Values that are names stay strings**: kinds, positions, URI parts
+  (they have hyphens; an AVRO enum's symbols cannot).
+- **Documents stay plain JSON**, validated as values against their
+  schema; not AVRO's JSON encoding, which wraps unions.
