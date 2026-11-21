@@ -96,8 +96,30 @@ for what is written from now on; checked once the schemas are there.
 - **Integers up to 2^53**; ids and counters beyond, strings.
 - **Free-form JSON only at named edges** (a request's arguments, open
   headers): there, a declared `json` type (null, boolean, number,
-  string, an array or a map of it).
+  string, an array or a map of it):
+  `pear-full-square/mycelium-value-avro/json`, the value as its JSON
+  text.
 - **Values that are names stay strings**: kinds, positions, URI parts
   (they have hyphens; an AVRO enum's symbols cannot).
 - **Documents stay plain JSON**, validated as values against their
   schema; not AVRO's JSON encoding, which wraps unions.
+
+## Schemas
+
+A schema's name is its URI, where it comes from; its identity its
+fingerprint (`mycelium-value-avro`).
+
+- **Named by its URI**: `<org>/<package>/<name>`, a module's
+  `<org>/<module>/<name>`: `haiccing/base-package-help/annotate-answer`.
+  Each part a data name's URI form ("Data names").
+- **Its AVRO fullname by the data-name mapping**, exact both ways: the
+  namespace each part's data name, the name's the same with a capital
+  first: `haiccing.basePackageHelp.AnnotateAnswer`. A schema whose name
+  does not map is still a schema, known by its fingerprint only.
+- **Its fingerprint**: the AVRO specification's CRC-64-AVRO of its
+  Parsing Canonical Form, 16 hex digits (`9a1f…`), a name: a schema
+  never changes; a new version, a new fingerprint.
+- **A record names its own**: a topic is not bound to one schema; each
+  record carries its schema's fingerprint (AVRO's single-object
+  encoding), each level of it its own ("Data shapes": the `json` type
+  where nothing is typed yet).

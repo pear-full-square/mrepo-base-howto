@@ -13,7 +13,8 @@ import { record, wrap, guid } from 'mrepo-base-request'
 import { ask } from 'mrepo-base-runtime'
 import { spawn, spawnSync } from 'bare-subprocess'
 import process from 'bare-process'
-import { build, deploy, teardown, redeploy, place, parseSource, lay } from '../index.js'
+import { registry } from 'mycelium-value-avro'
+import { build, deploy, teardown, redeploy, place, parseSource, lay, schemasOf } from '../index.js'
 
 const lj = (dir, mode) => { mkdirSync(dir, { recursive: true }); writeFileSync(join(dir, 'layer.json'), JSON.stringify({ mode, description: 'test' })) }
 const sha256 = b => crypto.createHash('sha256').update(b).digest('hex')
@@ -110,6 +111,31 @@ test('documents: sources: every package the sources offer beyond the list placed
     t.alike([packages['haiccing/other'].documented, packages['haiccing/other'].entries, packages['haiccing/base'].documented], [true, [], undefined], 'the documented marked, no entry: nothing of it runs')
     t.ok(existsSync(join(built, 'packages', 'haiccing', 'other.bundle')), 'its bundle there, for its pages')
   } finally { for (const d of [pkgs, into, dir, store]) rmSync(d, { recursive: true, force: true }) }
+})
+
+test('schemas: each package placed registers the schemas it carries, its own and its modules\', in the install\'s registry', async (t) => {
+  const pkgs = mkdtempSync(join(tmpdir(), 'schemas-src-'))
+  const store = mkdtempSync(join(tmpdir(), 'schemas-store-'))
+  const dir = mkdtempSync(join(tmpdir(), 'schemas-dir-'))
+  try {
+    const answer = { type: 'record', name: 'haiccing.base.Answer', fields: [{ name: 'a', type: 'string' }] }
+    const inner = { type: 'record', name: 'pearFullSquare.someModule.Thing', fields: [{ name: 'n', type: 'long' }] }
+    source(pkgs, {
+      'haiccing/base': { 'runtime/layer.json': { mode: 'atomic' }, '/schemas/answer.json': answer, '/modules/pear-full-square/some-module/schemas/thing.json': inner, '/schemas/README.md': '# not one' },
+      'haiccing/bad': { '/schemas/bad.json': { type: 'record', name: 'X', fields: [{ name: 'a', type: 'nope' }] } }
+    })
+    const sources = [parseSource(`folder:${pkgs}`)]
+    lj(join(dir, 'packages'), 'replicated')
+    const { dir: built } = await build({ from: dir, work: store, name: 'base' })
+    const { schemas } = await place({ dir: built, store, sources, list: ['haiccing/base'] })
+    t.alike(schemas['haiccing/base'].map(s => s.uri), ['pear-full-square/some-module/thing', 'haiccing/base/answer'], 'its modules\' and its own, by URI')
+    t.ok(schemas['haiccing/base'].every(s => s.added && /^[0-9a-f]{16}$/.test(s.fingerprint)), 'each by its fingerprint')
+    const reg = registry(schemasOf(store))
+    t.is(reg.named('haiccing/base/answer').length, 1, 'in the install\'s registry, read by another')
+    const again = await place({ dir: built, store, sources, list: ['haiccing/base'] })
+    t.absent(again.schemas['haiccing/base'].some(s => s.added), 'placed again: the same entries')
+    await t.exception(place({ dir: built, store, sources, list: ['haiccing/bad'] }), /not a schema: haiccing\/bad \/schemas\/bad.json/, 'not valid AVRO: said, with where')
+  } finally { for (const d of [pkgs, store, dir]) rmSync(d, { recursive: true, force: true }) }
 })
 
 test('deploy from a target package\'s list, placed by its unique URI, its link recorded; redeploy; teardown; a script answered as a continuation; the mrepo registry, several torn down; a swarm\'s node', async (t) => {

@@ -27,6 +27,10 @@ routine.
   `exec.runtime.dir`.
 - **Internal methods** are called by code: by the actions, and by the boot
   itself before any runtime runs.
+- **The schemas registered at deploy**: placing a package registers the
+  schemas its bundle carries, its own and its modules', in the install's
+  registry, beside the packages in the store (`internal/schemas`;
+  `mycelium-value-avro`): the creator registers.
 - **Not yet**: the requirements resolved into packages; what an action does
   outside the repository, such as a runtime started or a folder removed, is
   not undone by a reset.

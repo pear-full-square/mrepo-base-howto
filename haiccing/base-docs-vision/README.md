@@ -29,18 +29,21 @@ From the bottom:
   the schema is the type; a document in git stays JSON, a record in a
   topic AVRO's binary, a table Parquet's columns, all typed by the same
   schema. A node's kind names its schema. The shapes JSON keeps to get
-  there: `base-docs-uri`, "Data shapes". First schemas (proposed): the
-  kinds being built (a swarm's node, the `howtos` namespace, a lookup db
-  entry, a node's log record, a trace), in a registry mrepo, named by
-  URI, checked where they enter.
+  there: `base-docs-uri`, "Data shapes". Built: the encoding, the
+  install's registry, packages carrying their schemas
+  (`mycelium-value-avro`; `base-docs-package`, "Schemas"). Next: the
+  kinds' schemas (a swarm's node, the `howtos` namespace, a lookup db
+  entry, a trace), documents validated against their kind where they
+  enter (`crud/create`); the swarm's schema repository with its lookup
+  db, common to every node, replicated lazily.
 - **AVRO containers in p2p** (the human: "I guess that AVRO containers
   will be good data containers to use in p2p."): an AVRO object
   container file carries its schema with its records, compressed, in
   blocks: self-describing, as a bundle is. Proposed: a container of
   mycelium's own (beside `mycelium-container-document`), for sets that
   move between repositories (an export, a training set, a log's
-  archived segment); inside a topic, a record in AVRO's single-object
-  encoding, its schema named by fingerprint from the registry.
+  archived segment). Inside a topic, a record in AVRO's single-object
+  encoding: built (`mycelium-value-avro`).
 - **Kafka:** streaming and high-volume data: records and topics. On
   Hypercore, a partition is a core, an offset a block index; no central
   broker, its functions taken on by peers.
