@@ -518,20 +518,21 @@ phase; scheduled, it leaves the vision):
 The human, 2026-11-13 to 2026-11-15. What was built of it: the static
 side as the `info` protocol (a package's pages read by keywords), the
 how-tos as pages in the packages, read with `info`; their direction,
-runnable how-tos, is `base-docs-hdlc`'s ("Working demos"). The rest is
-direction.
+runnable how-tos, is `base-docs-hdlc`'s ("Working demos"). Built too
+(2026-11-20, 2026-11-21): the flag unit (`mrepo-base-request`,
+`flags/`); dynamic help, `--flags help` on a command answered by
+`help/annotate` where it would run (`base-package-help`); feedback on a
+command, `--flags feedback <text>` recorded by `haici/feedback`
+(`base-package-haici`), the request log its store; both answered in
+natural language, the record with `--raw`. The rest is direction.
 
 - **Three kinds of help** (settled): static help, about the packages'
   composition, design and decisions, complete; dynamic help, a full
   command described in context; and the how-tos, "very important": "the
   entry point to scope an activity on the platform", "what do you want to
   do plus how-to options".
-- **Dynamic help** (ours, proposed): a full command with `--help`
-  answered with its action's documentation and the check where it stands
-  (active here, its arguments right), nothing executed; the how-tos that
-  use it.
-- **`haici`, human AI continuous improvement** (settled): it starts from
-  the request log, "the one place that has all the information", parsed
+- **`haici`, human AI continuous improvement** (settled; its first
+  action, `feedback`, built): it starts from the request log, "the one place that has all the information", parsed
   into its sections (metrics, warnings and errors, audit, the use of the
   protocols, what was asked of help and not found); learning simply
   first, sophistication built up. Its findings are rooted in the package
@@ -545,9 +546,6 @@ direction.
   install and the activity, finds it and does it; an action documented
   and not coded run by headless Claude with its README as its contract,
   until code replaces it.
-- **Feedback on a command** (settled, with "a proper flag handling
-  unit"): a flag that rewrites a command into `haici`'s feedback command,
-  run where the command would have run, the command itself not run.
 
 ## Queries across links
 

@@ -16,7 +16,7 @@ The boot component's part of the structure: the list of the packages the boot mr
 With no service, everything hangs on `boot`, which its runtime fires
 each time it starts, in name order:
 
-- `boot`, `crud`, `haicc`, `help`, `info` and `runtime` activated: the
+- `boot`, `crud`, `haicc`, `haici`, `help`, `info` and `runtime` activated: the
   boot mrepo takes commands for them.
 - Its info extracted.
 - The node `registry` made in its `main`, where it is not there yet: the

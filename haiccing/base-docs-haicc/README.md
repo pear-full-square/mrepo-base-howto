@@ -124,4 +124,5 @@ organisation of its own, beside haicc's own, `haiccing`.
   parts, a plain mrepo first, the platform's side laid on it after.
   Splectral is one.
 - **haici**: human ai continuous improvement, findings from the request
-  log, fed back to the HDLC.
+  log, fed back to the HDLC; its protocol records feedback on a command
+  (`--flags feedback <text>`), the request log its store.
