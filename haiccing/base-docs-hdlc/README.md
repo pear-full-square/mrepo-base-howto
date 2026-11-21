@@ -293,7 +293,10 @@ prints one line of JSON a result, so another can use it.
 - `install.sh`: the dependencies, replayed from the lockfile.
 - `release.js`: every package assembled and bundled into the sources,
   Bare's tarball, the `haicc` installer; `--strict` refuses a stale
-  report.
+  report. For every platform of `lib/platforms.js` (`linux-x64`,
+  `linux-arm64`): one bundle a package carrying each one's native
+  addons, Bare's tarball and pin for each. The tools themselves run on
+  `linux-x64`.
 - `package-test.js <org>/<package>`: a package's pre-release.
 - `package-template.sh <org>/<package>`: a package brought to its
   organisation's template, its generic tests copied, its pin recorded.

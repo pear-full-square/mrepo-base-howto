@@ -6,7 +6,8 @@
 #                                     copied): our packages (<org>/<package>
 #                                     .bundle, <org>/manifest.json, addons/)
 #                                     and the third-party components
-#   haicc sources download bare       Bare's runtime fetched over https into
+#   haicc sources download bare       Bare's runtime, this machine's
+#                                     platform's, fetched over https into
 #                                     haicc's own sources folder, checked
 #                                     against its pin; that folder linked
 #                                     (third-party: the same)
@@ -49,14 +50,15 @@ fetch () {
 
 download_bare () {
   command -v curl >/dev/null 2>&1 || fail "curl is needed to download" 3
+  [ -n "$BARE_FILE" ] || fail "no Bare pinned for this machine, $BARE_PLATFORM (pinned: $BARE_PLATFORMS)" 3
   to=$own/$BARE_FILE
-  if [ -f "$to" ] && [ "$(sha512_of "$to")" = "$BARE_SHA512" ]; then echo "bare: there, as pinned ($BARE_VERSION)"; return 0; fi
+  if [ -f "$to" ] && [ "$(sha512_of "$to")" = "$BARE_SHA512" ]; then echo "bare: there, as pinned ($BARE_VERSION, $BARE_PLATFORM)"; return 0; fi
   mkdir -p "$(dirname "$to")"
   echo "bare: fetching $BARE_URL"
   fetch "$BARE_URL" "$to.part" || { rm -f "$to.part"; fail "could not fetch Bare's runtime: $BARE_URL" 3; }
   [ "$(sha512_of "$to.part")" = "$BARE_SHA512" ] || { rm -f "$to.part"; fail "Bare's runtime is not as pinned (sha512): $BARE_URL" 3; }
   mv "$to.part" "$to"
-  echo "bare: downloaded, as pinned ($BARE_VERSION)"
+  echo "bare: downloaded, as pinned ($BARE_VERSION, $BARE_PLATFORM)"
 }
 
 # Where the releases are: $HAICC_RELEASES/<org>/<package>/releases/

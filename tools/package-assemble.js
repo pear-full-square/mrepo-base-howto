@@ -18,12 +18,13 @@ import { fileURLToPath } from 'bare-url'
 import { closure } from '../pear-full-square/pkgm-base-manager/lib/closure.js'
 import { copy } from '../pear-full-square/pkgm-base-manager/lib/tree.js'
 import { writeDispatcher } from './lib/dispatcher.js'
+import { PLATFORMS } from './lib/platforms.js'
 
 const dev = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const readJson = f => JSON.parse(readFileSync(f, 'utf8'))
-const platform = () => `${os.platform()}-${os.arch()}`
-// Third-party code as shipped: no tests, no .bin, this platform's prebuilds only.
-const skipThird = (r, base) => base === 'test' || base === '.bin' || (r.split('/').at(-2) === 'prebuilds' && base !== platform())
+// Third-party code as shipped: no tests, no .bin, the release's platforms'
+// prebuilds only (tools/lib/platforms.js).
+const skipThird = (r, base) => base === 'test' || base === '.bin' || (r.split('/').at(-2) === 'prebuilds' && !PLATFORMS.includes(base))
 // Not a module's: its dependencies, git, records, a log a run left.
 const skipOurs = (r, base) => base === 'node_modules' || base === '.git' || base === 'record' || r === 'log'
 
@@ -93,15 +94,17 @@ for (const name of omit) {
   writeFileSync(join(d, 'package.json'), JSON.stringify({ name, version: '0.0.0-omitted', main: 'index.js' }, null, 2) + '\n')
   writeFileSync(join(d, 'index.js'), `module.exports = function omitted () { throw new Error('${name}: omitted from this package (its assemble options)') }\n`)
 }
-const rt = join(out, 'node_modules', `bare-runtime-${platform()}`, 'bin', 'bare')
-if (existsSync(rt)) chmodSync(rt, 0o755)
+for (const p of PLATFORMS) {
+  const rt = join(out, 'node_modules', `bare-runtime-${p}`, 'bin', 'bare')
+  if (existsSync(rt)) chmodSync(rt, 0o755)
+}
 const lock = existsSync(join(dev, 'package-lock.json')) ? readJson(join(dev, 'package-lock.json')) : { packages: {} }
 const record = set.third.map(t => {
   const e = lock.packages[`node_modules/${t}`] || {}
   const pj = readJson(join(dev, 'node_modules', t, 'package.json'))
   return { name: t, version: pj.version, license: pj.license || e.license || null, resolved: e.resolved || null, integrity: e.integrity || null }
 })
-writeFileSync(join(out, 'third-party.json'), JSON.stringify({ platform: platform(), omitted: omit, modules: record }, null, 2) + '\n')
+writeFileSync(join(out, 'third-party.json'), JSON.stringify({ platforms: PLATFORMS, omitted: omit, modules: record }, null, 2) + '\n')
 // Its README: a menu, a link to each of ours (READMEs cascade:
 // haiccing/base-docs-package, "READMEs"), each by its name.
 const item = p => existsSync(join(out, p, 'README.md')) ? `- [${p.split('/').pop()}](${p}/)` : null
@@ -113,7 +116,7 @@ writeFileSync(join(out, 'README.md'), [
   'Assembled from the modules `package.json` names, all the way down; never',
   'edited by hand. Each of ours carries its own tests, run by the package\'s',
   `modules test, \`/test/modules\`. The third-party code: \`node_modules/\`, ${record.length}`,
-  `modules for ${platform()}, each with its version, licence and source in`,
+  `modules for ${PLATFORMS.join(', ')}, each with its version, licence and source in`,
   '`third-party.json`. Our modules find each other by name through',
   '`node_modules/`, links.',
   '',

@@ -5,12 +5,13 @@
 #   haicc prereq --check   checked only, nothing changed
 # A line a prerequisite: ok, or missing with how to get it. Exit 0 when all
 # are there, 3 when one is missing.
-#   platform   this machine's, the one the pinned Bare is for
+#   platform   this machine's, one Bare is pinned for (the pins: a build
+#              a platform; this machine's chosen)
 #   tools      what the scripts use: tar, sha512sum
 #   sources    a folder registered that holds the app: its bundle, with its
 #              organisation's manifest
-#   bare       the pinned Bare, in haicc's folder, as pinned (its tarball's
-#              sha512 recorded beside it)
+#   bare       the pinned Bare, this platform's, in haicc's folder, as
+#              pinned (its tarball's sha512 recorded beside it)
 set -u
 . "$(dirname "$0")/haicc-lib.sh"
 check=no
@@ -22,8 +23,8 @@ ok () { printf 'ok       %s\n' "$1"; }
 miss () { printf 'missing  %s\n' "$1"; missing=1; }
 
 # platform
-if [ "$(platform)" = "$BARE_PLATFORM" ]; then ok "platform: $BARE_PLATFORM"
-else miss "platform: this is $(platform), the pinned Bare is for $BARE_PLATFORM"; fi
+if [ -n "$BARE_FILE" ]; then ok "platform: $BARE_PLATFORM"
+else miss "platform: this is $BARE_PLATFORM, Bare is pinned for $BARE_PLATFORMS"; fi
 
 # tools
 for t in tar sha512sum; do
@@ -36,7 +37,9 @@ if [ -n "$app" ] && [ -f "$(dirname "$app")/manifest.json" ]; then ok "sources: 
 else miss "sources: no folder registered holds $HAICC_ORG/$APP_PACKAGE.bundle (haicc sources link <folder>)"; fi
 
 # bare
-if [ -x "$HAICC_BARE" ] && [ -f "$HAICC_HOME/bare/tarball.sha512" ] && [ "$(cat "$HAICC_HOME/bare/tarball.sha512")" = "$BARE_SHA512" ]; then
+if [ -z "$BARE_FILE" ]; then
+  miss "bare: none pinned for $BARE_PLATFORM"
+elif [ -x "$HAICC_BARE" ] && [ -f "$HAICC_HOME/bare/tarball.sha512" ] && [ "$(cat "$HAICC_HOME/bare/tarball.sha512")" = "$BARE_SHA512" ]; then
   ok "bare: $BARE_VERSION, as pinned"
 else
   tarball=$(in_sources "$BARE_FILE")

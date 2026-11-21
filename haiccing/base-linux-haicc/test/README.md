@@ -21,6 +21,9 @@ inspect. One line a check, the count last; exit 0 passed, 1 failed.
    is not there.
 5. **The prerequisites**: a check changes nothing; `haicc prereq` unpacks
    the pinned Bare from the sources and records its hash; there next time.
+   Bare chosen by machine: every pinned platform's in the sources; an
+   `aarch64` machine (`uname` answering as one would) chooses
+   `linux-arm64`'s, a platform not pinned is said.
    From here the command is the app: its usage whole; no such command; a
    URI with no command after it; `haicc boot` alone; `--output` without a
    URI; no boot mrepo yet; the backup off and on; a folder linked twice
