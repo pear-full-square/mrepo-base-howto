@@ -81,6 +81,7 @@ test('the replica an action is about: by the mrepo\'s unique URI, beside the mre
   t.alike([r.node, r.links, r.local('k')], ['main/container/.node.json', 'main/container/.shortcuts.json', 'links/k.json'], 'its node and its shortcut in main, its link\'s record in the links layer')
   t.is(replica({ runtime: { dir: '/w/x/node-1', work: null, uri: 'swarm-1/node-1' }, log: () => {} }).dir, '/w/x/containers/swarm-1/node-1', 'no work folder: beside the mrepo')
   t.exception(() => replica({ runtime: { dir: '/w/mrepos/boot', work: '/w', uri: 'boot' }, log: () => {} }), /no unique URI to make a replica by: boot/, 'an mrepo without a unique URI: no replica')
+  t.exception(() => replica({ runtime: { dir: '/mrepo', work: null, uri: 'swarm-1/node-1/container' }, log: () => {} }), /a replica makes no replica of its own: swarm-1\/node-1\/container/, 'a replica: none of its own')
   const h = replica({ runtime: { dir: '/w/mrepos/haiccing/base-package-crud/howto/query/node-1', work: '/w', uri: 'haiccing/base-package-crud/howto/query/node-1' }, log: () => {} })
   t.alike([h.dir, /^haicc-haiccing-base-package-crud-howto-query-node-1-[0-9a-f]{8}$/.test(h.name)], ['/w/containers/haiccing/base-package-crud/howto/query/node-1', true], 'a unique URI that is a path: its folder by it, its container named by it')
   t.exception(() => replica({ runtime: { dir: null, uri: 'swarm-1/node-1' }, log: () => {} }), /no directory in the context/)

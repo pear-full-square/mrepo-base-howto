@@ -505,7 +505,7 @@ has "$out" '"state":"running"}' "running"
 is "$(haicc --output $N haicc container service/start 2>&1 >/dev/null)" "haicc: not now: service start (the service is started)" "the replica in service already: the script brought it there, through its node"
 has "$(haicc --output $N haicc container crud/create notes/a '{"x":1}' 2>&1)" '{"uri":["main","notes/a"],"value":{"x":1},"children":[],"outcome":"created"}' "a command sent on into the container: a node created in the replica's main"
 is "$(haicc --output host/swarms/swarm-1/node-1/container crud/read notes/a 2>&1)" '[{"uri":["main","notes/a"],"value":{"x":1},"children":[]}]' "read back with one URI through three shortcuts: the host, the node, its container"
-out=$(haicc $N haicc container container/create 2>&1 >/dev/null); is "$out" "haicc: no unique URI to make a replica by: swarm-1/node-1/container (<swarm>/<name>)" "a replica makes no replica of its own"
+out=$(haicc $N haicc container container/create 2>&1 >/dev/null); is "$out" "haicc: a replica makes no replica of its own: swarm-1/node-1/container" "a replica makes no replica of its own"
 has "$(haicc --output $N container/stop 2>&1)" '"stopped":"container"' "container/stop"
 has "$(haicc --output $N container/status 2>&1)" '"state":"exited"}' "stopped: exited"
 has "$(haicc --output $N container/start 2>&1)" '"state":"running"}' "container/start: running again"
@@ -519,7 +519,7 @@ is "$(haicc --output $N crud/read . 2>&1)" '[{"uri":["main","."],"value":{},"chi
 out=$(curl -s "$splectral/records")
 has "$out" '"command":"haicc host haicc swarms/swarm-1/node-2 container/start","ok":true,"error":null,"through":["local/host","swarm-1/node-2"]' "Splectral: a command of the cluster script, sent on through the host to the node"
 has "$out" '"through":["local/host","swarm-1/node-1","swarm-1/node-1/container"]' "one that went on into a container: all three"
-has "$out" '"ok":false,"error":"no unique URI to make a replica by: swarm-1/node-1/container (<swarm>/<name>)"' "one that failed: its error"
+has "$out" '"ok":false,"error":"a replica makes no replica of its own: swarm-1/node-1/container"' "one that failed: its error"
 # and the install as those commands made it: a tree, a swarm node one node
 tree=$(curl -s "$splectral/structure")
 has "$tree" '"nodes":[{"uri":"local/boot","parent":null,"at":".","package":null,"service":null,"container":null,"depth":0},{"uri":"local/host","parent":"local/boot","at":"host","package":"haiccing/base-component-haicc","service":"started","container":null,"depth":1}' "Splectral: the install's structure, folded from the commands: the root, the host below it, started"
