@@ -1,8 +1,8 @@
 {
   "package": "haiccing/base-app-haicc",
-  "content": "8d474c103a77ba83461514c0275bf69101ddc8ce21e98790316f7a8df5d158f4",
+  "content": "f1cca712091ba4b838c2fd1e15b14416292626b99e256e837cc235af4eaf21d4",
   "bare": "v1.36.0",
-  "date": "2026-11-21T02:28:25.052Z",
+  "date": "2026-11-21T03:50:10.482Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -88,12 +88,12 @@
       "unit": "/test/modules/pear-full-square/mrepo-base-crud",
       "ok": true,
       "tests": {
-        "passed": 8,
-        "total": 8
+        "passed": 9,
+        "total": 9
       },
       "asserts": {
-        "passed": 76,
-        "total": 76
+        "passed": 80,
+        "total": 80
       },
       "failures": []
     },
@@ -118,8 +118,8 @@
         "total": 9
       },
       "asserts": {
-        "passed": 60,
-        "total": 60
+        "passed": 62,
+        "total": 62
       },
       "failures": []
     },
@@ -140,12 +140,12 @@
       "unit": "/test/modules/pear-full-square/mrepo-base-request",
       "ok": true,
       "tests": {
-        "passed": 18,
-        "total": 18
+        "passed": 21,
+        "total": 21
       },
       "asserts": {
-        "passed": 228,
-        "total": 228
+        "passed": 240,
+        "total": 240
       },
       "failures": []
     },
@@ -224,6 +224,19 @@
       "asserts": {
         "passed": 195,
         "total": 195
+      },
+      "failures": []
+    },
+    {
+      "unit": "/test/modules/pear-full-square/mycelium-value-avro",
+      "ok": true,
+      "tests": {
+        "passed": 8,
+        "total": 8
+      },
+      "asserts": {
+        "passed": 57,
+        "total": 57
       },
       "failures": []
     },
