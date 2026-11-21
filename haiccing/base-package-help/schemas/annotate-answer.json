@@ -1,6 +1,6 @@
 {
   "type": "record",
-  "name": "haiccing.basePackageHelp.AnnotateAnswer",
+  "name": "haiccing.basePackageHelp.annotateAnswer",
   "doc": "help/annotate's answer: a command explained where it would run, not executed",
   "fields": [
     { "name": "help", "type": "string", "doc": "the command, as typed" },

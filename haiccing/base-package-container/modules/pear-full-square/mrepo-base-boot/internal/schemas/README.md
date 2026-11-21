@@ -13,7 +13,8 @@ beside the old.
 ## Signature
 
 - `register({ store, packages })`: each package's schemas into the
-  registry at `schemasOf(store)`.
+  registry at `schemasOf(store)`, each with the commit that brought it
+  (the package's, its manifest entry's `commit`).
 - `carried({ store, pkg })`: a package's schemas, read from its bundle.
 - `schemasOf(store)`: the install's registry, `<store>/schemas`.
 

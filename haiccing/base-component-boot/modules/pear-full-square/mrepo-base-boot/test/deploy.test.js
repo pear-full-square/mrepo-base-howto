@@ -118,8 +118,8 @@ test('schemas: each package placed registers the schemas it carries, its own and
   const store = mkdtempSync(join(tmpdir(), 'schemas-store-'))
   const dir = mkdtempSync(join(tmpdir(), 'schemas-dir-'))
   try {
-    const answer = { type: 'record', name: 'haiccing.base.Answer', fields: [{ name: 'a', type: 'string' }] }
-    const inner = { type: 'record', name: 'pearFullSquare.someModule.Thing', fields: [{ name: 'n', type: 'long' }] }
+    const answer = { type: 'record', name: 'haiccing.base.answer', fields: [{ name: 'a', type: 'string' }] }
+    const inner = { type: 'record', name: 'pearFullSquare.someModule.thing', fields: [{ name: 'n', type: 'long' }] }
     source(pkgs, {
       'haiccing/base': { 'runtime/layer.json': { mode: 'atomic' }, '/schemas/answer.json': answer, '/modules/pear-full-square/some-module/schemas/thing.json': inner, '/schemas/README.md': '# not one' },
       'haiccing/bad': { '/schemas/bad.json': { type: 'record', name: 'X', fields: [{ name: 'a', type: 'nope' }] } }

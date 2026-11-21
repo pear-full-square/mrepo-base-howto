@@ -46,12 +46,16 @@ export const canonicalOf = type => JSON.stringify(type.schema())
 export const fingerprint = type => fingerprintOf(canonicalOf(type))
 export const wholeOf = type => type.schema({ exportAttrs: true })
 
-// Is and is-like, one mechanism: AVRO's own resolution, unchanged.
-//   is        the writer's names the reader's, or a declared alias: one
-//             type over time, evolved within the rules
-//   is-like   aliases generated for the read: the writer's schema and the
-//             reader's walked side by side, each named type of the
-//             reader's given the writer's fullname at the same position
+// Is and is-like, one mechanism: AVRO's own resolution, unchanged, a
+// record matched by its name without the namespace, as the specification
+// says (avsc compares full names unless told: ignoreNamespaces).
+//   is        the same core type (the name; any variant, its namespace),
+//             or a declared alias: versions and variants of one type,
+//             evolved within the rules (base-docs-uri, "Core types")
+//   is-like   a different core type read as another: aliases generated
+//             for the read, the writer's schema and the reader's walked
+//             side by side, each named type of the reader's whose core
+//             type differs given the writer's fullname at the same position
 //             (a record's fields by name, an array's items, a map's
 //             values, a union's branch by structure, first fit in order);
 //             then the same resolution. Deterministic; the aliases
@@ -59,6 +63,8 @@ export const wholeOf = type => type.schema({ exportAttrs: true })
 const NAMED = ['record', 'error', 'enum', 'fixed']
 const kind = s => (typeof s === 'string' ? s : Array.isArray(s) ? 'union' : s?.type)
 const fullname = s => s?.name ?? null
+const core = s => { const n = fullname(s); return n === null ? null : n.slice(n.lastIndexOf('.') + 1) }
+const OPTS = { ignoreNamespaces: true }
 
 // writer, reader: whole schemas (every named type defined at its first
 // use). -> { reader: the reader's schema with the aliases, aliases:
@@ -98,7 +104,7 @@ function aliasesFor (writer, reader) {
       return
     }
     if (!w || !r || typeof w !== 'object' || typeof r !== 'object' || kind(w) !== kind(r)) return
-    if (NAMED.includes(r.type) && fullname(w) && fullname(w) !== fullname(r)) {
+    if (NAMED.includes(r.type) && fullname(w) && core(w) !== core(r)) {
       const key = `${fullname(w)}>${fullname(r)}`
       if (seen.has(key)) return
       seen.add(key)
@@ -112,7 +118,7 @@ function aliasesFor (writer, reader) {
   // (a union's branch by structure: does the writer's read as it, aliased)
   const fits = (w, r) => {
     // catch: a branch it does not read as: the next one is tried
-    try { const a = aliasesFor(w, r); typeOf(a.reader, {}).createResolver(typeOf(w, {})); return true } catch { return false }
+    try { const a = aliasesFor(w, r); typeOf(a.reader, {}).createResolver(typeOf(w, {}), OPTS); return true } catch { return false }
   }
   walk(writer, reader)
   const apply = s => {
@@ -143,7 +149,7 @@ export function resolverOf (writer, reader, { like = true } = {}) {
     const a = aliasesFor(wholeOf(writer), wholeOf(reader))
     if (Object.keys(a.aliases).length) r = { reader: typeOf(a.reader, {}), resolver: null, aliases: a.aliases }
   }
-  r.resolver = r.reader.createResolver(writer)
+  r.resolver = r.reader.createResolver(writer, OPTS)
   cache.set(key, r)
   return r
 }

@@ -9,7 +9,7 @@ const { encode, fingerprintIn, registry } = avro
 
 const ANSWER = {
   type: 'record',
-  name: 'haiccing.basePackageHelp.AnnotateAnswer',
+  name: 'haiccing.basePackageHelp.annotateAnswer',
   fields: [
     { name: 'help', type: 'string' },
     { name: 'does', type: ['null', 'string'], default: null },
@@ -24,14 +24,14 @@ test('the fingerprint: CRC-64-AVRO of the Parsing Canonical Form', (t) => {
   const t1 = avro.typeOf({ ...ANSWER, doc: 'kept out', fields: ANSWER.fields.map(f => ({ ...f, doc: 'out' })) })
   const t2 = avro.typeOf(ANSWER)
   t.is(avro.fingerprint(t1), avro.fingerprint(t2), 'docs are not part of it')
-  t.is(avro.canonicalOf(t2), '{"name":"haiccing.basePackageHelp.AnnotateAnswer","type":"record","fields":[{"name":"help","type":"string"},{"name":"does","type":["null","string"]},{"name":"answer","type":{"type":"array","items":"string"}}]}')
+  t.is(avro.canonicalOf(t2), '{"name":"haiccing.basePackageHelp.annotateAnswer","type":"record","fields":[{"name":"help","type":"string"},{"name":"does","type":["null","string"]},{"name":"answer","type":{"type":"array","items":"string"}}]}')
   t.ok(avro.isFingerprint(avro.fingerprint(t2)))
 })
 
 test('a name is its URI, exact both ways', (t) => {
-  t.is(avro.fullnameOf('haiccing/base-package-help/annotate-answer'), 'haiccing.basePackageHelp.AnnotateAnswer')
-  t.is(avro.uriOf('haiccing.basePackageHelp.AnnotateAnswer'), 'haiccing/base-package-help/annotate-answer')
-  t.is(avro.uriOf('pearFullSquare.myceliumValueAvro.Record'), 'pear-full-square/mycelium-value-avro/record')
+  t.is(avro.fullnameOf('haiccing/base-package-help/annotate-answer'), 'haiccing.basePackageHelp.annotateAnswer')
+  t.is(avro.uriOf('haiccing.basePackageHelp.annotateAnswer'), 'haiccing/base-package-help/annotate-answer')
+  t.is(avro.uriOf('pearFullSquare.myceliumValueAvro.record'), 'pear-full-square/mycelium-value-avro/record')
   t.is(avro.uriOf('org.apache.avro.Thing_1'), null, 'a name from elsewhere: no URI')
   t.is(avro.uriOf('Plain'), null)
   t.exception(() => avro.fullnameOf('haiccing/node-1/x'), /data name/, 'a segment that is no data name')
@@ -57,7 +57,7 @@ test('an unknown fingerprint is an error where it is read', (t) => {
   t.exception(() => avro.decode(avro.registry(), Buffer.from('{}')), /single-object/)
 })
 
-test('the registry: an index, by fingerprint and by URI, never refusing', (t) => {
+test('the registry: an index, by fingerprint and by URI, never refusing; its core types, their variants, their versions', (t) => {
   const dir = mkdtempSync(join(tmpdir(), 'avro-'))
   try {
     const reg = avro.registry(join(dir, 'schemas'))
@@ -68,16 +68,22 @@ test('the registry: an index, by fingerprint and by URI, never refusing', (t) =>
     const v2 = reg.add({ ...ANSWER, fields: [...ANSWER.fields, { name: 'more', type: 'string', default: '' }] })
     t.not(v2.fingerprint, a.fingerprint, 'a new version, a new fingerprint')
     t.alike(reg.named(a.uri), [a.fingerprint, v2.fingerprint], 'versions side by side, the oldest first')
+    const variant = reg.add({ ...ANSWER, name: 'splectral.baseComponentHelpViewer.annotateAnswer' }, { commit: 'c2' })
+    t.ok(reg.types().includes('annotateAnswer'), 'what core types there are')
+    t.alike(reg.variants('annotateAnswer'), [{ variant: 'haiccing.basePackageHelp', uri: a.uri }, { variant: 'splectral.baseComponentHelpViewer', uri: variant.uri }], 'the variants of a type, by namespace')
+    t.alike(reg.versions(variant.uri), [{ fingerprint: variant.fingerprint, commit: 'c2' }], 'the versions of a variant, by fingerprint, with the commit that brought it')
     const other = reg.add({ type: 'record', name: 'org.example.Thing_1', fields: [{ name: 'x', type: 'int' }] })
     t.is(other.uri, null, 'a valid schema from elsewhere: taken, known by its fingerprint')
     t.ok(reg.add('long').fingerprint, 'a schema with no name: taken')
-    const refers = { type: 'record', name: 'a.Refers', fields: [{ name: 'j', type: 'pearFullSquare.myceliumValueAvro.Json' }] }
+    const refers = { type: 'record', name: 'a.Refers', fields: [{ name: 'j', type: 'pearFullSquare.myceliumValueAvro.json' }] }
     t.ok(reg.add(refers).added, 'a schema naming a type the registry knows')
     t.absent(reg.add(refers).added, 'the same again: one entry')
     t.exception(() => reg.add({ type: 'record', name: 'X', fields: [{ name: 'a', type: 'nope' }] }), 'an invalid schema is not one')
     // another process: the same folder
     const again = avro.registry(join(dir, 'schemas'))
     t.alike(again.get(a.fingerprint).schema.name, ANSWER.name, 'read from the folder')
+    t.alike(again.named(a.uri), [a.fingerprint, v2.fingerprint], 'in the order they were added')
+    t.alike(again.versions(variant.uri)[0].commit, 'c2')
     t.is(documents(join(dir, 'schemas'), { extension: 'json' }).list().length, readdirSync(join(dir, 'schemas')).length)
     t.ok(again.list().some(e => e.uri === 'pear-full-square/mycelium-value-avro/record'), 'its own schemas always known')
   } finally { rmSync(dir, { recursive: true, force: true }) }
@@ -86,7 +92,7 @@ test('the registry: an index, by fingerprint and by URI, never refusing', (t) =>
 test('is-like: read as the reader needs, record names not required to match', (t) => {
   const reg = avro.registry()
   const bytes = avro.encode(reg, ANSWER, { help: 'h', does: null, answer: ['x'] })
-  const reader = { type: 'record', name: 'org.other.Help', fields: [{ name: 'help', type: 'string' }, { name: 'lines', type: 'long', default: 3 }, { name: 'answer', type: { type: 'array', items: 'string' } }] }
+  const reader = { type: 'record', name: 'org.other.help', fields: [{ name: 'help', type: 'string' }, { name: 'lines', type: 'long', default: 3 }, { name: 'answer', type: { type: 'array', items: 'string' } }] }
   t.alike({ ...avro.decode(reg, bytes, { as: reader }) }, { help: 'h', lines: 3, answer: ['x'] }, 'the writer\'s extra skipped, the reader\'s missing from its default')
   t.ok(avro.isLike(reg, avro.fingerprintIn(bytes), reader).like)
   const not = avro.isLike(reg, avro.fingerprintIn(bytes), { type: 'record', name: 'N', fields: [{ name: 'size', type: 'int' }] })
@@ -97,23 +103,27 @@ test('is-like: read as the reader needs, record names not required to match', (t
   t.alike(JSON.parse(JSON.stringify(avro.decode(reg, n, { as: wide }))), { n: 5, inner: { x: 1 } }, 'numbers widened, a record inside by its field')
 })
 
-test('is and is-like, one mechanism: the log viewer\'s line reading a node\'s log entry, its key skipped; the aliases applied said', (t) => {
+test('is and is-like, one mechanism: a core type\'s variant read as AVRO is; a different core type, the log viewer\'s line, reading a node\'s log entry, its key skipped; the aliases applied said', (t) => {
   const reg = registry()
-  const entry = { type: 'record', name: 'haiccing.basePackageRns.LogEntry', fields: [{ name: 'key', type: 'string' }, { name: 'timestamp', type: 'long' }, { name: 'uri', type: 'string' }, { name: 'output', type: ['null', 'string'], default: null }] }
-  const line = { type: 'record', name: 'splectral.baseComponentLogViewer.Line', fields: [{ name: 'timestamp', type: 'long' }, { name: 'uri', type: 'string' }, { name: 'output', type: ['null', 'string'], default: null }] }
+  const entry = { type: 'record', name: 'haiccing.basePackageRns.logEntry', fields: [{ name: 'key', type: 'string' }, { name: 'timestamp', type: 'long' }, { name: 'uri', type: 'string' }, { name: 'output', type: ['null', 'string'], default: null }] }
+  const line = { type: 'record', name: 'splectral.baseComponentLogViewer.line', fields: [{ name: 'timestamp', type: 'long' }, { name: 'uri', type: 'string' }, { name: 'output', type: ['null', 'string'], default: null }] }
   const bytes = encode(reg, entry, { key: 'k', timestamp: 5, uri: 'swarm-1/node-2', output: 'ok' })
   const fp = fingerprintIn(bytes)
-  t.absent(avro.is(reg, fp, line).is, 'is: not the same type, by name')
+  const variant = { ...line, name: 'splectral.baseComponentLogViewer.logEntry' }
+  t.ok(avro.is(reg, fp, variant).is, 'is: one core type (logEntry), another variant (its namespace): read as AVRO reads it')
+  t.alike(avro.isLike(reg, fp, variant).aliases, {}, 'no alias generated for a variant')
+  t.alike({ ...avro.decode(reg, bytes, { as: variant }) }, { timestamp: 5, uri: 'swarm-1/node-2', output: 'ok' }, 'the variant reads it, key skipped')
+  t.absent(avro.is(reg, fp, line).is, 'is: not the same core type')
   const like = avro.isLike(reg, fp, line)
   t.ok(like.like, 'is-like: the same thing, with less detail')
-  t.alike(like.aliases, { 'splectral.baseComponentLogViewer.Line': ['haiccing.basePackageRns.LogEntry'] }, 'the aliases generated for the read, said with the answer')
+  t.alike(like.aliases, { 'splectral.baseComponentLogViewer.line': ['haiccing.basePackageRns.logEntry'] }, 'the aliases generated for the read, said with the answer')
   t.alike({ ...avro.decode(reg, bytes, { as: line }) }, { timestamp: 5, uri: 'swarm-1/node-2', output: 'ok' }, 'read as the line: key skipped')
   t.ok(avro.is(reg, fp, { ...entry, fields: [...entry.fields, { name: 'more', type: 'int', default: 0 }] }).is, 'is: a version of the same type, evolved within the rules')
-  t.ok(avro.is(reg, fp, { ...line, aliases: ['haiccing.basePackageRns.LogEntry'] }).is, 'is: a declared alias')
+  t.ok(avro.is(reg, fp, { ...line, aliases: ['haiccing.basePackageRns.logEntry'] }).is, 'is: a declared alias')
   const u = encode(reg, { type: 'record', name: 'a.Box', fields: [{ name: 'in', type: ['null', { type: 'record', name: 'a.Small', fields: [{ name: 'x', type: 'int' }] }] }] }, { in: { x: 1 } })
   const ur = { type: 'record', name: 'b.Box', fields: [{ name: 'in', type: ['null', { type: 'record', name: 'b.Other', fields: [{ name: 'y', type: 'int' }] }, { type: 'record', name: 'b.Fits', fields: [{ name: 'x', type: 'long' }] }] }] }
   t.alike(JSON.parse(JSON.stringify(avro.decode(reg, u, { as: ur }))), { in: { 'b.Fits': { x: 1 } } }, 'a union\'s branch by structure, the first that fits (two records: wrapped, as AVRO\'s JSON)')
-  t.alike(avro.isLike(reg, fingerprintIn(u), ur).aliases, { 'b.Box': ['a.Box'], 'b.Fits': ['a.Small'] })
+  t.alike(avro.isLike(reg, fingerprintIn(u), ur).aliases, { 'b.Fits': ['a.Small'] }, 'aliases only where the core type differs (box is box)')
 })
 
 test('the cascade: each level carrying the next, unfolded', (t) => {

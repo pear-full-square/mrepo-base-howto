@@ -145,7 +145,7 @@ A package's types, carried with it and registered where it is deployed
 - **Its name its URI**: the file's name is the name's last part, and the
   schema's AVRO `name` its fullname by the data-name mapping:
   `haiccing/base-package-help/schemas/annotate-answer.json` is
-  `haiccing.basePackageHelp.AnnotateAnswer`.
+  `haiccing.basePackageHelp.annotateAnswer`.
 - **Its identity its fingerprint**: a schema never changes; a new version
   is a new schema, a new fingerprint, kept beside the old.
 - **Registered at deploy**: placing a package registers every schema its

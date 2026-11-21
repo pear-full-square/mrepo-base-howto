@@ -21,9 +21,9 @@
 import { typeOf, isLike as like, is as isAs, resolverOf, fingerprint, canonicalOf, wholeOf } from './lib/types.js'
 import { bytesOf, hexOf, isFingerprint, fingerprintOf, rabin } from './lib/fingerprint.js'
 import { registry, OWN, schemasOf } from './lib/registry.js'
-import { fullnameOf, uriOf } from './lib/names.js'
+import { fullnameOf, uriOf, partsOf } from './lib/names.js'
 
-export { registry, OWN, schemasOf, fullnameOf, uriOf, typeOf, fingerprint, canonicalOf, wholeOf, isFingerprint, fingerprintOf, rabin }
+export { registry, OWN, schemasOf, fullnameOf, uriOf, partsOf, typeOf, fingerprint, canonicalOf, wholeOf, isFingerprint, fingerprintOf, rabin }
 
 export const extension = 'avro'
 const MARK = Buffer.from([0xc3, 0x01])

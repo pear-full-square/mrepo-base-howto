@@ -33,20 +33,26 @@ is(reg, fingerprint, schema)      // AVRO's own: by name or declared alias
 - **A schema's name is its URI**, where it comes from:
   `<org>/<package>/<name>`, a module's `<org>/<module>/<name>`
   (`haiccing/base-package-help/annotate-answer`); its AVRO fullname by
-  the data-name mapping (`base-docs-uri`, "Data names"), exact both ways
-  (`haiccing.basePackageHelp.AnnotateAnswer`): `fullnameOf`, `uriOf`. A
-  name that does not map is still a valid schema, known by its
-  fingerprint only.
+  the data-name mapping (`base-docs-uri`, "Data names"), exact both ways,
+  each part its data name (`haiccing.basePackageHelp.annotateAnswer`):
+  `fullnameOf`, `uriOf`. The name is the core type, the namespace its
+  variant (`base-docs-uri`, "Core types"; `partsOf`). A name that does
+  not map is still a valid schema, known by its fingerprint only.
 - **Its identity is its fingerprint**, a content hash: the AVRO
   specification's CRC-64-AVRO of its Parsing Canonical Form, written as
   16 hex digits. A schema never changes; a new version is a new
   fingerprint, versions side by side.
 - **The registry, an index, not a gatekeeper** (`registry(folder)`): what
   a fingerprint is, what a URI has been (`get`, `type`, `named`,
-  `latest`, `list`); `add` never refuses a valid schema; no subjects
+  `latest`, `list`); its three questions: what core types there are
+  (`types`), the variants of a type (`variants`, by namespace), the
+  versions of a variant (`versions`, by fingerprint, in the order the
+  commits that brought them were registered: `add(schema, { commit })`);
+  no version numbers; `add` never refuses a valid schema; no subjects
   bound to topics, no global ids, no compatibility modes. An install's
   is a folder of plain JSON documents, one a schema, named by its
-  fingerprint, `{ fingerprint, uri, schema }`, the schema whole;
+  fingerprint, `{ fingerprint, uri, commit, added, schema }`, the schema
+  whole;
   written by whoever registers (the creator, at deploy:
   `mrepo-base-boot`), read by every process of the install. The
   module's own schemas are always known.
@@ -62,10 +68,13 @@ is(reg, fingerprint, schema)      // AVRO's own: by name or declared alias
   writer's schema from the fingerprint against the reader's: fields by
   name, the writer's extra skipped, the reader's missing from their
   defaults, numbers widened, unions resolved.
-  - **is** (`is`): the same name, or a declared alias: one type over
-    time, evolved within the rules.
-  - **is-like** (`isLike`, and `decode(reg, bytes, { as })`): aliases
-    generated for the read: the writer's schema and the reader's walked
+  - **is** (`is`): the same core type, its record matched by its name
+    without the namespace, as the specification says (`avsc` is told so:
+    it compares full names by default), or a declared alias: the
+    versions and variants of one type, evolved within the rules.
+  - **is-like** (`isLike`, and `decode(reg, bytes, { as })`): a
+    different core type read as another, aliases generated for the read
+    only where the core types differ: the writer's schema and the reader's walked
     side by side, each named type of the reader's given the writer's
     fullname at the same position (a record's fields by name, an
     array's items, a map's values, a union's branch by structure, the
@@ -73,6 +82,10 @@ is(reg, fingerprint, schema)      // AVRO's own: by name or declared alias
     resolver cached per writer and reader; the aliases applied returned
     with the answer (`{ like, aliases }`), so an is-like can be
     explained. The same thing meant, with more or less detail.
+- **The family is the scope of consistency** (`base` today): its core
+  types read each other as above; data from another family comes in and
+  goes out through an import and an export at a boundary, mapped and
+  validated there. Not built.
 - **An unknown fingerprint is an error** where it is read.
 - **Unions**: plain values; a union of several records wrapped, as
   AVRO's JSON does (`{ <fullname>: value }`): a shape "Data shapes"
