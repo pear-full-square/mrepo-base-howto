@@ -28,11 +28,15 @@ docs mrepo: `haicc docs info/get <keywords>`.
 - **The host**, `local/host`: the mrepo a machine is managed with,
   service managed; applications, swarms and their nodes are deployed in
   it. `haicc host <protocol>/<action>`.
-- **A swarm and its nodes**: a node is an mrepo at
-  `swarms/<swarm>/<name>` in the host, `<swarm>/<name>`; it can have a
-  replica in a container, linked as `container`; or it runs in a
-  container on its own haicc install, a pair (`boot/deploy ...
-  --flags container`).
+- **A swarm and its nodes**: a swarm is made by the host
+  (`swarm/create swarms/<swarm>`): a node in its `main` whose kind is
+  `swarm`, with its master, the swarm's first node, and its lookup db.
+  Nodes are deployed into it (`swarm/deploy swarms/<swarm>/<name>`),
+  each an mrepo, `<swarm>/<name>`, registered by the host that created
+  it. Every node runs `rns` on the swarm's lookup db: `rns/status` says
+  who is registered and active. A node can have a replica in a
+  container, linked as `container`; or it runs in a container on its
+  own haicc install, a pair (`boot/deploy ... --flags container`).
 - **Splectral**, `local/splectral`: an app platform beside the host. It
   deploys its components with the boot protocol, installs their
   Splectral side (`splectral/install`) and serves them in a browser as
@@ -123,6 +127,17 @@ organisation of its own, beside haicc's own, `haiccing`.
   protocol and adds only what is its own; a component deployed in two
   parts, a plain mrepo first, the platform's side laid on it after.
   Splectral is one.
+- **swarm**: haicc's node management on a host: a swarm, its master and
+  its nodes made, each node registered; not a protocol the nodes run.
+- **master**: a swarm's first node: it keeps the swarm's lookup db; one a
+  swarm.
+- **lookup db**: a swarm's registry, common to its nodes: each node's
+  unique URI, where it lives, whether it is active; kept at the master,
+  a replica on every node, read with `rns`.
+- **lease**: how long a node stays active without its `rns` renewing it
+  at the master; run out, the node is quiet.
+- **cell**: a node as a self-contained unit: its own haicc, its own
+  `rns`, its own identity.
 - **haici**: human ai continuous improvement, findings from the request
   log, fed back to the HDLC; its protocol records feedback on a command
   (`--flags feedback <text>`), the request log its store.

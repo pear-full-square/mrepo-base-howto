@@ -32,11 +32,12 @@ history, and each package and module has its own repository).
 
 - `haiccing/`: the packages, each at the path of its repository:
   `base-package-runtime`, `-protocol`, `-info`, `-help`, `-haici`, `-boot`,
-  `-service`, `-haicc`, `-crud`, `-container`, `-splectral`
-  (one package, one protocol); the components `base-component-boot` (the
-  boot mrepo and the program that puts it in place), `base-component-haicc`
-  (the haicc mrepo, a host or a node) and `base-component-docs` (the docs
-  mrepo); `base-app-haicc` (the `haicc` command, an app run with Bare)
+  `-service`, `-haicc`, `-crud`, `-container`, `-swarm`, `-rns`,
+  `-splectral` (one package, one protocol); the components
+  `base-component-boot` (the boot mrepo and the program that puts it in
+  place), `base-component-haicc` (the haicc mrepo, a host),
+  `base-component-node` (a swarm's node: the haicc mrepo with `rns`) and
+  `base-component-docs` (the docs mrepo); `base-app-haicc` (the `haicc` command, an app run with Bare)
   and `base-linux-haicc` (the first step on Linux, sh scripts); the
   documentation packages `base-docs-package` (the package specification,
   compile time and run time; the template a package is brought to, its
@@ -84,6 +85,9 @@ The rules are `base-docs-hdlc`'s "Validation"; here, how each is run.
 - The `haicc` command end to end: `sh haiccing/base-linux-haicc/test/run.sh`.
 - Splectral as an app platform, a component installed and its pages
   served: `sh haiccing/base-linux-haicc/test/splectral.sh`.
+- A swarm on one host, its master, its nodes registered, a node gone
+  quiet: `sh haiccing/base-linux-haicc/test/swarm.sh`, several times (a
+  race shows one run in a few).
 - The `haicc` command installed in a container, from the host's sources:
   `sh haiccing/base-linux-haicc/test/container.sh` (Docker).
 - Docker, for what makes containers: in a cloud session no daemon runs
