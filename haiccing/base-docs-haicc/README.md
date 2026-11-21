@@ -35,7 +35,10 @@ docs mrepo: `haicc docs info/get <keywords>`.
   each an mrepo, `<swarm>/<name>`, registered by the host that created
   it. Every node runs `rns` on the swarm's lookup db: `rns/status` says
   who is registered and active. Every node keeps its own log, synced
-  lazily to the master: `log/read` there answers every node's. A node can have a replica in a
+  lazily to the master: `log/read` there answers every node's. A node
+  reaches another by its unique URI, `haicc <swarm>/<name>
+  <protocol>/<action>`: dispatched, resolved by `rns`, delivered to it
+  directly. A node can have a replica in a
   container, linked as `container`; or it runs in a container on its
   own haicc install, a pair (`boot/deploy ... --flags container`).
 - **The workbench**, `local/workbench`: a solution, the development and
@@ -159,7 +162,10 @@ organisation of its own, beside haicc's own, `haiccing`.
 - **lease**: how long a node stays active without its `rns` renewing it
   at the master; run out, the node is quiet.
 - **cell**: a node as a self-contained unit: its own haicc, its own
-  `rns`, its own identity, its own log.
+  `rns`, its own `dispatch`, its own identity, its own log.
+- **dispatch**: a command routed to the node its unique URI names, not
+  through shortcuts: resolved in the sender's lookup db, on one machine
+  dropped into the node's inbox folder.
 - **log**: a node's completed requests, a record each, in a topic the
   node alone writes; a swarm's are read together at its master.
 - **haici**: human ai continuous improvement, findings from the request

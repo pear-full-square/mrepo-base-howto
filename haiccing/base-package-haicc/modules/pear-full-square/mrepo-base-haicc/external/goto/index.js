@@ -58,7 +58,21 @@ export async function goto (exec, { uri, args = [] }) {
   const run = at => { exec.log('verbose', 'executed here', { at, command }); return exec.run(args, { at: positionOf([MAIN, at]) }) }
   // a URI that names one position: there, or an error; what the command gave
   if (!selects(whole)) {
-    if (!here.length) throw new Error(`haicc ${whole.slice(MAIN.length + 1) || ROOT}: no node there`)
+    if (!here.length) {
+      const written = whole.slice(MAIN.length + 1) || ROOT
+      // No position here by that URI. A node of this mrepo's swarm by its
+      // unique URI (<swarm>/<node>): dispatch's, where this mrepo has it
+      // active: routed there (dispatch/send), not through a shortcut.
+      if (written.includes('/') && await exec.find('protocols/dispatch.json') !== null) {
+        exec.log('verbose', 'dispatched', { uri: written, command })
+        // catch: no such node in the swarm either: said as one error, the cause kept; anything else thrown on
+        try { return await exec.run(['dispatch/send', written, ...args]) } catch (err) {
+          if (!/^no node of the swarm by that unique URI/.test(err.message)) throw err
+          throw new Error(`haicc ${written}: no node there, and no node of the swarm by that unique URI`, { cause: err })
+        }
+      }
+      throw new Error(`haicc ${written}: no node there`)
+    }
     return run(here[0].at)
   }
   // one that selects: the command at each, in order; what each gave, a list

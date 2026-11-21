@@ -5,7 +5,8 @@
 # the host, the master and a node; a node resolved; a node gone quiet
 # when its service stops, active again when it starts; what is refused;
 # each node's log synced lazily to the master and read there in one view,
-# by node; the log viewer, a Splectral component, its page asked over
+# by node; a command dispatched from one node to another by its unique
+# URI, through rns; the log viewer, a Splectral component, its page asked over
 # HTTP; a node taken out; torn down, nothing left. Each step timed.
 #   sh test/swarm.sh [--keep]
 #     --keep    the temporary folder left as it is, its runtimes running (printed)
@@ -18,7 +19,7 @@ keep=no
 [ "${1:-}" = --keep ] && keep=yes
 HAICC_HOME=$pkg . "$pkg/bin/haicc-lib.sh"   # the pins, this machine's Bare chosen
 SOURCES=${SOURCES:-$pkg/../../sources}
-for f in "$HAICC_ORG/$APP_PACKAGE.bundle" "$HAICC_ORG/base-component-haicc.bundle" "$HAICC_ORG/base-component-node.bundle" "$HAICC_ORG/base-package-swarm.bundle" "$HAICC_ORG/base-package-rns.bundle" "$HAICC_ORG/base-package-log.bundle" "$HAICC_ORG/base-package-splectral.bundle" splectral/base-component-log-viewer.bundle "$BARE_FILE"; do
+for f in "$HAICC_ORG/$APP_PACKAGE.bundle" "$HAICC_ORG/base-component-haicc.bundle" "$HAICC_ORG/base-component-node.bundle" "$HAICC_ORG/base-package-swarm.bundle" "$HAICC_ORG/base-package-rns.bundle" "$HAICC_ORG/base-package-log.bundle" "$HAICC_ORG/base-package-dispatch.bundle" "$HAICC_ORG/base-package-splectral.bundle" splectral/base-component-log-viewer.bundle "$BARE_FILE"; do
   [ -f "$SOURCES/$f" ] || { echo "skipped: no $f in $SOURCES (SOURCES: a sources folder)"; exit 0; }
 done
 SOURCES=$(cd "$SOURCES" && pwd)
@@ -125,6 +126,26 @@ hasnt "$out" '"node":"swarm-1/node-2"' "and no other's"
 out=$(haicc --output $S/master log/status)
 has "$out" '"role":"master","collected":[{"uri":"swarm-1/node-1","key":"' "haicc host/swarms/swarm-1/master log/status: the topics it collected, each by its node"
 out=$(haicc --output $S/master log/read . swarm-1/node-9); has "$out" "no log held here for it: swarm-1/node-9 (swarm-1/master, swarm-1/node-1, swarm-1/node-2)" "a node no log is held for: said, with those that are"
+
+# 3c. dispatch: a command from one node to another by its unique URI,
+# resolved by rns, delivered into its inbox folder; the master not on the path
+out=$(haicc --output $S/node-1 haicc swarm-1/node-2 crud/create notes/sent '{"from":"node-1"}')
+has "$out" '{"uri":["main","notes/sent"],"value":{"from":"node-1"},"children":[],"outcome":"created"}' "haicc host/swarms/swarm-1/node-1 haicc swarm-1/node-2 crud/create notes/sent: answered by node-2"
+is "$(haicc --output $S/node-2 crud/read notes/sent)" '[{"uri":["main","notes/sent"],"value":{"from":"node-1"},"children":[]}]' "in node-2's main"
+is "$(haicc --output $S/node-1 crud/read notes/sent)" '[]' "not in node-1's"
+is "$(haicc --output $S/node-1 dispatch/send swarm-1/node-2 crud/read notes/sent)" '[{"uri":["main","notes/sent"],"value":{"from":"node-1"},"children":[]}]' "the same asked of dispatch by name: haicc ... dispatch/send swarm-1/node-2 crud/read notes/sent"
+is "$(haicc --output $S/node-1 haicc swarm-1/node-2/notes crud/read sent)" '[{"uri":["main","notes","sent"],"value":{"from":"node-1"},"children":[]}]' "a position below the node: what follows its unique URI goes on with the command"
+out=$(haicc --raw $S/node-1 --flags log=verbose -- haicc swarm-1/node-2 crud/read notes/sent)
+has "$out" '"event":"dispatch.send.resolved"' "its path, in the request's log (log=verbose at node-1's step): resolved by node-1's rns"
+has "$out" '"to":"swarm-1/node-2","how":"folder"' "dispatched by the folder drop"
+has "$out" '"jump":["host","swarms/swarm-1/node-1","swarm-1/node-2"]' "the entries of what node-2 did, under the jumps: the host, node-1, then node-2 by its unique URI"
+hasnt "$out" '"mrepo":"swarm-1/master"' "the master not on the path"
+out=$(haicc --output $S/node-2 haicc swarm-1/master rns/status); is "$(states "$out")" "swarm-1/master=active swarm-1/node-1=active swarm-1/node-2=active" "the master a node as any other: haicc ... node-2 haicc swarm-1/master rns/status"
+out=$(haicc --output $S/node-1 haicc swarm-1/node-1 crud/read notes/a); has "$out" '"uri":["main","notes/a"]' "a node's own unique URI: executed there"
+out=$(haicc --output $S/node-1 haicc swarm-1/node-9 crud/read .); has "$out" "haicc swarm-1/node-9: no node there, and no node of the swarm by that unique URI" "a unique URI no node has: said"
+out=$(haicc --output host haicc swarm-1/node-2 crud/read .); has "$out" "haicc swarm-1/node-2: no node there" "at the host, which does not dispatch: a position that is not there"
+out=$(haicc --output $S/master log/read . swarm-1/node-2 200); until_has 20 '"command":"crud/create notes/sent' --output $S/master log/read . swarm-1/node-2 200
+has "$out" '"from":"/swarm-1/node-1/execute/' "node-2's log, at the master: the dispatched command, asked by node-1"
 
 # 4. a node gone quiet: its service stopped, its rns ended, its lease run out
 label=stop; step --output $S/node-2 service/stop; has "$out" '"state":"initialised"' "node-2's service stopped"

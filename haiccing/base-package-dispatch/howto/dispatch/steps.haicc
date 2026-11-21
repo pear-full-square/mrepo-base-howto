@@ -1,0 +1,20 @@
+# dispatch: a command from one node of a swarm to another, by its unique URI.
+# The scene: the swarm package's how-to swarm, at its end.
+# step: from node-1, a command at node-2, by its unique URI
+host/swarms/swarm-1/node-1 haicc swarm-1/node-2 crud/create notes/sent
+# expect: "uri":["main","notes/sent"],"value":{},"children":[],"outcome":"created"
+# step: it is in node-2's main
+host/swarms/swarm-1/node-2 crud/read notes/sent
+# expect: "uri":["main","notes/sent"]
+# step: and not in node-1's
+host/swarms/swarm-1/node-1 crud/read notes/sent
+# expect: []
+# step: the same, asked of dispatch by name
+host/swarms/swarm-1/node-1 dispatch/send swarm-1/node-2 crud/read notes/sent
+# expect: "uri":["main","notes/sent"]
+# step: a position below the node
+host/swarms/swarm-1/node-1 haicc swarm-1/node-2/notes crud/read sent
+# expect: "uri":["main","notes","sent"]
+# step: the master is a node as any other
+host/swarms/swarm-1/node-2 haicc swarm-1/master rns/status
+# expect: "role":"master"

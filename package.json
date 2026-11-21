@@ -36,7 +36,8 @@
     "pear-full-square/mrepo-base-rns",
     "pear-full-square/mrepo-base-swarm",
     "pear-full-square/mrepo-base-log",
-    "pear-full-square/splectral-base-log-viewer"
+    "pear-full-square/splectral-base-log-viewer",
+    "pear-full-square/mrepo-base-dispatch"
   ],
   "dependencies": {
     "bare-bundle": "1.11.0",

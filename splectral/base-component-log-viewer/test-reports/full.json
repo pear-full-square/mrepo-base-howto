@@ -1,8 +1,8 @@
 {
   "package": "splectral/base-component-log-viewer",
-  "content": "7a443372e297ec6f0f154ce991c31235c33af402081b5d35fd10f277356ebc86",
+  "content": "7b60fab66ea1cb6c8ada48e691cff33354945ff634ba44029e7e5855b330ac4a",
   "bare": "v1.36.0",
-  "date": "2026-11-21T04:38:33.356Z",
+  "date": "2026-11-21T05:11:21.861Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -88,12 +88,12 @@
       "unit": "/test/modules/pear-full-square/mrepo-base-boot",
       "ok": true,
       "tests": {
-        "passed": 6,
-        "total": 6
+        "passed": 7,
+        "total": 7
       },
       "asserts": {
-        "passed": 120,
-        "total": 120
+        "passed": 125,
+        "total": 125
       },
       "failures": []
     },
@@ -101,12 +101,12 @@
       "unit": "/test/modules/pear-full-square/mrepo-base-crud",
       "ok": true,
       "tests": {
-        "passed": 8,
-        "total": 8
+        "passed": 9,
+        "total": 9
       },
       "asserts": {
-        "passed": 76,
-        "total": 76
+        "passed": 80,
+        "total": 80
       },
       "failures": []
     },
@@ -131,8 +131,8 @@
         "total": 9
       },
       "asserts": {
-        "passed": 60,
-        "total": 60
+        "passed": 62,
+        "total": 62
       },
       "failures": []
     },
@@ -153,12 +153,12 @@
       "unit": "/test/modules/pear-full-square/mrepo-base-request",
       "ok": true,
       "tests": {
-        "passed": 18,
-        "total": 18
+        "passed": 21,
+        "total": 21
       },
       "asserts": {
-        "passed": 228,
-        "total": 228
+        "passed": 240,
+        "total": 240
       },
       "failures": []
     },
@@ -237,6 +237,19 @@
       "asserts": {
         "passed": 195,
         "total": 195
+      },
+      "failures": []
+    },
+    {
+      "unit": "/test/modules/pear-full-square/mycelium-value-avro",
+      "ok": true,
+      "tests": {
+        "passed": 8,
+        "total": 8
+      },
+      "asserts": {
+        "passed": 57,
+        "total": 57
       },
       "failures": []
     },
@@ -335,12 +348,12 @@
       "unit": "/test/modules/pear-full-square/splectral-server",
       "ok": true,
       "tests": {
-        "passed": 8,
-        "total": 8
+        "passed": 10,
+        "total": 10
       },
       "asserts": {
-        "passed": 113,
-        "total": 113
+        "passed": 120,
+        "total": 120
       },
       "failures": []
     }
