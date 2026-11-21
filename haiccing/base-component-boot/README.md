@@ -25,6 +25,7 @@ bare base-component-boot.bundle --work=<folder> --sources=folder:<sources>
 - [base-package-runtime](../base-package-runtime/)
 - [base-package-info](../base-package-info/)
 - [base-package-help](../base-package-help/)
+- [base-package-haici](../base-package-haici/)
 - [base-package-protocol](../base-package-protocol/)
 - [base-package-boot](../base-package-boot/)
 - [base-package-haicc](../base-package-haicc/)

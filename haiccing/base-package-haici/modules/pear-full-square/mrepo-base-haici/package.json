@@ -1,0 +1,14 @@
+{
+  "name": "mrepo-base-haici",
+  "version": "0.1.0",
+  "description": "Module: the mrepo haici protocol, human ai continuous improvement: feedback on a command, recorded in the request log.",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "brittle-bare test/*.test.js"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "brittle": "4.5.0"
+  }
+}

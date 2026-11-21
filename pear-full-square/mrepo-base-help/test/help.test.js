@@ -26,7 +26,7 @@ const PROTOCOLS = {
 test('annotate: a command explained on an execution written for it: what it does, the door here and now, its arguments, the commands to run it and read more', async (t) => {
   const exec = execution({ protocols: PROTOCOLS })
   const a = await annotate(exec, { uri: ['main', 'swarms'], args: ['crud/read'] })
-  t.alike(a, { help: 'crud/read swarms', does: 'The nodes at a URI, read.', door: 'taken here, now', arguments: 'none', run: 'crud/read swarms', more: 'info/get crud/read' }, 'each a short line in a fixed place: the command, what it does, the door, its arguments, to run it, to read more')
+  t.alike(a, { help: 'crud/read swarms', does: 'The nodes at a URI, read.', door: 'taken here, now', arguments: 'none', run: 'crud/read swarms', more: 'info/get crud/read', answer: ['crud/read swarms: The nodes at a URI, read.', 'Taken here, now.', 'Arguments: none.', 'To run it: crud/read swarms', 'To read more: info/get crud/read'] }, 'each a short line in a fixed place: the command, what it does, the door, its arguments, to run it, to read more; the same in natural language')
   t.is((await annotate(exec, { uri: ['main', 'swarms'], args: ['crud'] })).help, 'crud/read swarms', 'the protocol alone: its default action')
   t.is((await annotate(exec, { uri: ['main', 'x'], args: ['crud/create', '{}'] })).arguments, 'value [kind]', 'the arguments its action names, an optional one in brackets')
   t.is((await annotate(exec, { uri: ['main', 'x'], args: ['crud/read'], flags: { log: 'debug' } })).run, 'crud/read x --flags log=debug', 'its other flags kept in the command to run it')

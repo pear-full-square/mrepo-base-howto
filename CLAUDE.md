@@ -31,7 +31,7 @@ Only what is in use. What nothing uses is removed (it stays in the
 history, and each package and module has its own repository).
 
 - `haiccing/`: the packages, each at the path of its repository:
-  `base-package-runtime`, `-protocol`, `-info`, `-help`, `-boot`,
+  `base-package-runtime`, `-protocol`, `-info`, `-help`, `-haici`, `-boot`,
   `-service`, `-haicc`, `-crud`, `-container`, `-splectral`
   (one package, one protocol); the components `base-component-boot` (the
   boot mrepo and the program that puts it in place), `base-component-haicc`

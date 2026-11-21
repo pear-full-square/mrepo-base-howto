@@ -58,7 +58,7 @@ test('annotate: a command explained where it would run, nothing of it executed',
   const exec = execution(files, protocols)
   const before = JSON.stringify(files)
   const a = await act('annotate', exec, { protocol: 'help', action: 'annotate', uri: ['main', 'swarms'], args: ['crud/read'] })
-  t.alike(a, { help: 'crud/read swarms', does: 'The nodes at a URI, read.', door: 'taken here, now', arguments: 'none', run: 'crud/read swarms', more: 'info/get crud/read' }, 'what it does, the door here and now, its arguments, to run it, to read more')
+  t.alike(a, { help: 'crud/read swarms', does: 'The nodes at a URI, read.', door: 'taken here, now', arguments: 'none', run: 'crud/read swarms', more: 'info/get crud/read', answer: ['crud/read swarms: The nodes at a URI, read.', 'Taken here, now.', 'Arguments: none.', 'To run it: crud/read swarms', 'To read more: info/get crud/read'] }, 'what it does, the door here and now, its arguments, to run it, to read more; the same in natural language')
   t.is((await act('annotate', exec, { protocol: 'help', action: 'annotate', uri: ['main', 'x'], args: ['crud/update'] })).door, 'refused here: no action: crud update (read)', 'refused: said why')
   t.is(JSON.stringify(files), before, 'nothing written')
 })

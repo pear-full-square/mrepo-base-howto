@@ -36,7 +36,7 @@ export async function annotate (exec, { uri = ['.'], args = [], flags = {} }) {
   const missing = names.filter((a, i) => !a.optional && i >= given.length).map(a => a.name)
   const extra = names.length || !cfg ? given.slice(names.length) : []
   exec.log('verbose', 'annotated', { command, refused })
-  return {
+  const a = {
     help: command,
     does: cfg?.description ?? page?.oneliner ?? null,
     door: refused ? `refused here: ${refused}` : 'taken here, now',
@@ -47,4 +47,7 @@ export async function annotate (exec, { uri = ['.'], args = [], flags = {} }) {
     // its page; an action not there: its protocol's; a protocol not here: the top
     more: cfg ? `info/get ${protocol}/${action}` : protocols[protocol] ? `info/get ${protocol}` : 'info/get'
   }
+  // the same in natural language, a line each: what the haicc command prints
+  const cap = s => s[0].toUpperCase() + s.slice(1)
+  return { ...a, answer: [`${a.help}: ${a.does ?? 'nothing said of what it does here'}`, `${cap(a.door)}.`, `Arguments: ${a.arguments}.`, `To run it: ${a.run}`, `To read more: ${a.more}`] }
 }
