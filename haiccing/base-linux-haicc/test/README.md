@@ -44,8 +44,12 @@ inspect. One line a check, the count last; exit 0 passed, 1 failed.
    commands chained through both shortcuts; a URI running through a
    shortcut; an argument with spaces and quotes; the output alone.
    **Flags**: `--flags help` answered where the command would run,
-   nothing of it executed, through a chain too; a flag that is none, or
-   help not on the last command: not run, exit 1, said why.
+   nothing of it executed, through a chain too, by default in natural
+   language; `--flags feedback <text>` recorded where the command would
+   run, nothing of it executed, answered with its request's id and read
+   back from the request layer, asked directly too; a flag that is none,
+   help not on the last command, feedback with no text or where `haici`
+   is not: not run, exit 1, said why.
 10. **Torn down**: the node; the service stopped, its boot protocol
     deactivated; shut down; the host.
 11. **The boot again**: there already, kept.

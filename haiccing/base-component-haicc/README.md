@@ -23,6 +23,7 @@ created.
 - [base-package-runtime](../base-package-runtime/)
 - [base-package-info](../base-package-info/)
 - [base-package-help](../base-package-help/)
+- [base-package-haici](../base-package-haici/)
 - [base-package-protocol](../base-package-protocol/)
 - [base-package-boot](../base-package-boot/)
 - [base-package-service](../base-package-service/)

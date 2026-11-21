@@ -13,7 +13,7 @@ The component's part of the structure: the list of the packages the haicc mrepo 
 
 - **`runtime/service.json`**: the service state, `booted`: the haicc
   mrepo is service managed.
-- **At `boot`**: `haicc`, `help`, `info`, `runtime` and `service` activated. A
+- **At `boot`**: `haicc`, `haici`, `help`, `info`, `runtime` and `service` activated. A
   closed haicc mrepo can be addressed, inspected and tested.
 - **At `initialise`**: its info extracted.
 - **At `start`**: `boot`, `crud` and `container` activated. Deploying

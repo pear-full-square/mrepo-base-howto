@@ -1,6 +1,6 @@
 # Test report: haiccing/base-package-splectral
 
-The package passed its `full` set: all 24 units, 338 of 338 tests and 2328 of 2328 asserts.
+The package passed its `full` set: all 24 units, 338 of 338 tests and 2344 of 2344 asserts.
 
 | | |
 |---|---|
@@ -9,10 +9,10 @@ The package passed its `full` set: all 24 units, 338 of 338 tests and 2328 of 23
 | Result | passed |
 | Units | 24 of 24 passed |
 | Tests | 338 of 338 passed |
-| Asserts | 2328 of 2328 passed |
-| Run | 2026-11-21 01:17 UTC |
+| Asserts | 2344 of 2344 passed |
+| Run | 2026-11-21 00:36 UTC |
 | Bare | v1.36.0 |
-| Content | `fa256ebe9f0258c7e57e045eee3219f64173c3c154c063000a10fab4a67707ac` |
+| Content | `40efedd4d5990d79d1bd3063616ac2f3584b12ba31b504fc4172773c36027d05` |
 
 ## Units
 
@@ -28,7 +28,7 @@ The package passed its `full` set: all 24 units, 338 of 338 tests and 2328 of 23
 | `/test/modules/pear-full-square/mrepo-base-execute` | passed | 10 of 10 | 98 of 98 |
 | `/test/modules/pear-full-square/mrepo-base-info` | passed | 9 of 9 | 60 of 60 |
 | `/test/modules/pear-full-square/mrepo-base-protocol` | passed | 3 of 3 | 10 of 10 |
-| `/test/modules/pear-full-square/mrepo-base-request` | passed | 18 of 18 | 212 of 212 |
+| `/test/modules/pear-full-square/mrepo-base-request` | passed | 18 of 18 | 228 of 228 |
 | `/test/modules/pear-full-square/mrepo-base-runtime` | passed | 9 of 9 | 150 of 150 |
 | `/test/modules/pear-full-square/mrepo-base-service` | passed | 2 of 2 | 13 of 13 |
 | `/test/modules/pear-full-square/mrepo-base-xpath` | passed | 5 of 5 | 52 of 52 |

@@ -27,6 +27,7 @@
     "pear-full-square/mrepo-base-container",
     "pear-full-square/splectral-server",
     "pear-full-square/splectral-base-help-viewer",
+    "pear-full-square/mrepo-base-haici",
     "pear-full-square/mrepo-base-help",
     "pear-full-square/mrepo-base-info"
   ],

@@ -1,0 +1,20 @@
+{
+  "name": "base-package-haici",
+  "description": "Package: the haici protocol, human ai continuous improvement: feedback on a command, recorded in the request log.",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "main": "main.js",
+  "modules": [
+    "pear-full-square/mrepo-base-haici",
+    "pear-full-square/mrepo-base-info",
+    "pear-full-square/pkgm-base-check"
+  ],
+  "template": {
+    "repository": "haiccing/base-docs-package",
+    "commit": "d6d99cffc82361d9c15ae86fd723045537ba63b3"
+  },
+  "scripts": {
+    "test": "bare test/run.js"
+  }
+}

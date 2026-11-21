@@ -1,8 +1,8 @@
 {
   "package": "haiccing/base-component-haicc",
-  "content": "af620854064eb996140be394d4f6c101e278dfa4c1573afbb0b1e31666070099",
+  "content": "9b1e62af28cddc757f66b831ecc84a6ac273cf915d270e2bfd4c016695c16b2c",
   "bare": "v1.36.0",
-  "date": "2026-11-21T01:02:58.772Z",
+  "date": "2026-11-21T00:23:22.076Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -14,8 +14,8 @@
         "total": 6
       },
       "asserts": {
-        "passed": 44,
-        "total": 44
+        "passed": 46,
+        "total": 46
       },
       "failures": []
     },
