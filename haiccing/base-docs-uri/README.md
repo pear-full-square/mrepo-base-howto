@@ -133,6 +133,14 @@ the name, variant in the namespace context."
 - **Is and is-like**: one core type, its versions and variants, is read
   as AVRO reads it; a different core type is read as another only when
   asked (is-like: aliases generated for that read).
+- **Typed topics** (the human, 2026-11-21: "Better to work in typed
+  topics to keep structure. The structure of every log is the same at
+  the kafka level, but the type is the value type - that is the data
+  payload"): every topic has a Kafka record's structure (`key`,
+  `value`, `timestamp`, `headers`); what it holds is its value's core
+  type, and it is named by it (`request-summary`), never by a generic
+  word ("log"); whose it is, is where it is (a node mrepo's
+  `request-summary` topic).
 ## Schemas
 
 A schema's name is its URI, where it comes from; its identity its
