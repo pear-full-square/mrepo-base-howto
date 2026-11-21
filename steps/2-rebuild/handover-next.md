@@ -54,28 +54,30 @@ container. Without a daemon those tests fail, they do not skip.
 
 ## Right now
 
-What is open is in `splectrum/roadmap-2`: the plan (`roadmap/plan/`),
-the tasks (`tasks/`). What is this environment's own:
+**Paused for a review** (the human, 2026-11-21: "pause the builds, and
+we'll do a review of each"; "don't run off without talking"). Before
+anything else: `splectrum/roadmap-2`, `tasks/review/`: the items, the
+state of each build session, the form of the review (as our last one:
+`tasks/distributed-applications/design.md`, "The proof of concept
+reviewed"), and what is open with the human. Nothing is built, merged
+or sent to a build session until the review is done and the human has
+approved what follows. Use our own help and rules for how we work
+(`base-docs-hdlc`, the packages' pages, `info`); do not invent process.
 
-- **The roadmap-1 transfer**: done (with the human, 2026-11-20): the
-  roadmap and the scheduled work in `splectrum/roadmap-2`; the research
-  in the vision; the principles in hdlc. roadmap-1 ready for the human
-  to archive (`tasks/cleanup/`); its request to the site is open but
-  not here (the human).
-- **Building now** (agreed 2026-11-20, `tasks/splectral/design.md`,
-  "Open, one at a time", 1): the help viewer's navigation, the flag unit
-  with `help/annotate`, the command box on `--flags help`: built. Their
-  repositories exist already (`haiccing/base-package-help`,
-  `pear-full-square/mrepo-base-help`, holding the old help package and
-  module of 2026-11-17): a push replaces them; pushed when the human
-  asks.
+- **Work not on `main`, in the build sessions' containers only**:
+  `runnable-howtos`' phase 1 (`session_01WxkeD3Xo8aGfLG9vjQt6Ay`,
+  paused) and `avro-foundation`'s rework, three commits and 48
+  generated files (`session_01WxkeD3QaJg6w838zRfqwFR`, paused). Their
+  state: `tasks/review/`, items 5 and 6.
+- **Product repositories**: `avro-foundation` says it pushed 8 modules
+  and 23 packages "at the human's request" from e7433ac7: to confirm
+  with the human. Otherwise pushed only when the human asks. Not pushed
+  since 2026-11-19: `pear-full-square/.github` (its profile no longer
+  links this repository, 2026-11-20).
+- **A rule proposed, not committed** ("Work outside the rules needs
+  approval", for `base-docs-hdlc`): its text in `tasks/review/`, "Open".
 - **The local agent**: its prompt and its last note, `local-note.md`;
-  its instructions, `handover-local.md`. The next run (2026-11-20):
-  test only, the help viewer's navigation, the flag unit, help and the
-  command box, and the help viewer set up for the human to try.
-- **Product repositories**: not in use yet, our private use only (the
-  human, 2026-11-19); everything builds and runs from this repository
-  (`tools/release.js`, `haicc sources link`). Pushed only when the human
-  asks; one behind is no fault. Last pushed 2026-11-19, before the
-  Splectral site. Not pushed since: `pear-full-square/.github` (its
-  profile no longer links this repository, 2026-11-20).
+  its instructions, `handover-local.md`. Its last run (2026-11-21):
+  004dbc7 built and tested, the help viewer set up for the human.
+- **The roadmap-1 transfer**: done (2026-11-20); roadmap-1 ready for the
+  human to archive (`tasks/cleanup/`).
