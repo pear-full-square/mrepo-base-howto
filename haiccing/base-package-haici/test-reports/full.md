@@ -1,6 +1,6 @@
 # Test report: haiccing/base-package-haici
 
-The package passed its `full` set: all 14 units, 248 of 248 tests and 1512 of 1512 asserts.
+The package passed its `full` set: all 14 units, 248 of 248 tests and 1513 of 1513 asserts.
 
 | | |
 |---|---|
@@ -9,10 +9,10 @@ The package passed its `full` set: all 14 units, 248 of 248 tests and 1512 of 15
 | Result | passed |
 | Units | 14 of 14 passed |
 | Tests | 248 of 248 passed |
-| Asserts | 1512 of 1512 passed |
-| Run | 2026-11-21 01:39 UTC |
+| Asserts | 1513 of 1513 passed |
+| Run | 2026-11-21 02:40 UTC |
 | Bare | v1.36.0 |
-| Content | `b15171ce6da2fbaf290140a969d0be0657ad870099784ec5465cf0813ab59e8d` |
+| Content | `1b95d0213f64e17ba9ff7526d1cd7e5c965d87e6161c73bb2c30d264d6f1b68b` |
 
 ## Units
 
@@ -31,6 +31,6 @@ The package passed its `full` set: all 14 units, 248 of 248 tests and 1512 of 15
 | `/test/modules/pear-full-square/mycelium-uri` | passed | 21 of 21 | 195 of 195 |
 | `/test/modules/pear-full-square/mycelium-value-json` | passed | 1 of 1 | 3 of 3 |
 | `/test/modules/pear-full-square/mycelium-xpath` | passed | 21 of 21 | 141 of 141 |
-| `/test/modules/pear-full-square/pkgm-base-check` | passed | 23 of 23 | 69 of 69 |
+| `/test/modules/pear-full-square/pkgm-base-check` | passed | 23 of 23 | 70 of 70 |
 
 Written by the package's pre-release from `full.json`, beside it. The content is the hash of the bundle that was tested, its test reports left out.

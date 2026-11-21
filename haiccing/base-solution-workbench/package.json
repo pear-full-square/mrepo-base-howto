@@ -1,0 +1,22 @@
+{
+  "name": "base-solution-workbench",
+  "description": "Solution: the workbench, a development and testing environment; one deploy installs the docs mrepo, the host and Splectral beside it, and its mrepo holds the howtos namespace.",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "main": "main.js",
+  "modules": [
+    "pear-full-square/mrepo-base-runtime",
+    "pear-full-square/mrepo-base-request",
+    "pear-full-square/mycelium-git",
+    "pear-full-square/mrepo-base-info",
+    "pear-full-square/pkgm-base-check"
+  ],
+  "template": {
+    "repository": "haiccing/base-docs-package",
+    "commit": "d6d99cffc82361d9c15ae86fd723045537ba63b3"
+  },
+  "scripts": {
+    "test": "bare test/run.js"
+  }
+}

@@ -33,7 +33,9 @@ history, and each package and module has its own repository).
 - `haiccing/`: the packages, each at the path of its repository:
   `base-package-runtime`, `-protocol`, `-info`, `-help`, `-haici`, `-boot`,
   `-service`, `-haicc`, `-crud`, `-container`, `-splectral`
-  (one package, one protocol); the components `base-component-boot` (the
+  (one package, one protocol); the solution `base-solution-workbench`
+  (the workbench: one deploy installs the docs mrepo, the host and
+  Splectral; its `howtos` namespace); the components `base-component-boot` (the
   boot mrepo and the program that puts it in place), `base-component-haicc`
   (the haicc mrepo, a host or a node) and `base-component-docs` (the docs
   mrepo); `base-app-haicc` (the `haicc` command, an app run with Bare)
