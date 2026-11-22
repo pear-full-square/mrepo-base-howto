@@ -1,8 +1,8 @@
 {
   "package": "haiccing/base-package-splectral",
-  "content": "995f7021083df705de72e88ba8b11be1b22005a20115091813ed9686b8fae26d",
+  "content": "49ade9533dc8e4f7c23467df660c019a7d7b47d91ee425151ade8d2f1354e6e2",
   "bare": "v1.36.0",
-  "date": "2026-11-22T06:39:38.065Z",
+  "date": "2026-11-22T07:46:17.299Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -326,8 +326,8 @@
         "total": 10
       },
       "asserts": {
-        "passed": 121,
-        "total": 121
+        "passed": 122,
+        "total": 122
       },
       "failures": []
     }

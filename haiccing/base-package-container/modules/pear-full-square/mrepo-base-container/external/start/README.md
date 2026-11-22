@@ -16,8 +16,9 @@ again does not run it again.
 
 ## Returns
 
-`{ started, container, state }`: the position, `container`; the
-container's name; its state, `running`. A container that runs already
+`{ started, container, state, service }`: the position, `container`; the
+container's name; its state, `running`; the replica's service state as
+its commission left it (`started`; `null`: none). A container that runs already
 is left as it is and answered the same.
 
 ## Errors

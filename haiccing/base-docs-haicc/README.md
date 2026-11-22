@@ -29,7 +29,9 @@ docs mrepo: `haicc docs info/get <keywords>`.
   read with `info`.
 - **The host**, `local/host`: the mrepo a machine is managed with,
   service managed; applications, swarms and their nodes are deployed in
-  it. `haicc host <protocol>/<action>`.
+  it. `haicc host <protocol>/<action>`. On an install with the
+  workbench, the workbench fulfils this role (below): the role counts,
+  not the mrepo's name.
 - **A swarm and its nodes**: a swarm is made by the host
   (`swarm/create swarms/<swarm>`): a node in its `main` whose kind is
   `swarm`, with its master, the swarm's first node, and its lookup db.
@@ -125,7 +127,11 @@ organisation of its own, beside haicc's own, `haiccing`.
   `haiccing/base-package-crud/howto/query/boot`); its folder
   `<work>/mrepos/<unique URI>/`, its node in the registry
   `registry/<unique URI>`. Never a prefix of another's: no mrepo's
-  folder inside another's.
+  folder inside another's. Unique with respect to its install: what is
+  in `local`, and a how-to's mrepos, only within it; a swarm's node
+  (`<swarm>/<name>`) independent of the install it runs on. Beyond the
+  install, in an external context, a domain segment in front makes it
+  unique there (not built).
 - **namespace**: where unique URIs are made: `local`, what the boot
   mrepo deploys; a node whose kind is a namespace's, the nearest above
   a position: `swarm` (its name the namespace's), `howtos` (the path

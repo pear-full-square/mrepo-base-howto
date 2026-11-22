@@ -511,7 +511,7 @@ is "$(haicc --output host/swarms/swarm-1/node-1/container crud/read notes/a 2>&1
 out=$(haicc $N haicc container container/create 2>&1 >/dev/null); is "$out" "haicc: a replica makes no replica of its own: swarm-1/node-1/container" "a replica makes no replica of its own"
 has "$(haicc --output $N container/stop 2>&1)" '"stopped":"container"' "container/stop"
 has "$(haicc --output $N container/status 2>&1)" '"state":"exited"}' "stopped: exited"
-has "$(haicc --output $N container/start 2>&1)" '"state":"running"}' "container/start: running again"
+has "$(haicc --output $N container/start 2>&1)" '"state":"running","service":"started"}' "container/start: running again, the replica in service as it was (not commissioned again)"
 is "$(haicc --output $N haicc container crud/read notes/a 2>&1)" '[{"uri":["main","notes/a"],"value":{"x":1},"children":[]}]' "its data kept over a stop and a start: the replica's folder is on the host"
 has "$(haicc --output $N container/remove 2>&1)" '{"removed":"container","container":"haicc-swarm-1-node-1-' "container/remove: while it runs"
 is "$(haicc --output $N container/status 2>&1)" '{"replica":null,"state":"none"}' "removed: no replica"

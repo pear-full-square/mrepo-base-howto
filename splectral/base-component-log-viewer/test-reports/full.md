@@ -1,6 +1,6 @@
 # Test report: splectral/base-component-log-viewer
 
-The package passed its `full` set: all 27 units, 356 of 356 tests and 2475 of 2475 asserts.
+The package passed its `full` set: all 27 units, 356 of 356 tests and 2476 of 2476 asserts.
 
 | | |
 |---|---|
@@ -9,10 +9,10 @@ The package passed its `full` set: all 27 units, 356 of 356 tests and 2475 of 24
 | Result | passed |
 | Units | 27 of 27 passed |
 | Tests | 356 of 356 passed |
-| Asserts | 2475 of 2475 passed |
-| Run | 2026-11-22 06:52 UTC |
+| Asserts | 2476 of 2476 passed |
+| Run | 2026-11-22 07:54 UTC |
 | Bare | v1.36.0 |
-| Content | `81c4a94c98a98960d17af2fe12390a453de6a89875284d2766d0d92779d12a28` |
+| Content | `13df4c921e5c611dcb3e9e8b65414231e3ba8ef641994e0533b5085e217751df` |
 
 ## Units
 
@@ -44,6 +44,6 @@ The package passed its `full` set: all 27 units, 356 of 356 tests and 2475 of 24
 | `/test/modules/pear-full-square/p2p-store` | passed | 5 of 5 | 20 of 20 |
 | `/test/modules/pear-full-square/pkgm-base-check` | passed | 23 of 23 | 70 of 70 |
 | `/test/modules/pear-full-square/splectral-base-log-viewer` | passed | 2 of 2 | 24 of 24 |
-| `/test/modules/pear-full-square/splectral-server` | passed | 10 of 10 | 121 of 121 |
+| `/test/modules/pear-full-square/splectral-server` | passed | 10 of 10 | 122 of 122 |
 
 Written by the package's pre-release from `full.json`, beside it. The content is the hash of the bundle that was tested, its test reports left out.
