@@ -91,7 +91,6 @@ test('its config in effect: a request checked: the target, the argument, the URI
   t.is(ask('teardown', 'main'), 'missing argument: target', 'teardown of the mrepo itself: no')
   t.is(ask('deploy', 'main/swarms/swarm-1/node-1', ['p']), null, 'deeper below main: offered')
   t.is(ask('teardown', 'main/swarms/swarm-1/node-1'), null, 'and torn down there')
-  t.is(ask('teardown', 'main/registry/local/*'), null, 'a query into the registry: offered')
   t.is(check({ protocol: 'boot', action: 'deploy', uri: ['main', 'host'], args: ['p'] }, { ...data, active: {} }), 'not now: boot deploy (boot is not active)', 'not activated: refused')
 })
 
@@ -108,7 +107,10 @@ test('deploy: each refusal, before anything is built', async (t) => {
     await t.exception(act('deploy', execution(dir, { ...store, ...swarm }).exec, form('main/swarms/local/node-1', 'haiccing/p')), /not a swarm: local/, 'local: the swarm of what is in none, no swarm\'s name')
     await t.exception(act('deploy', execution(dir, { ...store, ...LINKED }).exec, form('main/host/node-1', 'haiccing/p')), /host is a shortcut: a URI does not run through it/, 'below a shortcut: another mrepo\'s position')
     await t.exception(act('deploy', execution(dir, store).exec, form('host', 'haiccing/p')), /not a position in main: host \(main\/<name>\)/, 'not in main: from the root the layer comes first')
-    await t.exception(act('deploy', execution(dir, { ...store, ...LINKED }).exec, form('main/host', 'haiccing/p')), /deployed already: host/, 'a child linked there already')
+    await t.exception(act('deploy', execution(dir, { ...store, ...LINKED }).exec, form('main/host', 'haiccing/p')), /deployed already: host/, 'a child linked there already, from another package (here none recorded): refused')
+    const again = execution(dir, { ...store, ...LINKED, [LOCAL]: B({ package: 'haiccing/p' }) })
+    t.is((await act('deploy', again.exec, form('main/host', 'haiccing/p'))).again, true, 'from the same package: a repeat, allowed, nothing done')
+    t.alike(again.writes, [], 'nothing written')
     await t.exception(act('deploy', execution(dir, { ...store, '/main/host/data.json': B({}) }).exec, form('main/host', 'haiccing/p')), /host exists locally: the boot protocol cannot target it/, 'data in main at that position: not a target')
     mkdirSync(join(dir, 'mrepos', 'local', 'busy'), { recursive: true })
     await t.exception(act('deploy', execution(dir, store).exec, form('main/busy', 'haiccing/p')), /in the way: .*mrepos\/local\/busy/, 'a folder in its place: where it would be put, by its unique URI')
@@ -117,11 +119,13 @@ test('deploy: each refusal, before anything is built', async (t) => {
     await t.exception(act('deploy', execution(dir, {}).exec, form('main/host', 'haiccing/p')), /no store: the mrepo's packages manifest names none/, 'a parent that names no store')
     const last = execution(dir, { '/packages/manifest.json': B({ store: join(dir, 'store'), sources: [] }) })
     await t.exception(act('deploy', last.exec, form('main/host', 'haiccing/no-such-package')), 'a package that is in no source: refused')
-    t.alike([last.writes, existsSync(join(dir, 'mrepos', 'local', 'host'))], [[], false], 'a refusal writes nothing and leaves no folder')
+    const paths = op => [...new Set(last.writes.filter(w => w[0] === op).map(w => w[1]))].sort()
+    t.alike([paths('put').length, paths('remove')], [3, paths('put')], 'linked first (its node, its shortcut, its link\'s record), then undone: each removed again')
+    t.alike([Object.keys(last.files).filter(p => p.startsWith('/main/') || p.startsWith('/links/')), existsSync(join(dir, 'mrepos', 'local', 'host'))], [[], false], 'a refusal leaves nothing: no link, no folder')
   })
 })
 
-test('teardown: a child without a runtime, its folder and its shortcut removed; what is not deployed, refused', async (t) => {
+test('teardown: a child without a runtime, its folder and its shortcut removed; what is not deployed, a repeat', async (t) => {
   await within(async dir => {
     const folder = join(dir, 'mrepos', 'local', 'host')
     mkdirSync(folder, { recursive: true })
@@ -130,15 +134,16 @@ test('teardown: a child without a runtime, its folder and its shortcut removed; 
     t.alike(await act('teardown', exec, { uri: ['main', 'host'] }), { tornDown: 'host' }, 'what it returns')
     t.absent(existsSync(folder), 'its folder, where it was placed by its unique URI: removed')
     t.alike([writes, Object.keys(files)], [[['remove', SHORTCUT], ['remove', NODE], ['remove', LOCAL]], []], 'its shortcut and its node out of main, its link\'s record out of the links layer')
-    await t.exception(act('teardown', exec, { uri: ['main', 'host'] }), /not deployed: host/, 'torn down already: not deployed')
+    t.alike(await act('teardown', exec, { uri: ['main', 'host'] }), { tornDown: 'host', again: true }, 'torn down already: a repeat, allowed, nothing done')
+    t.ok(exec.entries.some(e => e.level === 'warn' && e.event === 'not deployed'), 'a warning: not deployed')
     await t.exception(act('teardown', execution(dir, { '/main/data/x.json': B({}) }).exec, { uri: ['main', 'data'] }), /data exists locally: the boot protocol cannot target it/, 'data in main there: not a child')
     await t.exception(act('teardown', exec, { uri: ['main', '.'] }), /missing argument: target/, 'the mrepo itself')
   })
 })
 
-test('redeploy: teardown first; what is not deployed, refused; the package it was deployed from, by default', async (t) => {
+test('redeploy: teardown first; what is not deployed and no package: refused; the package it was deployed from, by default', async (t) => {
   await within(async dir => {
-    await t.exception(act('redeploy', execution(dir).exec, { uri: ['main', 'host'] }), /not deployed: host/, 'nothing to tear down: refused, nothing deployed')
+    await t.exception(act('redeploy', execution(dir).exec, { uri: ['main', 'host'] }), /missing argument: package/, 'nothing deployed and no package given: nothing to deploy from')
     const { exec, writes } = execution(dir, { ...LINKED, [LOCAL]: B({ package: 'haiccing/gone-package' }), '/packages/manifest.json': B({ store: join(dir, 'store'), sources: [] }) })
     await t.exception(act('redeploy', exec, { uri: ['main', 'host'], args: [] }), 'no package given: the one it was deployed from, here in no source: the deploy refused')
     t.alike(writes.slice(0, 4), [['remove', SHORTCUT], ['remove', NODE], ['remove', LOCAL], ['commit']], 'torn down first, and that committed in the execution, before the deploy is tried')

@@ -37,10 +37,12 @@ haicc boot/deploy                               the machine level: the boot
 haicc boot/teardown                             every runtime stopped, what
                                                 boot/deploy put in place removed
 haicc scripts                                   the install's scripts by
-                                                name: <home>/scripts/
-                                                <name>.haicc, a folder you
-                                                make (haicc <URI> haicc/file
-                                                <URI> <name> runs one)
+                                                name: <work>/scripts/: each
+                                                package's, placed by a deploy
+                                                (<org>/<package>/<name>), and
+                                                yours (<name>.haicc); haicc
+                                                <URI> haicc/file <URI> <name>
+                                                runs one
 haicc sources                                   the sources registered
 haicc sources unlink <folder>
 haicc sources download <org>...                 an organisation's packages

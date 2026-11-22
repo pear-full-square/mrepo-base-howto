@@ -65,7 +65,8 @@ out=$(haicc --output splectral/help runtime/run . packages/splectral/base-compon
 has "$out" "not a package of this mrepo: splectral/base-component-help-viewer" "the runtime knows none of them"
 
 # what it refuses
-out=$(haicc --output splectral splectral/install help splectral/base-component-help-viewer); has "$out" "a component there already: help" "installed again: refused (deploy and teardown)"
+out=$(haicc --output splectral splectral/install help splectral/base-component-help-viewer); has "$out" '"again":true' "installed again: idempotent, allowed, nothing done"
+out=$(haicc --output splectral splectral/install help splectral/base-component-log-viewer); has "$out" "a component there already: help, splectral/base-component-help-viewer" "another component there: refused (deploy and teardown)"
 out=$(haicc --output splectral splectral/install other splectral/base-component-help-viewer); has "$out" "not deployed: other" "nothing deployed there: refused"
 haicc --output splectral boot/deploy other haiccing/base-package-service >/dev/null
 out=$(haicc --output splectral splectral/install other haiccing/base-component-docs); has "$out" "not a Splectral component: haiccing/base-component-docs" "a haiccing package: not a Splectral component"
@@ -144,12 +145,13 @@ s=$(ms); out=$(wb --output . boot/deploy workbench haiccing/base-solution-workbe
 is $r 0 "haicc . boot/deploy workbench haiccing/base-solution-workbench: deployed and commissioned, one command"
 has "$out" '"mrepo":"local/workbench"' "the workbench at workbench, local/workbench"
 has "$out" '"commission":"done","service":"started"' "its commission done: its components deployed, then itself in service"
-out=$(wb --output . crud/read 'registry/local/*')
-has "$out" '"uri":"local/workbench"' "the install's registry: the workbench"
-hasnt "$out" '"uri":"local/docs"' "and not its components: they are the workbench's"
-out=$(wb --output workbench crud/read 'registry/local/*')
-for m in docs splectral; do has "$out" "\"uri\":\"local/$m\",\"at\":\"$m\"" "local/$m: in the workbench's registry, at workbench/$m"; done
-is "$(wb --output workbench/docs service/start)" "haicc: not now: service start (the service is started)" "the docs mrepo in service: its own commission"
+for m in workbench docs splectral; do [ -d "$H2/work/mrepos/local/$m/.git" ] && ok "the install's registry, mrepos/: local/$m" || no "the install's registry, mrepos/: local/$m"; done
+out=$(wb --output . crud/read '*')
+has "$out" '"shortcuts":[{"mrepo":"local/workbench"' "the boot mrepo links the workbench"
+hasnt "$out" '"mrepo":"local/docs"' "and not its components: they are the workbench's"
+out=$(wb --output workbench crud/read '*')
+for m in docs splectral; do has "$out" "\"shortcuts\":[{\"mrepo\":\"local/$m\"" "local/$m: linked in the workbench, at workbench/$m: forward visibility"; done
+is "$(wb --output workbench/docs service/start)" '{"service":"started","state":"started","again":true}' "the docs mrepo in service: its own commission (a start again: a repeat)"
 out=$(wb --output workbench/splectral splectral/status)
 URL=$(printf '%s' "$out" | sed -n 's/.*"url":"\([^"]*\)".*/\1/p')
 has "$URL" "http://127.0.0.1:" "Splectral in service, its server: $URL"
@@ -157,7 +159,7 @@ get /install; is "$code" 200 "its site answers"
 has "$(wb workbench/docs info/get hdlc/validation)" "Before every commit" "the docs mrepo answers, its info extracted at its initialise"
 has "$(wb --output workbench crud/read howtos)" '"value":{"kind":"howtos"}' "in the workbench: its howtos namespace, made at its initialise"
 is "$(running2 | wc -l | tr -d ' ')" 5 "five processes: the runtimes of the boot mrepo, the workbench, docs, Splectral, and Splectral's server"
-out=$(wb . boot/deploy bench-2 haiccing/base-solution-workbench); has "$out" "its commission failed: line 6: boot/deploy docs haiccing/base-component-docs: in the way" "a second on the same install: its components' places taken, its commission failed, the line of its file said"
+out=$(wb . boot/deploy bench-2 haiccing/base-solution-workbench); has "$out" "its commission failed: line 5: boot/deploy docs haiccing/base-component-docs: in the way" "a second on the same install: its components' places taken, its commission failed, the line of its file said"
 [ ! -e "$H2/work/mrepos/local/bench-2" ] && ok "nothing of it left" || no "nothing of it left"
 s=$(ms); out=$(wb --output . boot/teardown workbench); r=$?; echo "teardown2 $(( $(ms) - s ))" >> "$TIMES"
 is "$out" '{"tornDown":"workbench"}' "haicc . boot/teardown workbench: its decommission first"

@@ -17,8 +17,8 @@ export const protocols = {
     package: 'haiccing/base-package-boot',
     description: 'Deploys and tears down child mrepos; executed by the parent.',
     actions: {
-      deploy: { ...CHILD, args: ['package'], description: 'A child mrepo built from a target package at a position below main, placed by its unique URI (in the swarm of the nearest node above it whose document says it is one), its packages linked, its runtime started, its shortcut and its link recorded; its argument the package.' },
-      teardown: { ...CHILD, description: 'The child\'s runtime stopped, the child and its records removed. A URI into the mrepo registry (registry/local/*, the boot mrepo\'s) selects mrepos there: each torn down.' },
+      deploy: { ...CHILD, args: ['package'], description: 'A child mrepo built from a target package at a position below main, placed by its unique URI (in the swarm of the nearest node above it whose document says it is one), its packages linked, its runtime started, its shortcut and its link recorded first, its packages\' scripts placed in the work folder\'s scripts/; its argument the package. Again, from the same package: a warning, nothing done.' },
+      teardown: { ...CHILD, description: 'The child\'s decommission, its runtime stopped, the child and its records removed. Again, nothing deployed there: a warning, nothing done.' },
       redeploy: { ...CHILD, args: ['package?'], description: 'Teardown, then deploy.' }
     }
   }

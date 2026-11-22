@@ -135,7 +135,7 @@ test('where the layers live on the p2p host: the atomic ones in the store, the r
   } finally { rmSync(work, { recursive: true, force: true }) }
 })
 
-test('commission and decommission: the commission hook run after the boot, once (recorded, not run again on a restart), its state in the status, waited for; a decommission asked, its lines run; a line that fails said', { timeout: 120000 }, async (t) => {
+test('commission and decommission: the commission hook run after the boot, at every start (a restart runs it again, idempotent), its state in the status, waited for; a decommission asked, its lines run; a line that fails said', { timeout: 120000 }, async (t) => {
   for (const [name, more, expect] of [
     ['done', { commission: 'crud/create notes/commissioned\n', decommission: 'crud/create notes/decommissioned\n' }, { state: 'done' }],
     ['failed', { commission: 'crud/create notes/a\ncrud/create .\ncrud/create notes/b\n' }, null],
@@ -157,7 +157,7 @@ test('commission and decommission: the commission hook run after the boot, once 
         t.ok(await repo().find('/main/notes/commissioned/.node.json'), 'its lines run as the mrepo\'s own: before its start, crud not active, not asked')
         t.alike(await decommission({ work }), { ok: true, decommission: 'done' }, 'a decommission asked: its lines run, answered when done')
         t.ok(await repo().find('/main/notes/decommissioned/.node.json'), 'what its lines did')
-        t.alike((await ask({ work, op: 'status' }))?.commission, { state: 'done' }, 'the commission not run again')
+        t.alike((await ask({ work, op: 'status' }))?.commission, { state: 'done' }, 'done, said in the status')
       }
       if (name === 'none') t.alike(await decommission({ work }), { ok: true, decommission: 'none' }, 'no decommission hook: none')
       if (name === 'failed') t.absent(await repo().find('/main/notes/b/.node.json'), 'nothing after the line that failed')
@@ -165,10 +165,12 @@ test('commission and decommission: the commission hook run after the boot, once 
       for (let i = 0; i < 100 && alive(s.pid); i++) await wait(100)
       t.absent(alive(s.pid))
       if (name === 'done') {
-        // started again (a replica's runtime, with its container): not commissioned again
-        t.ok(await repo().find('/runtime/commission.json'), 'its commission done: recorded in its runtime layer')
+        // started again (a restart; a replica's runtime, with its container):
+        // its commission run again, its lines idempotent
+        t.absent(await repo().find('/runtime/commission.json'), 'nothing recorded of it: no marker')
         const again = await start({ work, bundle: join(here, 'test', 'runtime.js') })
-        t.alike(again?.commission, { state: 'done' }, 'started again: done already, as recorded, not run again')
+        t.ok(again?.commission, 'started again: its commission there again')
+        t.alike(await commissioned({ work, wait: 60000 }), { state: 'done' }, 'run again, done: what it made there already, left as it is')
         await ask({ work, op: 'stop' })
         for (let i = 0; i < 100 && alive(again.pid); i++) await wait(100)
       }

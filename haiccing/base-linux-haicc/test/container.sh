@@ -71,7 +71,6 @@ out=$(haicc --output host haicc/script . 'crud/create notes
 crud/create notes/a
 crud/read notes/a'); is $? 0 "haicc host haicc/script: lines run at the host"
 has "$out" '"uri":["main","notes/a"]' "what they made read back"
-out=$(haicc --output registry/local/host crud/read notes/a); has "$out" '"uri":["main","notes/a"]' "the host by its registry reference"
 out=$(haicc --output . info/get boot); has "$out" '"keyword":"boot"' "haicc . info/get boot: the install's info"
 out=$(haicc --output host service/stop); has "$out" '"service":"stopped"' "haicc host service/stop"
 
@@ -81,7 +80,7 @@ out=$(haicc boot/teardown); is $? 0 "haicc boot/teardown"
 has "$out" '"runtimes":2' "said: two runtimes stopped, the boot mrepo's and the host's"
 left=$(in_c sh -c 'for p in /proc/[0-9]*; do tr "\0" " " < $p/cmdline 2>/dev/null; echo; done' | grep -c 'bin/bare')
 is "$left" 0 "no runtime left in the container"
-is "$(ls "$T/work" 2>/dev/null)" "" "the work folder emptied; Bare, the scripts and the sources list kept"
+is "$(ls "$T/work" 2>/dev/null)" "scripts" "the work folder emptied but for the install's scripts; Bare, the bin scripts and the sources list kept"
 [ -x "$T/bare/bin/bare" ] && ok "Bare kept" || no "Bare kept"
 
 echo "# checks = $((n - failed))/$n pass"

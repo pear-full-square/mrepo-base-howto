@@ -38,10 +38,12 @@ haicc . boot/teardown <name>
 
 ## Notes
 
-- **Once**: the runtime starts at a deploy; a commission done is
-  recorded in the runtime layer (`/runtime/commission.json`), so a
-  runtime started again (a replica's, with its container) does not run
-  it again.
+- **Idempotent**: the runtime runs the commission at every start (a
+  deploy, a restart, a replica's with its container); nothing records it
+  done. Each line is an idempotent action (`base-docs-hdlc`, "Every
+  action is idempotent"): a deploy of what is there is a warning, a
+  service in its state already runs its hook again, a node there is left
+  as it is. Write the hook so that running it again changes nothing.
 - **A line that fails** fails the deploy, the line said, nothing of the
   mrepo left (what it deployed so far decommissioned, as it can be); a
   decommission line that fails stops the teardown, nothing removed.

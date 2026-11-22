@@ -36,8 +36,8 @@ where its bridgehead is. It is the one folder its container can write:
 seen inside it as `/mrepo`. The bridgehead holds a node for it in its
 `main`, a shortcut at `container`, and the link's record in its `links`
 layer: how it came about (`container`), where it is, its package, and
-its container's name and image. It is not in the mrepo registry, which
-is for the mrepos on the host.
+its container's name and image. It is not in the install's registry,
+`mrepos/`, which holds the mrepos on the host.
 
 ## The container
 

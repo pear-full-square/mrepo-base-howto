@@ -47,7 +47,10 @@ exits 3.
   sources/        what haicc sources download fetched: Bare, the packages
   bare/           Bare, unpacked by haicc prereq
   work/           the app's work folder
-  scripts/        the install's scripts: <name>.haicc, <org>/<package>/<name>.haicc
+    mrepos/       every mrepo, by its unique URI: the install's registry
+    scripts/      the install's scripts: <org>/<package>/<name>.haicc, placed
+                  by a deploy; yours, <name>.haicc
+    packages/     the package store
 ```
 
 `HAICC_HOME` names another folder.

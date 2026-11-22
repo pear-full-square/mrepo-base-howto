@@ -77,28 +77,17 @@ position is a shortcut when its node has sources.
 - **Own shortcuts only.** An mrepo resolves its own; those of a linked
   mrepo are not visible from here.
 
-## The mrepo registry
+## The registry
 
-The boot mrepo keeps the registry of the install's mrepos, in its
-`main`, at the position `registry`: a node an mrepo it deployed, by the
-mrepo's unique URI, holding the mrepo's record (the same as its link's).
-
-```
-/main/registry/local/host/.node.json     { "uri": "local/host", "at": "host", "how": "deployed", "folder": "../local/host", ... }
-```
-
-It is a position as any: read, and queried, where it is.
+The install's registry is the work folder's `mrepos/`: a folder each
+mrepo, by its unique URI, for the install's system administration. No
+mrepo keeps a copy in its `main`: what an mrepo deployed it sees through
+its own links, its shortcuts and its links layer, forward only.
 
 ```
-haicc registry/local crud/read "*"
-haicc . crud/read "registry/local/*[runtime/pid]"
-haicc . boot/teardown "registry/local/*"
+haicc . crud/read "*"                          what the boot mrepo linked
+haicc . crud/read "*" --flags layer=links      its links' records
 ```
-
-The last tears down every mrepo the query selects there, each at the
-position that links to it. Written by `boot/deploy` and `boot/teardown`,
-there where `main` has the node `registry`: the boot mrepo makes it as
-it boots. An mrepo deployed by another than the boot mrepo is not in it.
 
 ## Later
 

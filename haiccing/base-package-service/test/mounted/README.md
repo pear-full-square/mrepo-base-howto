@@ -12,7 +12,8 @@ hooks.
 - **What it provides**: one protocol, `service`, with a function for
   every action configured and no other.
 - **Its config, value by value**: the four actions at the mrepo itself,
-  each in the states that allow it; no argument, no target, no default.
+  each in the states that allow it, the state it leads to among them (a
+  repeat, idempotent); no argument, no target, no default.
 - **Its config in effect**: a request checked on each state: allowed
   only where the action names the state, refused with the state it is in;
   not offered anywhere but the mrepo itself; refused when not activated.

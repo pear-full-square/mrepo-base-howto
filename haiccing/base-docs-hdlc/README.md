@@ -34,6 +34,13 @@ says where it is built.
 - **Outcomes are data, on `main`**: results, notes, designs, decisions;
   the request layers hold the requests and their metadata, nothing
   more. Built: `main`, the external state.
+- **Every action is idempotent** (the human, 2026-11-22): an action
+  can be repeated; a repeat is allowed and may raise a warning; what it
+  does again is the action's own to say (a deploy of what is there does
+  nothing; an `initialise` again adds only what is new). A restart, a
+  retry, a commission run again are then safe. In part: the boot
+  protocol's deploy and teardown, the service's transitions, the
+  container's actions.
 - **Self-contained units**: a unit carries what it needs to be
   understood, run and verified, its instrumentation and audit included,
   and meets its environment through its interface; done is decided
@@ -48,8 +55,8 @@ says where it is built.
   then needed only at the boundary. Not built: the records lack the
   environment and the nondeterministic inputs.
 - **Cascading links**: the link from a context down to a process is
-  authoritative, the link back up informative. Built: an mrepo's links,
-  the registry.
+  authoritative, the link back up informative. Built: an mrepo's links;
+  the install's registry, the work folder's `mrepos/`.
 - **Ids, not versions**: a validated instance gets an id; the commit
   that records it is its place in the history, the authoritative record.
   Built: packages pinned by commit, bundles by their content's hash.

@@ -4,6 +4,10 @@
 // Bare (the one running this), the sources. The invocation is a request
 // from the start, a record (boot deploy /boot, the command as typed, its key
 // a GUID); each step's outcome logged in it:
+//   0. the work folder sorted: its mrepos/ (where every mrepo is placed, by
+//      its unique URI: the install's registry) and its scripts/ (each
+//      package's scripts, placed by a deploy: <org>/<package>/<name>.haicc,
+//      what the haicc command runs), made when they are not there;
 //   1. the boot mrepo built into <work>/mrepos/boot/ the first time, as any
 //      mrepo is: this component's list fetched into the store
 //      (<work>/packages/) and laid in, each package's part of the structure
@@ -11,7 +15,7 @@
 //      written (its unique URI, local/boot);
 //   2. its packages put in place (its packages layer's list): hard linked
 //      individually from the store into its packages/, the list, hashes,
-//      sources and store committed;
+//      sources and store committed; their scripts placed in <work>/scripts/;
 //   3. the request, completed, into its request/execute: its runtime moves
 //      it to request/done first, when it starts;
 //   4. its runtime started, from its own packages/, by its directory, on the
@@ -37,8 +41,8 @@ import { existsSync, mkdirSync, mkdtempSync, writeFileSync, rmSync } from './mod
 import { tmpdir } from './modules/node_modules/bare-os/index.js'
 import { join, resolve, basename } from './modules/node_modules/bare-path/index.js'
 import { gitdirOf, open, viewOf, start } from './modules/pear-full-square/mrepo-base-runtime/index.js'
-import { build, lay, parseSource, place, storeOf } from './modules/pear-full-square/mrepo-base-boot/index.js'
-import { record, wrap, guid, complete, logger, follow, EXECUTE } from './modules/pear-full-square/mrepo-base-request/index.js'
+import { build, lay, parseSource, place, storeOf, placeScripts } from './modules/pear-full-square/mrepo-base-boot/index.js'
+import { record, wrap, guid, complete, logger, follow, EXECUTE, MREPOS, SCRIPTS } from './modules/pear-full-square/mrepo-base-request/index.js'
 import { executed } from './modules/pear-full-square/mrepo-base-execute/index.js'
 import { writer, openRepo } from './modules/pear-full-square/mycelium-git/index.js'
 
@@ -70,6 +74,9 @@ const done = result => complete(core, result, entries)
 
 mkdirSync(work, { recursive: true })
 try {
+  // 0. The work folder sorted: mrepos/ and scripts/ (idempotent: there, kept).
+  for (const f of [MREPOS, SCRIPTS]) mkdirSync(join(work, f), { recursive: true })
+
   // 1. Built, the first time: its list laid in, as deploy lays a child's.
   if (!existsSync(gitdirOf(work, NAME))) {
     const tmp = mkdtempSync(join(tmpdir(), 'boot-mrepo-'))
@@ -91,6 +98,9 @@ try {
   // hashes and addons at verbose)
   log('info', 'packages', { packages: Object.keys(placed.packages ?? {}), committed: placed.committed })
   log('verbose', 'placed', placed)
+  // their scripts, in the work folder's scripts/, as a deploy places them
+  const scripts = list.flatMap(pkg => placeScripts({ store: storeOf(work), pkg, into: join(work, SCRIPTS) }).map(n => `${pkg}/${n}`))
+  log('verbose', 'scripts', { scripts })
 } catch (err) {
   // The mrepo there or not: the request printed, the error said.
   console.log(JSON.stringify(done({ ok: false, error: err.message })))

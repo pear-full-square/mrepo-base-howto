@@ -30,7 +30,7 @@ deployed or torn down.
 | action | offered at | arguments |
 |---|---|---|
 | `deploy` | any position below `main` | the package, required |
-| `teardown` | the same; a query into the registry, `registry/<swarm>/*` | none |
+| `teardown` | the same | none |
 | `redeploy` | as `deploy` | the package, optional: the one it was deployed from |
 
 `--flags container` on a deploy, a routing directive: the child deployed

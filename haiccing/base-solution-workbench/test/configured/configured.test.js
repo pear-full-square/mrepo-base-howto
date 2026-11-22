@@ -41,18 +41,17 @@ const LIST = [
 ]
 // What its commission deploys: its components, below it.
 const COMPONENTS = { docs: 'haiccing/base-component-docs', splectral: 'haiccing/base-package-splectral' }
-// Each hook named here with its command: its commission (its registry, its
+// Each hook named here with its command: its commission (its
 // components deployed below it, then its own service initialised and
 // started), its decommission (its components torn down), what it offers
 // from its boot (the haicc mrepo's: it fulfils the host's role), what its
 // initialise sets up (its info, its howtos namespace), and the door its
 // service opens and closes.
 const HOOKS = {
-  'commission/1': ['crud/create', 'registry'],
-  'commission/2': ['boot/deploy', 'docs', COMPONENTS.docs],
-  'commission/3': ['boot/deploy', 'splectral', COMPONENTS.splectral],
-  'commission/4': ['service/initialise'],
-  'commission/5': ['service/start'],
+  'commission/1': ['boot/deploy', 'docs', COMPONENTS.docs],
+  'commission/2': ['boot/deploy', 'splectral', COMPONENTS.splectral],
+  'commission/3': ['service/initialise'],
+  'commission/4': ['service/start'],
   'decommission/1': ['boot/teardown', 'splectral'],
   'decommission/2': ['boot/teardown', 'docs'],
   'boot/1': ['protocol/activate', '.', 'haicc'],
@@ -170,18 +169,18 @@ function world () {
 }
 const of = transition => Object.keys(brought).filter(n => n.startsWith(`${transition}/`)).sort()
 
-test('what its hooks do: the boot opens what a haicc mrepo offers; the commission makes its registry, deploys its components, initialises it (its info, its howtos namespace) and starts it (its door open); stop, shutdown; the decommission tears its components down', async (t) => {
+test('what its hooks do: the boot opens what a haicc mrepo offers; the commission deploys its components, initialises it (its info, its howtos namespace) and starts it (its door open); stop, shutdown; the decommission tears its components down', async (t) => {
   const w = world()
   // the boot: the runtime places these as its own, in name order
   for (const name of of('boot')) await w.exec.run(brought[name])
   t.alike(w.active(), ['haicc', 'haici', 'help', 'info', 'runtime', 'service'], 'after the boot: what a haicc mrepo always offers')
   t.absent(w.active().includes('protocol'), 'the protocol protocol: not a hook\'s, the runtime opens it itself')
-  // its commission: what the runtime runs once, as it starts after its deploy
+  // its commission: what the runtime runs as it starts after its deploy
   const commissioned = []
   for (const name of of('commission')) commissioned.push(await w.exec.run(brought[name]))
-  t.ok(await w.exec.find('/main/registry/.node.json'), 'its registry first: what it deploys is registered there')
-  t.alike(commissioned.slice(1, 3), [{ deployed: 'docs', package: COMPONENTS.docs, commission: 'done' }, { deployed: 'splectral', package: COMPONENTS.splectral, commission: 'done' }], 'its components deployed below it, before its own initialise, each commissioned by its own')
-  t.alike(commissioned.slice(3), [{ service: 'initialised', state: 'initialised' }, { service: 'started', state: 'started' }], 'then itself: initialised, then started')
+  t.absent(await w.exec.find('/main/registry/.node.json'), 'no registry of its own: the install\'s is mrepos/')
+  t.alike(commissioned.slice(0, 2), [{ deployed: 'docs', package: COMPONENTS.docs, commission: 'done' }, { deployed: 'splectral', package: COMPONENTS.splectral, commission: 'done' }], 'its components deployed below it, before its own initialise, each commissioned by its own')
+  t.alike(commissioned.slice(2), [{ service: 'initialised', state: 'initialised' }, { service: 'started', state: 'started' }], 'then itself: initialised, then started')
   t.ok(w.commands.includes('info/extract'), 'initialise: its info extracted, by its hook')
   t.alike(JSON.parse((await w.exec.read('/main/howtos/.node.json')).toString()), { kind: 'howtos' }, 'initialise: the node howtos, a namespace\'s root')
   t.alike(w.active(), ['boot', 'container', 'crud', 'haicc', 'haici', 'help', 'info', 'runtime', 'service', 'swarm'], 'started: the door open, boot, container, crud and swarm with the others')

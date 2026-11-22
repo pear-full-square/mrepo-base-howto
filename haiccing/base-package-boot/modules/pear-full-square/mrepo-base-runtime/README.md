@@ -38,11 +38,12 @@ mrepo's own packages: `bare
   `/runtime/hooks/commission.haicc`, the same way, its lines the mrepo's
   own: what the mrepo does once deployed, as its package says (its
   components deployed, each commissioned by its own; its service
-  initialised, started). Fired once: the runtime starts at a deploy, and
-  stops at a teardown; done, it is recorded in the runtime layer
-  (`/runtime/commission.json`, `COMMISSIONED`), so a runtime started again
-  (a replica's, with its container) does not run it again. Its state in
-  the status, `commission`:
+  initialised, started). At every start: the runtime starts at a deploy
+  and stops at a teardown, and a runtime started again (a restart, a
+  replica's with its container) runs it again; its lines are idempotent
+  (`base-docs-hdlc`, "Every action is idempotent"): a deploy of what is
+  there is a warning, a service in its state already runs its hook again.
+  Nothing records it. Its state in the status, `commission`:
   `none` (no hook), `pending`, `running`, `done`, `failed` with the line
   that failed and why; the inbox is open while it runs.
 - **Decommission**: asked over its connection (`decommission`) by a

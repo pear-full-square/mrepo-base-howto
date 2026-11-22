@@ -34,9 +34,10 @@ inspect. One line a check, the count last; exit 0 passed, 1 failed.
    `base-component-haicc`; the response record printed unpacked across
    lines by default, as stored with `--raw`; a record printed, packed
    again, is the record as stored in the outbox; deployed
-   again, an error on stderr; its commission done before the deploy
-   answered, in service, its info extracted; `service/initialise` again
-   refused; `service/stop`, its boot protocol behind the closed door, its
+   again, a repeat allowed (`again`), from another package refused, an
+   error on stderr; its commission done before the deploy answered, in
+   service, its info extracted; `service/initialise` again a repeat, its
+   hook run again, the state as it is; `service/stop`, its boot protocol behind the closed door, its
    runtime still running, then `service/start`, each passed through to
    it, answering what was done and the state now (`--output`).
 8. **What is missing is said**: a target, a package, a command; a
@@ -51,12 +52,18 @@ inspect. One line a check, the count last; exit 0 passed, 1 failed.
    back from the request layer, asked directly too; a flag that is none,
    help not on the last command, feedback with no text or where `haici`
    is not: not run, exit 1, said why.
+   **Scripts**: the host's package's placed by its deploy in
+   `<work>/scripts/`, listed by `haicc scripts` with the user's, run by
+   name (`haicc/file`). **The registry**: `mrepos/`, the host there by
+   its unique URI; its link's record in the boot mrepo. A teardown again:
+   a repeat allowed.
 10. **Torn down**: the node; the service stopped, its boot protocol
     deactivated; shut down; the host.
 11. **The boot again**: there already, kept.
 12. **The machine level torn down**: `haicc boot/teardown` with a host
     deployed: both runtimes stopped, the mrepos and the package store
-    removed, Bare, the sources list and the scripts kept; a second time,
+    removed, Bare, the sources list and the scripts kept (the bin's, and
+    the install's, `<work>/scripts/`); a second time,
     nothing there; `haicc boot/deploy` brings it back.
 
 ## A swarm
@@ -94,10 +101,10 @@ folder too; `--keep` leaves both.
    sources, `haicc prereq` every line ok.
 3. **The boot and a host in service**: `haicc boot/deploy`; the host
    deployed, in service by its commission.
-4. **Commands**: a script's lines at the host; the host by its registry
-   reference; `info/get`; the service stopped.
+4. **Commands**: a script's lines at the host; `info/get`; the service
+   stopped.
 5. **The teardown**: both runtimes stopped, none left in the container;
-   the work folder emptied; Bare kept.
+   the work folder emptied but for the install's scripts; Bare kept.
 
 ## Splectral
 
@@ -106,14 +113,15 @@ component, end to end, in a temporary folder removed after: the docs
 mrepo and Splectral deployed; the help viewer installed in two halves
 (`boot/deploy help haiccing/base-package-service`, then `splectral/install
 help splectral/base-component-help-viewer`), its hooks laid by the mrepo
-itself, its package not in the mrepo's own; what `install` refuses;
+itself, its package not in the mrepo's own; installed again, a repeat
+allowed; what `install` refuses;
 its pages asked over HTTP before and after its service started (a page
 by its keywords, another mrepo, a keyword not there), its data requests
 in the install's record; stopped, torn down, nothing left running. Then
 the workbench on a fresh install, one command (`haicc . boot/deploy
 workbench haiccing/base-solution-workbench`): its commission done, its
-components below it (`workbench/docs`, `workbench/splectral`) in its own
-registry and in service, Splectral's site and the docs answering, the
+components below it (`workbench/docs`, `workbench/splectral`) in the
+install's registry, `mrepos/`, linked in the workbench only, in service, Splectral's site and the docs answering, the
 workbench's `howtos` namespace; a second on the same install refused,
 its commission failed at its first component, nothing of it left; the
 workbench torn down, its decommission taking its components with it;

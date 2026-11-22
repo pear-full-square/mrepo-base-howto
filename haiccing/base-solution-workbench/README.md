@@ -40,10 +40,12 @@ On a fresh install, after `haicc boot/deploy`, one command at the root:
 haicc . boot/deploy workbench haiccing/base-solution-workbench
 ```
 
-The deploy starts its runtime and waits for its `commission`: its
-registry made, the docs mrepo deployed at `workbench/docs` and Splectral
+The deploy starts its runtime and waits for its `commission`: the docs
+mrepo deployed at `workbench/docs` and Splectral
 at `workbench/splectral` (their unique URIs `local/docs`,
-`local/splectral`), each in service by its own commission; then the
+`local/splectral`, placed in the install's registry, `<work>/mrepos/`,
+and linked in the workbench: forward visibility), each in service by
+its own commission; then the
 workbench initialised and started. The deploy answers once all of it is
 done (`commission: "done"`, `service: "started"`); a line that fails
 fails it, nothing left. `haicc . boot/teardown workbench` runs its
@@ -56,9 +58,10 @@ The workbench's `main` has the node `howtos`, its document
 mrepo the workbench deploys below it has the path below it as its unique
 URI: `howtos/haiccing/base-package-crud/howto/query/boot` is
 `haiccing/base-package-crud/howto/query/boot`, placed at
-`<work>/mrepos/haiccing/base-package-crud/howto/query/boot/` and kept
-in the workbench's own registry by that path. A how-to installed there
-sees forward only: its own mrepos, nothing of the workbench.
+`<work>/mrepos/haiccing/base-package-crud/howto/query/boot/`, the
+install's registry, and linked at its position in the workbench. A
+how-to installed there sees forward only: its own mrepos, nothing of
+the workbench.
 
 ## Its files
 

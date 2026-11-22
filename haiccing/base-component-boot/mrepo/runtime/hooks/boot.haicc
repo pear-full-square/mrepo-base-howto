@@ -7,4 +7,3 @@ protocol/activate . help
 protocol/activate . info
 protocol/activate . runtime
 info/extract
-crud/create registry

@@ -1,8 +1,8 @@
 {
   "package": "splectral/base-component-help-viewer",
-  "content": "df3bd907fbec749be9d67577551887a1d5189b59126c6d444407cd0ad5c29e4c",
+  "content": "4d84547df294a88e9f2bf5706b51383b42dafa0255d7595e0a0b33b60a7738c4",
   "bare": "v1.36.0",
-  "date": "2026-11-22T07:50:23.481Z",
+  "date": "2026-11-22T15:36:16.185Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -105,8 +105,8 @@
         "total": 8
       },
       "asserts": {
-        "passed": 127,
-        "total": 127
+        "passed": 125,
+        "total": 125
       },
       "failures": []
     },
@@ -183,8 +183,8 @@
         "total": 10
       },
       "asserts": {
-        "passed": 171,
-        "total": 171
+        "passed": 172,
+        "total": 172
       },
       "failures": []
     },
@@ -192,12 +192,12 @@
       "unit": "/test/modules/pear-full-square/mrepo-base-service",
       "ok": true,
       "tests": {
-        "passed": 2,
-        "total": 2
+        "passed": 3,
+        "total": 3
       },
       "asserts": {
-        "passed": 13,
-        "total": 13
+        "passed": 19,
+        "total": 19
       },
       "failures": []
     },
@@ -209,8 +209,8 @@
         "total": 5
       },
       "asserts": {
-        "passed": 55,
-        "total": 55
+        "passed": 54,
+        "total": 54
       },
       "failures": []
     },

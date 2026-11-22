@@ -16,9 +16,9 @@ The workbench's part of the structure: the list of the packages the workbench mr
   is service managed, as every mrepo.
 - **At `boot`**: `haicc`, `haici`, `help`, `info`, `runtime` and
   `service` activated: the activations only.
-- **`commission`**, run once by its runtime as it starts after its
-  deploy, the deploy waiting for it: its `registry` made (what it deploys
-  is registered there), its components deployed, `docs`
+- **`commission`**, run by its runtime as it starts (a deploy; again at
+  a restart, its lines idempotent), the deploy waiting for it: its
+  components deployed, linked in it, `docs`
   (`haiccing/base-component-docs`) and `splectral`
   (`haiccing/base-package-splectral`), each commissioned by its own; then
   its service initialised and started.

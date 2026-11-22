@@ -53,10 +53,9 @@ lines simple commands, standing at `main`.
   opened the protocol protocol itself; nothing else is taken from the
   inbox until its lines are done. The activations only: an mrepo's
   setup is its `initialise`, a visible state.
-- `commission`: run by the runtime after `boot`, once (the runtime
-  starts at a deploy; done, it is recorded, `/runtime/commission.json`,
-  and not run again on a restart, a replica's with its container); the
-  deploy waits for it, a line that fails failing the deploy with nothing
+- `commission`: run by the runtime after `boot`, at every start (a
+  deploy; a restart, a replica's with its container, runs it again: its
+  lines idempotent, nothing recorded); the deploy waits for it, a line that fails failing the deploy with nothing
   of the mrepo left. What the mrepo does once deployed: its components
   deployed first, each commissioned by its own (the cascade), then its
   service initialised and, as its package says, started.

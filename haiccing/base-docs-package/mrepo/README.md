@@ -80,8 +80,11 @@ An mrepo is a folder, `<dir>`. The first, the boot mrepo, put in place by
 unique URI, side by side with it: `<work>/mrepos/<unique URI>/` (the
 host: `mrepos/local/host/`). The mrepo that deployed it has a node for it
 in `main`, a shortcut: the link, nothing of its data; and a record in its
-`links` layer: where it is on this machine. The boot mrepo keeps the
-mrepo registry besides, in its `main`: the mrepos of the install. A running mrepo sees only forward
+`links` layer: where it is on this machine: the managing mrepo's, in
+forward visibility only. The install's registry, for its system
+administration, is the work folder's `mrepos/` itself, made at the
+initial boot with `scripts/` beside it: nothing in an mrepo copies it.
+A running mrepo sees only forward
 (a URI has no `..`); outside is reached through a mapping (the work
 folder's package store, named in its packages manifest).
 
@@ -99,8 +102,7 @@ it is a namespace (its kind), the nearest:
   path below it the unique URI; a how-to's key, `<org>/<package>/howto/<name>`,
   then its mrepo's name: `howtos/haiccing/base-package-crud/howto/query/boot`
   is `haiccing/base-package-crud/howto/query/boot`, placed at
-  `<work>/mrepos/haiccing/base-package-crud/howto/query/boot/` and in the
-  registry at `registry/haiccing/base-package-crud/howto/query/boot`.
+  `<work>/mrepos/haiccing/base-package-crud/howto/query/boot/`.
   What that mrepo deploys is in its namespace, beside it
   (`.../howto/query/host`), a swarm's nodes too.
 

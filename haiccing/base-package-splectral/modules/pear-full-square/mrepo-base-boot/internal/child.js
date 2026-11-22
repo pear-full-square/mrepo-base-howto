@@ -24,12 +24,6 @@
 //             runtime's process): its link's record in the links layer,
 //             by the link's key: links/<key>.json (local(key): its path);
 //             main replicates, this does not
-//   registry  its node in the mrepo registry, in main, by its unique URI:
-//             main/registry/<unique URI>/.node.json; written where
-//             registers() says this mrepo keeps one: the boot mrepo
-//   ranks     the registry's nodes above its own, each a document: one
-//             each segment of its unique URI before its name (its
-//             swarm's, its namespace's path)
 //   mrepo     its unique URI, a path: from the nearest namespace node
 //             above it down to it. A swarm names its namespace by its own
 //             name (swarms/swarm-1 a swarm: swarms/swarm-1/node-1 is
@@ -47,17 +41,18 @@
 //             target that: refuse() throws then
 //   free      the rule, at deploy: a unique URI is never a prefix of
 //             another's, no mrepo's folder inside another's; free()
-//             throws when one is: an mrepo's folder (or its registry
-//             record) above it, or registry nodes below it already (a
-//             folder in its place: in the way, said by the deploy)
+//             throws when one is: an mrepo's folder above it, or mrepos'
+//             folders below it already (the folders under mrepos/ are
+//             the install's registry; a plain folder in its place: in the
+//             way, said by the deploy)
 // A target is needed: main itself, or the root, is the mrepo, which one
 // cannot deploy or tear down. A position below a shortcut is another
 // mrepo's: refused.
-import { existsSync } from 'bare-fs'
+import { existsSync, readdirSync, statSync } from 'bare-fs'
 import { join, dirname, relative } from 'bare-path'
 import { segmented, joined, within, ROOT } from 'mycelium-uri'
 import { MREPOS } from 'mrepo-base-request'
-import { shortcutOf, shortcutsAt, linked, linkPath, registryOf, uriOf, namespaceOf, REGISTRY, LOCAL } from 'mrepo-base-xpath'
+import { shortcutOf, shortcutsAt, linked, linkPath, uriOf, namespaceOf, LOCAL } from 'mrepo-base-xpath'
 
 export const NODE = '.node.json'
 // What a node's document says it is: { "kind": "swarm" }, a swarm.
@@ -118,17 +113,22 @@ export async function child (exec, segments) {
   // the rule: no unique URI a prefix of another's
   const free = async () => {
     const prefix = (a, b) => new Error(`a unique URI is never a prefix of another's: ${a} is ${b}'s (no mrepo's folder inside another's)`)
-    for (const p of prefixes) {
-      if (existsSync(join(base, ...p.split('/'), '.git'))) throw prefix(p, mrepo)
-      const reg = await exec.find(`${registryOf(p)}/${NODE}`)
-      let value = null
-      // catch: a registry node that is no record is one above an mrepo's
-      try { value = reg === null ? null : JSON.parse(reg.toString()) } catch {}
-      if (value && typeof value.uri === 'string') throw prefix(p, mrepo)
+    for (const p of prefixes) if (existsSync(join(base, ...p.split('/'), '.git'))) throw prefix(p, mrepo)
+    // an mrepo's folder below its place: the first found, its unique URI
+    const below = at => {
+      if (!existsSync(at) || !statSync(at).isDirectory()) return null
+      for (const n of readdirSync(at).sort()) {
+        const d = join(at, n)
+        if (!statSync(d).isDirectory()) continue
+        if (existsSync(join(d, '.git'))) return relative(base, d)
+        const deeper = below(d)
+        if (deeper) return deeper
+      }
+      return null
     }
-    const below = (await exec.select(`${registryOf(mrepo)}/*`)).map(([p]) => p).filter(p => !p.endsWith(NODE))
-    if (below.length) throw prefix(mrepo, below[0].replace(/^\/?main\/registry\//, ''))
-    // (a folder in its place, whatever it holds: in the way, said by the deploy)
+    const other = existsSync(join(placed, '.git')) ? null : below(placed)
+    if (other) throw prefix(mrepo, other)
+    // (a folder in its place that holds no mrepo: in the way, said by the deploy)
   }
   const shortcut = async () => (await shortcutsAt(exec, at)).find(l => l.mrepo === mrepo) ?? null
   const exists = async () => (await exec.select(`main/${at}`)).length > 0 && !(await shortcut())
@@ -148,10 +148,6 @@ export async function child (exec, segments) {
     links: shortcutOf(at),
     local: linkPath,
     mrepo,
-    // (the mrepo registry: there where main has the node `registry`: the boot mrepo)
-    registry: `${registryOf(mrepo)}/${NODE}`,
-    ranks: prefixes.map(p => `${registryOf(p)}/${NODE}`),
-    registers: async () => (await exec.find(`main/${REGISTRY}/${NODE}`)) !== null,
     recorded: async () => { const l = await shortcut(); return l ? { ...l, ...(await linked(exec, l.link) ?? {}) } : null },
     exists,
     free,
