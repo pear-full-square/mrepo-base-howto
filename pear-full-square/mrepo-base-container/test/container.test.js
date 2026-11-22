@@ -136,7 +136,7 @@ test('a replica made, started, reached, stopped, started again and removed: a re
     t.alike(await status(exec), { replica: 'container', mrepo: 'swarm-1/node-1/container', container: name, image: c.container.image, state: 'created' }, 'status: created')
     t.alike(await stop(exec), { stopped: 'container', container: name, state: 'created' }, 'stop, not running: left as it is')
 
-    t.alike(await start(exec), { started: 'container', container: name, state: 'running' }, 'start: running')
+    t.alike(await start(exec), { started: 'container', container: name, state: 'running', service: 'started' }, 'start: running, the replica in service by its commission')
     const s = await ask({ repo: placed, op: 'status' })
     t.alike([s?.pid, s?.repository.uri], [1, 'swarm-1/node-1/container'], 'its runtime answering on its socket in the mapped folder: process 1 of its container')
     // a request into its inbox folder, as the bridgehead reaches it: answered
@@ -150,7 +150,7 @@ test('a replica made, started, reached, stopped, started again and removed: a re
 
     t.alike(await stop(exec), { stopped: 'container', container: name, state: 'exited' }, 'stop: exited')
     t.alike([docker('inspect', '--format', '{{.State.ExitCode}}', name).out, existsSync(join(placed, 'runtime.sock'))], ['0', false], 'its runtime closed on being asked: ended with 0, its socket gone')
-    t.alike(await start(exec), { started: 'container', container: name, state: 'running' }, 'started again: the same container, the same folder')
+    t.alike(await start(exec), { started: 'container', container: name, state: 'running', service: 'started' }, 'started again: the same container, the same folder; not commissioned again, its service as it was')
     t.is((await ask({ repo: placed, op: 'status' }))?.pid, 1, 'its runtime answering again')
 
     exec.entries = []

@@ -1,6 +1,6 @@
 # Test report: splectral/base-component-log-viewer
 
-The package passed its `full` set: all 27 units, 354 of 354 tests and 2453 of 2453 asserts.
+The package passed its `full` set: all 27 units, 356 of 356 tests and 2476 of 2476 asserts.
 
 | | |
 |---|---|
@@ -8,11 +8,11 @@ The package passed its `full` set: all 27 units, 354 of 354 tests and 2453 of 24
 | Set | `full` |
 | Result | passed |
 | Units | 27 of 27 passed |
-| Tests | 354 of 354 passed |
-| Asserts | 2453 of 2453 passed |
-| Run | 2026-11-21 05:11 UTC |
+| Tests | 356 of 356 passed |
+| Asserts | 2476 of 2476 passed |
+| Run | 2026-11-22 07:54 UTC |
 | Bare | v1.36.0 |
-| Content | `7b60fab66ea1cb6c8ada48e691cff33354945ff634ba44029e7e5855b330ac4a` |
+| Content | `13df4c921e5c611dcb3e9e8b65414231e3ba8ef641994e0533b5085e217751df` |
 
 ## Units
 
@@ -24,13 +24,13 @@ The package passed its `full` set: all 27 units, 354 of 354 tests and 2453 of 24
 | `/test/code` | passed | 1 of 1 | 2 of 2 |
 | `/test/mrepo` | passed | 1 of 1 | 1 of 1 |
 | `/test/package` | passed | 1 of 1 | 1 of 1 |
-| `/test/modules/pear-full-square/mrepo-base-boot` | passed | 7 of 7 | 125 of 125 |
+| `/test/modules/pear-full-square/mrepo-base-boot` | passed | 8 of 8 | 127 of 127 |
 | `/test/modules/pear-full-square/mrepo-base-crud` | passed | 9 of 9 | 80 of 80 |
 | `/test/modules/pear-full-square/mrepo-base-execute` | passed | 10 of 10 | 98 of 98 |
 | `/test/modules/pear-full-square/mrepo-base-info` | passed | 9 of 9 | 62 of 62 |
 | `/test/modules/pear-full-square/mrepo-base-protocol` | passed | 3 of 3 | 10 of 10 |
-| `/test/modules/pear-full-square/mrepo-base-request` | passed | 21 of 21 | 240 of 240 |
-| `/test/modules/pear-full-square/mrepo-base-runtime` | passed | 9 of 9 | 150 of 150 |
+| `/test/modules/pear-full-square/mrepo-base-request` | passed | 21 of 21 | 238 of 238 |
+| `/test/modules/pear-full-square/mrepo-base-runtime` | passed | 10 of 10 | 171 of 171 |
 | `/test/modules/pear-full-square/mrepo-base-service` | passed | 2 of 2 | 13 of 13 |
 | `/test/modules/pear-full-square/mrepo-base-xpath` | passed | 5 of 5 | 55 of 55 |
 | `/test/modules/pear-full-square/mycelium-container-document` | passed | 1 of 1 | 8 of 8 |
@@ -44,6 +44,6 @@ The package passed its `full` set: all 27 units, 354 of 354 tests and 2453 of 24
 | `/test/modules/pear-full-square/p2p-store` | passed | 5 of 5 | 20 of 20 |
 | `/test/modules/pear-full-square/pkgm-base-check` | passed | 23 of 23 | 70 of 70 |
 | `/test/modules/pear-full-square/splectral-base-log-viewer` | passed | 2 of 2 | 24 of 24 |
-| `/test/modules/pear-full-square/splectral-server` | passed | 10 of 10 | 120 of 120 |
+| `/test/modules/pear-full-square/splectral-server` | passed | 10 of 10 | 122 of 122 |
 
 Written by the package's pre-release from `full.json`, beside it. The content is the hash of the bundle that was tested, its test reports left out.

@@ -43,10 +43,9 @@ the tests: `boot.test.js`. It leaves nothing running.
      link said so; the package validated in situ; torn down;
    - the haicc component, deployed from `base-component-haicc` (named
      without its organisation): its packages layer the component's list,
-     its `main` empty; booted, its boot protocol behind the service's door,
-     not active;
-     `haicc haicc service/initialise` and `service/start` passed through
-     to it; a node deployed inside it by `haicc haicc boot/deploy node-1`,
+     its `main` empty; its commission done before the deploy answered,
+     initialised and started; `haicc haicc service/initialise` passed
+     through to it, refused: not again; a node deployed inside it by `haicc haicc boot/deploy node-1`,
      its shortcut in the haicc mrepo's `main`; commands chained
      through both shortcuts; the component validated in situ; the node
      torn down; `service/stop`, its boot protocol deactivated by the stop

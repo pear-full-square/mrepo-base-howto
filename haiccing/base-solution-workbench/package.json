@@ -1,6 +1,6 @@
 {
   "name": "base-solution-workbench",
-  "description": "Solution: the workbench, a development and testing environment; one deploy installs the docs mrepo, the host and Splectral beside it, and its mrepo holds the howtos namespace.",
+  "description": "Solution: the workbench, the local manager in the host's role; its commission deploys its components below it (the docs mrepo, Splectral) and brings it into service; it holds the howtos namespace.",
   "private": true,
   "license": "MIT",
   "type": "module",

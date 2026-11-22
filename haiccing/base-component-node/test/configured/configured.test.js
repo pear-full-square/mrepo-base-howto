@@ -52,6 +52,8 @@ const HOOKS = {
   'boot/4': ['protocol/activate', '.', 'info'],
   'boot/5': ['protocol/activate', '.', 'runtime'],
   'boot/6': ['protocol/activate', '.', 'service'],
+  'commission/1': ['service/initialise'],
+  'commission/2': ['service/start'],
   'initialise/1': ['info/extract'],
   'start/1': ['protocol/activate', '.', 'boot'],
   'start/2': ['protocol/activate', '.', 'container'],
@@ -174,10 +176,11 @@ test('what its hooks do: the boot opens haicc, haici, help, info, runtime and se
   t.alike(w.active(), ['haicc', 'haici', 'help', 'info', 'runtime', 'service'], 'after the boot: what a node always offers')
   t.absent(w.active().includes('boot') || w.active().includes('crud') || w.active().includes('container') || w.active().includes('rns') || w.active().includes('log') || w.active().includes('dispatch'), 'the boot protocol, the crud protocol, the container protocol, the rns protocol, the log protocol and the dispatch protocol are behind the service\'s door')
   t.absent(w.active().includes('protocol'), 'the protocol protocol: not a hook\'s, the runtime opens it itself')
-  t.alike(await w.exec.run(['service/initialise']), { service: 'initialised', state: 'initialised' })
+  // its commission: what the runtime runs once, as it starts after the deploy
+  const commissioned = []
+  for (const name of of('commission')) commissioned.push(await w.exec.run(brought[name]))
+  t.alike(commissioned, [{ service: 'initialised', state: 'initialised' }, { service: 'started', state: 'started' }], 'its commission: initialised, then started')
   t.ok(w.commands.includes('info/extract'), 'initialise: the info extracted, by its hook')
-  t.alike(w.active(), ['haicc', 'haici', 'help', 'info', 'runtime', 'service'], 'initialised: the same protocols open')
-  t.alike(await w.exec.run(['service/start']), { service: 'started', state: 'started' })
   t.alike(w.active(), ['boot', 'container', 'crud', 'dispatch', 'haicc', 'haici', 'help', 'info', 'log', 'rns', 'runtime', 'service'], 'started: the door open, boot, container, crud, rns, log and dispatch with the others')
   t.alike([w.commands.slice(-2), PROGRAMS], [PROGRAMS.map(p => `runtime/start . ${p}`), [`packages/${LIST.at(-4)}`, `packages/${LIST.at(-3)}`]], 'and last, with both open: their programs started, the rns\' before the log\'s (the log finds its master through it), each package as it is placed in the mrepo\'s folder')
   t.alike(await w.exec.run(['service/stop']), { service: 'stopped', state: 'initialised' })

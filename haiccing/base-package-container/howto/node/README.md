@@ -10,17 +10,13 @@ linked mrepo. Docker, its daemon running, is needed.
 ## Steps
 
 ```sh
-# the node, in the host, in service
+# the node, in the host, in service by its commission
 haicc host boot/deploy swarms/swarm-1/node-1 haiccing/base-component-haicc
-haicc host haicc swarms/swarm-1/node-1 service/initialise
-haicc host haicc swarms/swarm-1/node-1 service/start
 # its replica made and run in a container
 haicc host haicc swarms/swarm-1/node-1 container/create
 haicc host haicc swarms/swarm-1/node-1 container/start
 haicc host haicc swarms/swarm-1/node-1 container/status
-# the mrepo in the container, reached through the node
-haicc host haicc swarms/swarm-1/node-1 haicc container service/initialise
-haicc host haicc swarms/swarm-1/node-1 haicc container service/start
+# the mrepo in the container, in service by its own commission as its container started, reached through the node
 haicc host haicc swarms/swarm-1/node-1 haicc container crud/read .
 # removed before the node is torn down: boot/teardown does not know of containers
 haicc host haicc swarms/swarm-1/node-1 container/remove

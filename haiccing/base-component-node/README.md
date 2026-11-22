@@ -12,7 +12,6 @@ also bring it into service and register it.
 ## Links
 
 - [mrepo](mrepo/)
-- [scripts](scripts/)
 - [test](test/)
 - [test-reports](test-reports/)
 - [modules](modules/)

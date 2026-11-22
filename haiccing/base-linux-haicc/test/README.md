@@ -34,10 +34,11 @@ inspect. One line a check, the count last; exit 0 passed, 1 failed.
    `base-component-haicc`; the response record printed unpacked across
    lines by default, as stored with `--raw`; a record printed, packed
    again, is the record as stored in the outbox; deployed
-   again, an error on stderr; its boot protocol behind the service's door,
-   not active; its info not extracted yet;
-   `service/initialise` and `service/start` passed through to it, each
-   answering what was done and the state now (`--output`).
+   again, an error on stderr; its commission done before the deploy
+   answered, in service, its info extracted; `service/initialise` again
+   refused; `service/stop`, its boot protocol behind the closed door, its
+   runtime still running, then `service/start`, each passed through to
+   it, answering what was done and the state now (`--output`).
 8. **What is missing is said**: a target, a package, a command; a
    protocol or an action that is not there, with those that are.
 9. **A node inside the host**, deployed by a command passed through;
@@ -92,7 +93,7 @@ folder too; `--keep` leaves both.
 2. **The install**: the installer, `haicc sources link` with the host's
    sources, `haicc prereq` every line ok.
 3. **The boot and a host in service**: `haicc boot/deploy`; the host
-   deployed with `--flags continuation=start`.
+   deployed, in service by its commission.
 4. **Commands**: a script's lines at the host; the host by its registry
    reference; `info/get`; the service stopped.
 5. **The teardown**: both runtimes stopped, none left in the container;
@@ -110,10 +111,11 @@ its pages asked over HTTP before and after its service started (a page
 by its keywords, another mrepo, a keyword not there), its data requests
 in the install's record; stopped, torn down, nothing left running. Then
 the workbench on a fresh install, one command (`haicc . boot/deploy
-workbench haiccing/base-solution-workbench`): the workbench and, by its
-script run at the root, the docs mrepo, the host and Splectral beside
-it in the install's registry, the host and Splectral in service, its
-site and the docs answering, the workbench's `howtos` namespace; a
-second on the same install stopped at its script's first line; torn
-down, nothing left. Each step timed, the pages too. It needs the
+workbench haiccing/base-solution-workbench`): its commission done, its
+components below it (`workbench/docs`, `workbench/splectral`) in its own
+registry and in service, Splectral's site and the docs answering, the
+workbench's `howtos` namespace; a second on the same install refused,
+its commission failed at its first component, nothing of it left; the
+workbench torn down, its decommission taking its components with it;
+nothing left. Each step timed, the pages too. It needs the
 splectral packages' and the workbench's bundles in the sources.

@@ -1,18 +1,11 @@
 // deploy(exec, { uri, args: [package] }): the boot protocol's deploy (README.md beside it).
-import { existsSync } from 'bare-fs'
+import fs, { existsSync, rmSync } from 'bare-fs'
+import { openRepo, p2pgitBackend } from 'mycelium-git'
 import { join } from 'bare-path'
-import { start } from 'mrepo-base-runtime'
+import { start, stop, commissioned, decommission } from 'mrepo-base-runtime'
 import { guid } from 'mrepo-base-request'
-import { fetch, scriptOf, scriptsOf } from '../../internal/fetch/index.js'
 import { install, origin, targetOf } from '../../internal/install/index.js'
 import { child } from '../../internal/child.js'
-import { ROOT } from 'mycelium-uri'
-
-// A solution: a package whose script by this name deploys the mrepos an
-// install is made of, beside it: answered with every deploy of it as the
-// continuation, at this mrepo's own position (the deployer's), not the
-// deployed mrepo's.
-export const SOLUTION = 'solution'
 import { deployPair } from '../../internal/pair/index.js'
 
 // (link: the key of the link, when it has one already: a redeploy keeps it)
@@ -32,19 +25,6 @@ export async function deploy (exec, { uri, args = [], flags = {} }, { link: kept
   const target = targetOf(args[0])
   // The store and the sources: the mapping the parent's packages manifest records.
   const { store, sources } = await origin(exec)
-  // A continuation asked for (the flag: continuation=<script>): a script
-  // of the package deployed, by its name, answered with the deploy for
-  // who asked to go on with, run at the deployed mrepo's position (sent
-  // on as haicc/script). One that is not there: refused, before anything
-  // is built.
-  const script = typeof flags.continuation === 'string' ? flags.continuation : null
-  fetch({ store, sources, pkg: target })
-  const text = script ? scriptOf({ store, pkg: target, name: script }) : null
-  if (script && text === null) throw new Error(`no script: ${script} (${target} has ${scriptsOf({ store, pkg: target }).join(', ') || 'none'})`)
-  // A solution goes on with its own script, at this mrepo's position.
-  const solution = scriptOf({ store, pkg: target, name: SOLUTION })
-  if (solution && script) throw new Error(`a solution goes on with its own script, ${SOLUTION}: no continuation (${target})`)
-  if (solution && pair) throw new Error(`a solution is not deployed into a container: its script deploys beside it (${target})`)
   const link = kept ?? guid()
   // A pair: the container made, the child deployed in it by its own
   // platform; here only its link, as below, its folder the one in the
@@ -59,7 +39,6 @@ export async function deploy (exec, { uri, args = [], flags = {} }, { link: kept
       for (const r of c.ranks) if (await exec.find(r) === null) exec.put(r, Buffer.from('{}\n'))
       exec.put(c.registry, Buffer.from(JSON.stringify(entry(), null, 2) + '\n'))
     }
-    if (text) { exec.continuation(text, c.at); exec.log('verbose', 'continuation', { script, bytes: Buffer.byteLength(text) }) }
     exec.log('info', 'deployed', { at: c.at, mrepo: c.mrepo, package: target, container: made.container.name })
     return { deployed: c.at, mrepo: c.mrepo, package: target, container: made.container }
   }
@@ -76,6 +55,26 @@ export async function deploy (exec, { uri, args = [], flags = {} }, { link: kept
     const s = await exec.step('runtime', r => ({ started: Boolean(r), pid: r?.pid ?? null }), () => start({ repo: c.dir, bundle: runtime }))
     if (!s) throw new Error(`its runtime did not start: ${c.dir}`)
     record.runtime = { pid: s.pid }
+    // Its commission, fired by its runtime as it starts, waited for: what
+    // its package does once it is deployed (its components deployed, its
+    // service initialised, started). Failed: nothing of it left (what it
+    // deployed so far decommissioned, as it can be; its runtime stopped,
+    // its folder removed), the line that failed said.
+    const done = await exec.step('commission', r => ({ state: r?.state ?? null, ...(r?.error ? { error: r.error } : {}) }), () => commissioned({ repo: c.dir }))
+    if (!done || done.state === 'failed') {
+      await exec.step('undone', { dir: c.dir }, async () => {
+        // catch: what is left of it goes, whatever its decommission says
+        await decommission({ repo: c.dir }).catch(() => null)
+        // catch: and whatever its stop says
+        await stop({ repo: c.dir, pid: s.pid }).catch(() => null)
+        rmSync(c.dir, { recursive: true, force: true })
+      })
+      throw new Error(`its commission failed: ${done?.error ?? 'its runtime gone'} (${target}, nothing of it left)`)
+    }
+    record.commission = done.state
+    // its service's state as its commission left it, said with the deploy
+    // catch: no service state there: none to say
+    record.service = await openRepo(p2pgitBackend(join(c.dir, '.git'), { fs })).read('/runtime/service.json').then(b => JSON.parse(b.toString()).state ?? null, () => null)
   } else exec.log('verbose', 'no runtime', { package: target })
   // Its node, in main, and beside it its shortcuts: which mrepo, and the
   // link's key: what is needed to show it. The rest in the links layer.
@@ -88,8 +87,6 @@ export async function deploy (exec, { uri, args = [], flags = {} }, { link: kept
     for (const r of c.ranks) if (await exec.find(r) === null) exec.put(r, Buffer.from('{}\n'))
     exec.put(c.registry, Buffer.from(JSON.stringify(entry(), null, 2) + '\n'))
   }
-  if (text) { exec.continuation(text, c.at); exec.log('verbose', 'continuation', { script, bytes: Buffer.byteLength(text) }) }
-  if (solution) { exec.continuation(solution, ROOT); exec.log('verbose', 'continuation', { script: SOLUTION, at: ROOT, bytes: Buffer.byteLength(solution) }) }
-  exec.log('info', 'deployed', { at: c.at, mrepo: c.mrepo, package: target })
-  return { deployed: c.at, mrepo: c.mrepo, ...record, ...(solution ? { solution: SOLUTION } : {}) }
+  exec.log('info', 'deployed', { at: c.at, mrepo: c.mrepo, package: target, commission: record.commission ?? null })
+  return { deployed: c.at, mrepo: c.mrepo, ...record }
 }

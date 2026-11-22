@@ -37,12 +37,14 @@ structures in `main`.
 By the boot mrepo, with a command at the root. The mrepo starts `booted`:
 its boot protocol, its crud protocol, its container protocol and its
 swarm protocol are behind the service's door, activated by hooks on
-`start`. Its info is extracted by a hook on `initialise`. Each service
-command answers what was done and the state now.
+`start`. Its `commission`, run by its runtime as it starts, brings it
+into service before the deploy answers: `service/initialise` (its info
+extracted by a hook on `initialise`), then `service/start`. Each service
+command after answers what was done and the state now.
 
 ```
 haicc . boot/deploy host haiccing/base-component-haicc
-haicc host service/initialise
+haicc host service/stop
 haicc host service/start
 ```
 

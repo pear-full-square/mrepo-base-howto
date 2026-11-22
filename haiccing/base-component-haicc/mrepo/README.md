@@ -15,6 +15,9 @@ The component's part of the structure: the list of the packages the haicc mrepo 
   mrepo is service managed.
 - **At `boot`**: `haicc`, `haici`, `help`, `info`, `runtime` and `service` activated. A
   closed haicc mrepo can be addressed, inspected and tested.
+- **`commission`**, run once by its runtime as it starts after its
+  deploy, the deploy waiting for it: `service/initialise`, then
+  `service/start`: deployed, it is in service.
 - **At `initialise`**: its info extracted.
 - **At `start`**: `boot`, `crud`, `container` and `swarm` activated.
   Deploying mrepos, making structure in `main`, making its replica in a

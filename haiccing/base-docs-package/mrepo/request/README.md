@@ -115,9 +115,9 @@ A command may answer, beside its output, with a script to go on with:
 - **Through a shortcut** it comes back with the response, its position
   behind the one the command was sent on at.
 - **Who answers with one**: an action, when it has something to go on
-  with. `boot/deploy` does when asked, by a flag, for a script of the
-  package it deploys: `haicc . boot/deploy host haiccing/base-component-haicc
-  --flags continuation=start`.
+  with, run in the context of the command it continues. A deploy does
+  not: what a package does once deployed is its `commission` hook,
+  run in the mrepo itself (`mrepo/runtime`).
 
 ## Commands sent on
 

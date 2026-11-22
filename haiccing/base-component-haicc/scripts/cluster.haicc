@@ -1,21 +1,14 @@
 # cluster: a host with a swarm of two nodes, each with its replica in a
-# container. Docker is needed; the containers are left running.
-service/initialise
-service/start
+# container. Docker is needed; the containers are left running. The host,
+# its nodes and their replicas are each brought into service by their own
+# commission (the host's at its deploy, a node's at its, a replica's as its
+# container starts).
 # the swarm: a node whose document says it is one
 crud/create swarms/swarm-1 '{"kind":"swarm"}'
 boot/deploy swarms/swarm-1/node-1 haiccing/base-component-haicc
-haicc swarms/swarm-1/node-1 service/initialise
-haicc swarms/swarm-1/node-1 service/start
 haicc swarms/swarm-1/node-1 container/create
 haicc swarms/swarm-1/node-1 container/start
-haicc swarms/swarm-1/node-1 haicc container service/initialise
-haicc swarms/swarm-1/node-1 haicc container service/start
 boot/deploy swarms/swarm-1/node-2 haiccing/base-component-haicc
-haicc swarms/swarm-1/node-2 service/initialise
-haicc swarms/swarm-1/node-2 service/start
 haicc swarms/swarm-1/node-2 container/create
 haicc swarms/swarm-1/node-2 container/start
-haicc swarms/swarm-1/node-2 haicc container service/initialise
-haicc swarms/swarm-1/node-2 haicc container service/start
 crud/read swarms/swarm-1/*

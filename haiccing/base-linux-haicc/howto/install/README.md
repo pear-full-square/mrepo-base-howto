@@ -16,11 +16,9 @@ sh haicc-install.sh
 haicc sources download bare haiccing
 # Bare put in place from them
 haicc prereq
-# the boot mrepo, then a host in service
+# the boot mrepo, then the workbench: the local manager, its docs mrepo and Splectral, in service
 haicc boot/deploy
-haicc . boot/deploy host haiccing/base-component-haicc
-haicc host service/initialise
-haicc host service/start
+haicc . boot/deploy workbench haiccing/base-solution-workbench
 ```
 
 ## Notes

@@ -2,12 +2,15 @@
 // from the sources (the boot component, run on the Bare running this
 // test), then `boot/deploy workbench haiccing/base-solution-workbench` at
 // the root: the workbench mrepo at local/workbench, the deploy answering
-// with its script, unasked, for the root's own position. In the workbench:
-// its registry and its howtos namespace; an mrepo deployed below it, its
-// unique URI the path below it, placed and registered by it; torn down
-// through the registry by the how-to's key. The script itself run, the
-// docs mrepo, the host and Splectral in service: the `haicc` command's end
-// to end (base-linux-haicc, test/splectral.sh). Nothing left running.
+// once its commission is done: its components deployed below it (the docs
+// mrepo, Splectral), each commissioned by its own, in its own registry;
+// then itself initialised (its info, its howtos namespace) and started.
+// In the workbench: an mrepo deployed below its howtos node, its unique URI
+// the path below it, placed and registered by it; torn down through the
+// registry by the how-to's key. The workbench torn down: its decommission
+// tears its components down. Nothing left running. Splectral's pages, the
+// docs read: the `haicc` command's end to end (base-linux-haicc,
+// test/splectral.sh).
 // The sources: SOURCES, else ../../sources beside the packages; skipped without.
 import test from '../../modules/node_modules/brittle/index.js'
 import process from '../../modules/node_modules/bare-process/index.js'
@@ -27,7 +30,7 @@ const SOURCES = resolve(process.env.SOURCES || join(pkg, '..', '..', 'sources'))
 const have = ['base-component-boot', 'base-solution-workbench', 'base-package-runtime'].every(p => existsSync(join(SOURCES, 'haiccing', `${p}.bundle`)))
 const HOWTO = 'haiccing/base-solution-workbench/howto/install'
 
-test('the workbench on a fresh install: deployed by its segment, its script answered for the root; its howtos namespace, an mrepo below it by its path', { timeout: 240000, skip: !have }, async (t) => {
+test('the workbench on a fresh install: deployed by its segment, commissioned (its components below it, then itself in service); its howtos namespace, an mrepo below it by its path; decommissioned with its teardown', { timeout: 600000, skip: !have }, async (t) => {
   const work = mkdtempSync(join(tmpdir(), 'workbench-'))
   const pids = []
   try {
@@ -39,7 +42,7 @@ test('the workbench on a fresh install: deployed by its segment, its script answ
     const repo = openRepo(p2pgitBackend(gitdirOf(work, 'boot'), { fs }))
     // a command as typed, its parts, into the boot mrepo's inbox folder; its
     // completed form read from request/done
-    const typed = async (parts, tries = 600) => {
+    const typed = async (parts, tries = 3000) => {
       const c = record('/test', parts, guid())
       writeFileSync(join(boot, 'inbox', `${c.key}.json`), JSON.stringify(wrap('/local/boot/inbox', c)))
       let v = null
@@ -48,18 +51,25 @@ test('the workbench on a fresh install: deployed by its segment, its script answ
     }
     // the workbench: one command at the root, its name the segment
     const d = await typed(['boot/deploy', 'workbench', 'haiccing/base-solution-workbench'])
-    t.alike([d?.error, d?.output?.deployed, d?.output?.mrepo, d?.output?.solution], [undefined, 'workbench', 'local/workbench', 'solution'], `deployed at workbench, local/workbench, a solution ${d?.error ?? ''}`)
-    t.alike(d?.continuation, { at: '.', script: readFileSync(join(pkg, 'scripts', 'solution.haicc'), 'utf8') }, 'answered with its script, unasked, for the root\'s own position: what it deploys lands beside it')
+    t.alike([d?.error, d?.output?.deployed, d?.output?.mrepo, d?.output?.commission, d?.output?.service], [undefined, 'workbench', 'local/workbench', 'done', 'started'], `deployed at workbench, local/workbench; answered once its commission is done, in service ${d?.error ?? ''}`)
+    t.absent(d?.continuation, 'no continuation: nothing runs at the root after it')
     const bench = viewOf(work, 'local/workbench')
     const w = await ask({ repo: bench, op: 'status' })
     pids.push(w?.pid)
-    t.alike(w?.repository?.uri, 'local/workbench', 'its runtime running, placed by its unique URI: <work>/mrepos/local/workbench')
-    // its boot hooks: its registry, its howtos namespace
+    t.alike([w?.repository?.uri, w?.commission], ['local/workbench', { state: 'done' }], 'its runtime running, placed by its unique URI: <work>/mrepos/local/workbench; its commission done')
     const wrepo = openRepo(p2pgitBackend(join(bench, '.git'), { fs }))
-    let howtos = null
-    for (let i = 0; i < 300 && !howtos; i++) { howtos = await wrepo.read('/main/howtos/.node.json').then(b => JSON.parse(b.toString()), () => null); if (!howtos) await wait(100) }
-    t.alike(howtos, { kind: 'howtos' }, 'its main: the node howtos, a namespace\'s root')
-    t.ok(await wrepo.read('/main/registry/.node.json').then(() => true, () => false), 'its main: the node registry, its own mrepo registry')
+    const doc = async p => wrepo.read(p).then(b => JSON.parse(b.toString()), () => null)
+    t.alike(await doc('/main/howtos/.node.json'), { kind: 'howtos' }, 'its initialise: the node howtos, a namespace\'s root')
+    t.alike((await doc('/runtime/service.json'))?.state, 'started', 'started')
+    // its components: below it, in its registry, each in service by its own commission
+    for (const [at, pkg] of [['docs', 'haiccing/base-component-docs'], ['splectral', 'haiccing/base-package-splectral']]) {
+      const r = await doc(`/main/registry/local/${at}/.node.json`)
+      t.alike([r?.at, r?.package, r?.commission, r?.service], [at, pkg, 'done', 'started'], `${at}: deployed by its commission at workbench/${at}, in its registry, in service`)
+      const s2 = await ask({ repo: viewOf(work, `local/${at}`), op: 'status' })
+      pids.push(s2?.pid)
+      t.is(s2?.repository?.uri, `local/${at}`, `${at}: its unique URI local/${at}, its folder <work>/mrepos/local/${at}`)
+    }
+    t.absent(await repo.read('/main/registry/local/docs/.node.json').then(() => true, () => false), 'not in the install\'s registry: the workbench\'s')
     // an mrepo below its howtos node, by a how-to's key: deployed by the workbench
     const made = await typed(['haicc', 'workbench', 'crud/create', `howtos/${HOWTO}`])
     t.absent(made?.error, `the how-to's nodes below howtos ${made?.error ?? ''}`)
@@ -74,8 +84,10 @@ test('the workbench on a fresh install: deployed by its segment, its script answ
     const down = await typed(['haicc', 'workbench', 'boot/teardown', `registry/${HOWTO}/*`])
     t.alike(down?.output, [{ tornDown: `howtos/${HOWTO}/boot` }], `a how-to's mrepos torn down by its key ${down?.error ?? ''}`)
     t.absent(existsSync(placed), 'its folder gone')
-    const gone = await typed(['boot/teardown', 'workbench'])
+    const gone = await typed(['boot/teardown', 'workbench', '--flags', 'log=verbose'])
     t.alike(gone?.output, { tornDown: 'workbench' }, `the workbench torn down as any mrepo ${gone?.error ?? ''}`)
+    t.ok(gone?.log?.some(e => /decommission$/.test(e.event) && e.decommission === 'done'), `its decommission first, a step of the teardown ${JSON.stringify(gone?.log?.map(e => e.event))}`)
+    t.absent(existsSync(viewOf(work, 'local/docs')) || existsSync(viewOf(work, 'local/splectral')), 'its components torn down by its decommission: their folders gone')
     t.ok((await ask({ repo: boot, op: 'stop' }))?.stopping, 'the boot mrepo stopped')
     for (let i = 0; i < 100 && pids.some(p => p && alive(p)); i++) await wait(100)
     t.absent(pids.some(p => p && alive(p)), 'nothing left running')

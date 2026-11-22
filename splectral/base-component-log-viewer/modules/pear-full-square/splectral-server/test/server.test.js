@@ -102,6 +102,8 @@ test('the install folded from its completed records: its mrepos a tree, each wit
   t.is(s.apply(done(['local/host', 'swarm-1/node-1'], { created: 'container', mrepo: 'swarm-1/node-1/container', container: { name: 'haicc-swarm-1-node-1-abc', image: 'haicc-node:x' } })), 'swarm-1/node-1', 'its replica made: the node changed, no node of its own')
   t.alike(at('swarm-1/node-1').container, { name: 'haicc-swarm-1-node-1-abc', state: 'created', service: null }, 'the node\'s container: made')
   s.apply(done(['local/host', 'swarm-1/node-1'], { started: 'container', container: 'haicc-swarm-1-node-1-abc', state: 'running' }))
+  s.apply(done(['local/host', 'swarm-1/node-2'], { started: 'container', container: 'haicc-swarm-1-node-2-abc', state: 'running', service: 'started' }))
+  t.is(at('swarm-1/node-2').container?.service, 'started', 'a container started, its replica\'s service said with it (its commission done): that state')
   t.is(s.apply(done(['local/host', 'swarm-1/node-1', 'swarm-1/node-1/container'], { service: 'started', state: 'started' })), 'swarm-1/node-1', 'a service command executed in the replica: its node changed')
   t.alike([at('swarm-1/node-1').service, at('swarm-1/node-1').container, s.snapshot().nodes.length], ['started', { name: 'haicc-swarm-1-node-1-abc', state: 'running', service: 'started' }, 4], 'the node: its own state, its container running with the replica\'s state; four nodes still')
   t.is(s.apply(done(['local/host', 'swarm-1/node-1', 'swarm-1/node-1/container'], { deployed: 'x', mrepo: 'swarm-1/x' })), null, 'a deploy inside a replica: not shown')
@@ -116,7 +118,8 @@ test('the install folded from its completed records: its mrepos a tree, each wit
   t.is(s.apply(done(['local/elsewhere'], { service: 'started', state: 'started' })), null, 'executed in an mrepo it does not know: nothing')
   t.is(s.apply({ mode: 'atomic' }), null, 'no record: nothing')
   // torn down: the node and what was below it
-  t.is(s.apply(done([], { deployed: 'splectral', mrepo: 'local/splectral', package: 'haiccing/base-package-splectral' })), 'local/splectral')
+  t.is(s.apply(done([], { deployed: 'splectral', mrepo: 'local/splectral', package: 'haiccing/base-package-splectral', commission: 'done', service: 'started' })), 'local/splectral')
+  t.is(at('local/splectral').service, 'started', 'a deploy that says its service state, its commission done: that state')
   t.is(s.apply(done([], { tornDown: 'host' })), 'local/boot', 'a teardown executed at the root: its child gone; the root changed')
   t.alike(s.snapshot().nodes.map(x => x.uri), ['local/boot', 'local/splectral'], 'the host and the nodes below it gone')
   t.alike([s.apply(done([], [{ tornDown: 'splectral' }, { tornDown: 'nothing' }])), s.snapshot().nodes.length], ['local/boot', 1], 'several torn down at once: a list, each taken')

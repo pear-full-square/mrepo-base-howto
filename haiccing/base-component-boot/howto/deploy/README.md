@@ -5,12 +5,11 @@ Deploys the host, the mrepo a machine is managed with, and brings it into servic
 ## Steps
 
 ```sh
-# the host: an mrepo of its own, built from the haicc component and linked here at host
+# the host: an mrepo of its own, built from the haicc component and linked
+# here at host; its commission, run by its runtime as it starts, makes it
+# ready (its info extracted) and opens its door (it can deploy mrepos and
+# hold structure in its main) before the deploy answers
 haicc . boot/deploy host haiccing/base-component-haicc
-# made ready: its info extracted
-haicc host service/initialise
-# its door opened: it can deploy mrepos and hold structure in its main
-haicc host service/start
 # the check: the host answers with its root
 haicc host crud/read .
 ```

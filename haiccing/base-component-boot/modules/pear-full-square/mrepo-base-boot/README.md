@@ -2,9 +2,11 @@
 
 The mrepo boot protocol: deploy, tear down and redeploy a child mrepo, executed by its parent.
 
-Deploy builds a child from a target package's list, links its packages
-and starts its runtime. Teardown stops the runtime and removes the child,
-one or several (a query over the boot mrepo's registry); redeploy does both. The
+Deploy builds a child from a target package's list, links its packages,
+starts its runtime and waits for the child's `commission`. Teardown asks
+for the child's `decommission` first, then stops the runtime and removes
+the child, one or several (a query over the boot mrepo's registry);
+redeploy does both. The
 module also holds the install routine. Carried by
 `haiccing/base-package-boot`, which offers the actions, and by
 `haiccing/base-component-boot`, which builds the boot mrepo with the same

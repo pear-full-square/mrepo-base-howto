@@ -15,12 +15,12 @@ haicc host crud/read . --flags log=verbose
 haicc host --flags log=debug -- haicc node-1 crud/read .
 # another layer read: the requests done
 haicc . crud/read "done/*[value/value/protocol='boot']" --flags layer=request
-# a script to go on with, after the deploy
-haicc . boot/deploy host haiccing/base-component-haicc --flags continuation=start
+# into a container: the node deployed on its own haicc install there
+haicc host boot/deploy swarms/swarm-1/node-1 haiccing/base-component-haicc --flags container
 ```
 
 ## Notes
 
 - **`log`**: `info` (without it), `verbose`, `debug`. **`layer`**:
-  `main` without it. **`continuation`**: a script the deployed package
-  has; one it has not is refused, with those it has.
+  `main` without it. **`container`**: on a deploy, the child on its own
+  haicc install in a Docker container.

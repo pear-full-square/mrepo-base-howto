@@ -31,3 +31,7 @@ haicc . boot/deploy <name> <new>
 - **It defines an mrepo** (the mrepo-definition how-to): its list and
   its runtime config are laid in from it, the last of the list.
 - **The info test checks** its included packages against its list.
+- **A list names packages, not components**: a package that takes over
+  a component's role carries that component's packages in its own list
+  (the workbench, `base-solution-workbench`: the haicc component's, the
+  host's role), itself last.

@@ -5,11 +5,12 @@ The boot component's part of the structure: the list of the packages the boot mr
 - **Its packages** (`packages/layer.json`): the runtime, the info
   protocol, the protocol protocol, the boot protocol, the haicc protocol,
   the crud protocol, and this component last.
-- **Its runtime config**: its hooks, below. No service state: the boot
-  mrepo is not service managed.
-- **Nothing preloaded**: the boot mrepo deploys nothing by itself. Its
-  `main` holds the mrepo registry, `registry`, made by a hook, and the
-  shortcuts of what it deploys.
+- **Its runtime config**: its hooks, below. No service: the one mrepo
+  without, the root, nothing upstream managing it; no `commission`: it
+  is put in place, not deployed.
+- **Nothing preloaded**: it deploys nothing by itself; its `main` holds
+  the mrepo registry, made by a hook, and the shortcuts of what it
+  deploys.
 
 ## Runtime config
 

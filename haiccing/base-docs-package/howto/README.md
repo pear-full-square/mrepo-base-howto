@@ -18,7 +18,7 @@ implemented with no how-to naming it (`Pattern: <name>`).
 - [hooks](hooks/)
 - [service](service/)
 - [continuation-script](continuation-script/)
-- [solution](solution/)
+- [commission](commission/)
 - [documents](documents/)
 - [program](program/)
 - [platform](platform/)

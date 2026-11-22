@@ -1,8 +1,10 @@
 // start(exec): the container protocol's start (README.md beside it).
-import { existsSync, rmSync } from 'bare-fs'
+import fs, { existsSync, rmSync } from 'bare-fs'
+import { openRepo, p2pgitBackend } from 'mycelium-git'
 import { join } from 'bare-path'
 import { docker, available, stateOf } from '../../internal/docker/index.js'
 import { replica } from '../../internal/replica/index.js'
+import { commissioned } from 'mrepo-base-runtime'
 
 // The replica's runtime's socket, in its folder: there once it listens.
 const SOCKET = 'runtime.sock'
@@ -32,6 +34,13 @@ export async function start (exec, { wait = 20000 } = {}) {
     const said = docker('logs', '--tail', '5', name)
     throw new Error(`its runtime did not start in its container: ${name} (${stateOf(name) ?? 'gone'})${said.out || said.err ? `: ${(said.err || said.out).split('\n').pop()}` : ''}`)
   })
-  exec.log('info', 'started', { at: r.at, container: name })
-  return { started: r.at, container: name, state }
+  // its commission, run by its runtime as it starts (once: a restart does
+  // not again), waited for: started means in service, as its package says
+  const done = await exec.step('commission', c => ({ state: c?.state ?? null, ...(c?.error ? { error: c.error } : {}) }), () => commissioned({ repo: r.dir }))
+  if (done?.state === 'failed') throw new Error(`its commission failed in its container: ${name}: ${done.error}`)
+  // the replica's service state as its commission left it, said with the start
+  // catch: no service state there: none to say
+  const service = await openRepo(p2pgitBackend(join(r.dir, '.git'), { fs })).read('/runtime/service.json').then(b => JSON.parse(b.toString()).state ?? null, () => null)
+  exec.log('info', 'started', { at: r.at, container: name, commission: done?.state ?? null })
+  return { started: r.at, container: name, state, service }
 }

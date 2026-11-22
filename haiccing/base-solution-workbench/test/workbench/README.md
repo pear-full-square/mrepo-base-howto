@@ -1,6 +1,6 @@
 # test/workbench/
 
-The solution's own test: the workbench deployed on a fresh install, its howtos namespace used.
+The solution's own test: the workbench on a fresh install, commissioned, its howtos used, decommissioned.
 
 ## What it checks
 
@@ -8,17 +8,20 @@ The solution's own test: the workbench deployed on a fresh install, its howtos n
   the boot component.
 - **One command at the root**: `boot/deploy workbench
   haiccing/base-solution-workbench`: the workbench at `workbench`,
-  `local/workbench`, said a solution; answered with its script,
-  `scripts/solution.haicc`, unasked, for the root's own position.
-- **Its mrepo**: its runtime running by its unique URI; its boot hooks
-  made its `registry` and its `howtos` node, `{"kind":"howtos"}`.
-- **The howtos namespace**: an mrepo deployed by the workbench below
-  it, at `howtos/haiccing/base-solution-workbench/howto/install/boot`:
-  its unique URI the path below it, placed at `<work>/mrepos/<that
-  path>`, its runtime knowing it, in the workbench's registry by it;
-  torn down through the registry by the how-to's key.
-- **Nothing left**: the workbench torn down, the boot mrepo stopped,
-  every process ended.
+  `local/workbench`, answered once its commission is done, in service;
+  no continuation.
+- **Its commission**: its components deployed below it, `workbench/docs`
+  and `workbench/splectral` (`local/docs`, `local/splectral`), in its own
+  registry, each in service by its own commission; then itself
+  initialised (its `howtos` node, `{"kind":"howtos"}`) and started.
+- **The howtos namespace**: an mrepo deployed by the workbench below it,
+  at `howtos/haiccing/base-solution-workbench/howto/install/boot`: its
+  unique URI the path below it, placed at `<work>/mrepos/<that path>`,
+  its runtime knowing it, in the workbench's registry by it; torn down
+  through the registry by the how-to's key.
+- **Its decommission**: the workbench torn down, its decommission first,
+  its components torn down with it.
+- **Nothing left**: the boot mrepo stopped, every process ended.
 
 ## Sources
 
@@ -27,5 +30,5 @@ this package's bundles in it.
 
 ## Not here
 
-The script run, the docs mrepo, the host and Splectral in service: the
+Splectral's pages served, the docs read through the command line: the
 `haicc` command's end to end, `base-linux-haicc`'s `test/splectral.sh`.

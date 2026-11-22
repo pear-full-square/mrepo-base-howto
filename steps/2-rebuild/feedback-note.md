@@ -8,6 +8,14 @@ task and the human's words: `splectrum/roadmap-2`,
 `tasks/service-every-mrepo/`. To be fixed in the packages, then this
 note removed.
 
+**Where it stands** (2026-11-22): 1, 2, 3, 4 and 6 fixed with
+`commission` (`f3f6b0c3`, `0c009943`): `base-package-service` (every
+mrepo, the boot mrepo the exception and why, refused not held),
+`base-docs-package` (`mrepo/runtime`), `base-component-docs` (a service,
+its setup at `initialise`), `base-component-boot`, the workbench a
+service. Left: 5, `haici` in the docs mrepo, and the direct form's
+record of the command (not in the batch).
+
 1. `haicc docs info/get service` (`base-package-service`): "An mrepo
    that links it is service managed" reads as optional. Settled: every
    mrepo implements the service protocol, the boot mrepo the one

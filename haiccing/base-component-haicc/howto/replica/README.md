@@ -11,11 +11,11 @@ in a container.
 ```sh
 # the replica made, and the container that will run it
 haicc host haicc swarms/swarm-1/node-1 container/create
-# the container started: the replica's runtime runs in it
+# the container started: the replica's runtime runs in it, its commission
+# bringing it into service (once: a restart of its container does not again)
 haicc host haicc swarms/swarm-1/node-1 container/start
-# the replica made ready and its door opened, reached through its node
-haicc host haicc swarms/swarm-1/node-1 haicc container service/initialise
-haicc host haicc swarms/swarm-1/node-1 haicc container service/start
+# the replica answers, reached through its node
+haicc host haicc swarms/swarm-1/node-1 haicc container crud/read .
 # the check: the node says its container runs
 haicc host haicc swarms/swarm-1/node-1 container/status
 ```

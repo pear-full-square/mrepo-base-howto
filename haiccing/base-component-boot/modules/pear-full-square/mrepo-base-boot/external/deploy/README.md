@@ -21,26 +21,22 @@ in, in that order, and the child is built at `<parent>/main/<name>/`.
 
 ## Returns
 
-`{ deployed, mrepo, package, packages, layers, runtime: { pid } }`;
+`{ deployed, mrepo, package, packages, layers, runtime: { pid }, commission, service }`;
 `deployed` is the position as written at `main`; `mrepo` is the child's unique URI.
 
-**A solution** (its package has the script `scripts/solution.haicc`):
-the mrepos an install is made of, deployed beside it. Every deploy of it
-answers with that script as its continuation, unasked, for this mrepo's
-own position (`.`), not the deployed mrepo's: the terminal sends it on
-as `haicc/script .`, and what it deploys lands beside the solution's
-mrepo (`haicc . boot/deploy workbench haiccing/base-solution-workbench`:
-the workbench at `local/workbench`, then the docs mrepo, the host and
-Splectral at `local/docs`, `local/host`, `local/splectral`). It answers
-`solution: "solution"` besides. A continuation asked for besides, or the
-flag `container`, is refused before anything is built.
-
-Asked for a script of the package (the request's flag,
-`continuation=<script>`), it answers with it as its continuation: the
-script's lines, read from the package's bundle (`scripts/<script>.haicc`),
-for the deployed mrepo's position: the terminal sends them on as
-`haicc/script <position>`. A script the package has not is refused before
-anything is built, with those it has.
+**Its commission**: the child's runtime, as it starts, runs its
+`commission` hook (`runtime/hooks/commission.haicc`, its package's), and
+the deploy waits for it: what the package does once it is deployed, its
+components deployed (each deploy commissioning that one, the cascade),
+its service initialised and started, as the package says. The deploy
+answers when it is done, `commission: "done"` (`"none"`: no hook),
+and the state its service is left in, `service` (`"started"`; `null`:
+none). A
+line that fails fails the deploy, the line said: nothing of the child is
+left (what it deployed so far decommissioned, its runtime stopped, its
+folder removed). The deploy names no service: the package decides. The
+wait is bounded (30 minutes): a solution's commission deploys a whole
+install.
 
 **Into a container** (the request's flag `container`, a routing
 directive): the child is deployed on another haicc install, the
@@ -99,6 +95,8 @@ nothing of it inside this mrepo's folder.
   cannot target it.
 - The parent's packages manifest names no store.
 - The target lists no packages; its runtime does not start.
+- Its commission fails: `its commission failed: line <n>: ...`, nothing of
+  it left.
 - Into a container: no haicc install beside the work folder; the
   container not made, or not booted in time; the container's platform
   refusing the deploy (`in the container: ...`). Nothing of it is left.

@@ -20,13 +20,6 @@ haicc <URI> --flags <flag>... -- <command>      flags after a URI: that
                                                 layer=<name>, the layer the
                                                 command's URI is read at
                                                 (main without it);
-                                                continuation=<script>, a
-                                                script to go on with, where
-                                                a command has some (a deploy:
-                                                its package's scripts/
-                                                <script>.haicc): its lines
-                                                sent on by haicc as
-                                                haicc/script at the position;
                                                 container, on a boot/deploy:
                                                 the child deployed into a
                                                 Docker container, run there
@@ -57,14 +50,14 @@ haicc sources https | no-https [<org>...]       https as the backup, or not
 
   haicc boot/deploy
   haicc . boot/deploy host haiccing/base-component-haicc
-  haicc host service/initialise
+  haicc host service/stop
   haicc host service/start
   haicc host boot/deploy node-1 haiccing/base-component-haicc
   haicc host haicc node-1 info/get
   haicc host crud/read . --flags log=verbose
   haicc host --flags log=debug -- haicc node-1 crud/read .
   haicc . crud/read "done/*[value/value/protocol='boot']" --flags layer=request
-  haicc . boot/deploy host haiccing/base-component-haicc --flags continuation=start
+  haicc . boot/deploy workbench haiccing/base-solution-workbench
   haicc host boot/teardown node-1
   haicc . boot/teardown host
   haicc boot/teardown

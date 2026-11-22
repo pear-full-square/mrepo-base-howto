@@ -1,20 +1,15 @@
 # scripts/
 
-The scripts of base-component-haicc: scripts to go on with after a deploy, their lines simple commands.
+The scripts of base-component-haicc: lines of simple commands, run where the haicc command points.
 
-Asked for with the deploy, by name, a script is answered as the deploy's
-continuation, and the `haicc` command sends it on, `haicc/script`, to
-the deployed mrepo: its lines, each a simple command, executed there,
-the first that fails ending it.
-
-```
-haicc . boot/deploy host haiccing/base-component-haicc --flags continuation=start
-```
+A script is run by name with `haicc/file`, its lines sent as one
+`haicc/script` to where its URI points, each executed there, the first
+that fails ending it. Nothing runs one with a deploy: what the mrepo does
+once deployed is its `commission` hook (`mrepo/`).
 
 | script | |
 |---|---|
-| `start.haicc` | the mrepo brought into service: `service/initialise`, then `service/start` |
-| `cluster.haicc` | a host with a swarm of two nodes, each with its container: the mrepo brought into service, `swarms/swarm-1` created in its `main`, its document saying it is a swarm; `node-1` and `node-2` deployed below it from this component (`swarm-1/node-1`, `swarm-1/node-2`), each brought into service, its replica made in a container and started, and the replica brought into service through its node; then the swarm's nodes read |
+| `cluster.haicc` | a swarm of two nodes, each with its container: `swarms/swarm-1` created in the host's `main`, its document saying it is a swarm; `node-1` and `node-2` deployed below it from this component (`swarm-1/node-1`, `swarm-1/node-2`), each brought into service by its commission, its replica made in a container and started (brought into service by its own commission); then the swarm's nodes read |
 
 ## Cluster
 

@@ -55,8 +55,8 @@ test('a continuation: the response says what to go on with, a script: sent on as
     mkdirSync(join(s.root, 'inbox'), { recursive: true }); mkdirSync(join(s.root, 'outbox'), { recursive: true })
     const script = 'service/initialise\nservice/start\n'
     let a = answerAll(s.root, [{ output: { deployed: 'host' }, continuation: { at: 'host', script } }, { output: [{ line: 'service/initialise' }, { line: 'service/start' }] }])
-    t.is(await s.run(['--output', '.', 'boot/deploy', 'host', 'haiccing/base-component-haicc', '--flags', 'continuation=start']), 0, 'exit 0: the script done')
-    t.alike(await a.all, [['boot/deploy', 'host', 'haiccing/base-component-haicc', '--flags', 'continuation=start'], ['haicc/script', 'host', script]], 'the command, then its script, one command to the root: haicc/script, its URI the position it was answered for')
+    t.is(await s.run(['--output', '.', 'boot/deploy', 'host', 'haiccing/base-component-haicc']), 0, 'exit 0: the script done')
+    t.alike(await a.all, [['boot/deploy', 'host', 'haiccing/base-component-haicc'], ['haicc/script', 'host', script]], 'the command, then its script, one command to the root: haicc/script, its URI the position it was answered for')
     t.alike(s.out, ['{"deployed":"host"}', '[{"line":"service/initialise"},{"line":"service/start"}]'], '--output: each one\'s output')
 
     a = answerAll(s.root, [{ output: 1, continuation: { at: '.', script: 'x/y\n' } }, { error: 'line 1: x/y: no protocol' }])

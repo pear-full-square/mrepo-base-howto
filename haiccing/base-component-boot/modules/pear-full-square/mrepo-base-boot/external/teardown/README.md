@@ -2,15 +2,19 @@
 
 Stops a child mrepo's runtime and removes the child, its node, its shortcut and its link's record.
 
-The runtime is asked to stop over its socket; still running, it gets
-SIGTERM, then SIGKILL, each waited for until the process has ended. How
-it stopped is logged.
+Its `decommission` first: its runtime asked to run its package's
+`decommission` hook, waited for (what it deployed torn down, the
+cascade). A line that fails stops the teardown, nothing removed. Then
+the runtime is asked to stop over its socket; still running, it gets
+SIGTERM, then SIGKILL, each waited for until the process has ended.
+
+## A pair
 
 A child deployed into a container (its link's record `how: container`)
 is not stopped here: the container's platform tears it down (a
 `boot/teardown` dropped into its boot mrepo's inbox, when the container
-runs), then its container and its folder are removed (`internal/pair`).
-It answers `{ tornDown, container }`.
+runs, its decommission there), then its container and its folder are
+removed (`internal/pair`). It answers `{ tornDown, container }`.
 
 ## Signature
 
@@ -40,6 +44,8 @@ into the registry: a list of them, empty when nothing is selected.
 - No target, `main` itself or the root: `missing argument: target`.
 - The child is not deployed; or the position exists locally, which the
   boot protocol cannot target.
+- Its decommission fails: `not torn down: <position>: its decommission:
+  line <n>: ...`, nothing removed.
 - Its runtime does not stop.
 
 ## Design

@@ -57,7 +57,7 @@ import { openStore } from 'p2p-store'
 import { mrepos } from 'p2p-mrepo'
 import { openRepo, writer } from 'mycelium-git'
 import { nativeBackend, p2pgitBackend } from 'mycelium-git'
-import { INBOX, OUTBOX, MREPOS, inboxFolder, inboxOf, post, viewOf, gitdirOf, setting, request, principals, layer, internal, hookOf, parse, runLines, DONE, OUTSIDE, guid } from 'mrepo-base-request'
+import { INBOX, OUTBOX, MREPOS, inboxFolder, inboxOf, post, viewOf, gitdirOf, setting, request, principals, layer, internal, hookOf, parse, runLines, DONE, OUTSIDE, guid, AUTHOR } from 'mrepo-base-request'
 import { execute, failed } from 'mrepo-base-execute'
 import { IDENTITY } from 'mrepo-base-xpath'
 export { run as runtimeRun } from './external/run/index.js'
@@ -197,8 +197,36 @@ export async function run ({ work: w, repo: given = null, every = 200, idle = 20
   // what is activated, extracted or made ready at boot is the hook's.
   const starting = [(await internal(ctx, { command: ['protocol/activate', '.', 'protocol'] })).name]
   const boot = await hookOf(ctx.repo, 'boot')
+  // Its commission: what the mrepo does once deployed, after its boot: its
+  // components deployed (each commissioned by its own), its service
+  // initialised, started, as its package says. Once: done, it is recorded
+  // in the runtime layer (COMMISSIONED), and a runtime started again (a
+  // replica's, with its container) does not run it again. Its state in the
+  // status, which the deploy waits on: none (no hook), pending, running,
+  // done, failed (the line that failed, why).
+  const commission = await hookOf(ctx.repo, 'commission')
+  const recorded = await ctx.repo.find(COMMISSIONED) !== null
+  ctx.commission = { state: commission === null ? 'none' : recorded ? 'done' : 'pending' }
+  const commissioning = () => {
+    if (commission === null || recorded) return
+    ctx.commission = { state: 'running' }
+    // catch: a line that failed is in its own record and in the state; the runtime goes on
+    Promise.resolve().then(() => runLines({ dir: dir ?? viewOf(work, repo.name), uri: ctx.uri, own: ctx.own }, parse(commission), '.'))
+      .then(() => { ctx.commission = { state: 'done', record: true }; wake() }, err => { ctx.commission = { state: 'failed', error: err.message } })
+  }
+  // Its decommission, asked by a teardown before the runtime is stopped:
+  // what the mrepo does before it goes (what it deployed torn down). ->
+  // { ok, decommission: none | done } or { ok: false, error }
+  const decommissioning = async () => {
+    const hook = await hookOf(ctx.repo, 'decommission')
+    if (hook === null) return { ok: true, decommission: 'none' }
+    try {
+      await runLines({ dir: dir ?? viewOf(work, repo.name), uri: ctx.uri, own: ctx.own }, parse(hook), '.')
+      return { ok: true, decommission: 'done' }
+    } catch (err) { return { ok: false, error: `decommission: ${err.message}` } }
+  }
   ctx.intake = false
-  const status = () => ({ ok: true, pid: process.pid, started, repository: { name: repo.name, uri: ctx.uri, storage: repo.storage, id: repo.id, key: repo.key }, version })
+  const status = () => ({ ok: true, pid: process.pid, started, repository: { name: repo.name, uri: ctx.uri, storage: repo.storage, id: repo.id, key: repo.key }, commission: { state: ctx.commission.state, ...(ctx.commission.error ? { error: ctx.commission.error } : {}) }, version })
   let stopping = null
   let stopped = false
   let server = null
@@ -229,7 +257,8 @@ export async function run ({ work: w, repo: given = null, every = 200, idle = 20
         try { req = JSON.parse(line) } catch {}
         if (req?.op === 'status') pipe.write(JSON.stringify(status()) + '\n')
         else if (req?.op === 'stop') { pipe.end(JSON.stringify({ ok: true, stopping: true }) + '\n'); stop('asked') }
-        else pipe.write(JSON.stringify({ ok: false, error: 'not a request (status, stop)' }) + '\n')
+        else if (req?.op === 'decommission') decommissioning().then(r => pipe.write(JSON.stringify(r) + '\n'))
+        else pipe.write(JSON.stringify({ ok: false, error: 'not a request (status, stop, decommission)' }) + '\n')
       }
     })
     pipe.on('error', () => {})
@@ -294,14 +323,21 @@ export async function run ({ work: w, repo: given = null, every = 200, idle = 20
       // operational once its own requests are done: the inbox taken in
       // catch: not in done yet: its own requests still going, not operational yet
       if (ctx.intake === false && (await Promise.all(starting.map(n => layer(ctx, DONE).read(n).then(() => true, () => false)))).every(Boolean)) {
-        if (boot === null) ctx.intake = true
-        else {
+        if (boot === null) { ctx.intake = true; commissioning() } else {
           ctx.intake = 'internal'
           // the boot hook's lines, each its own request; whatever came of
           // them, the inbox open after
           // catch: a line that failed is in its own record; the boot goes on
-          Promise.resolve().then(() => runLines({ dir: dir ?? viewOf(work, repo.name), uri: ctx.uri, own: ctx.own }, parse(boot), '.')).catch(() => null).then(() => { ctx.intake = true; wake() })
+          Promise.resolve().then(() => runLines({ dir: dir ?? viewOf(work, repo.name), uri: ctx.uri, own: ctx.own }, parse(boot), '.')).catch(() => null).then(() => { ctx.intake = true; commissioning(); wake() })
         }
+      }
+      // a commission done: recorded, between passes (the store's one writer)
+      if (ctx.commission.record) {
+        stage = 'commissioned'
+        const c = await ctx.writer.change('runtime')
+        await c.put(COMMISSIONED.slice('/runtime'.length), Buffer.from(JSON.stringify({ commissioned: new Date().toISOString() }) + '\n'))
+        await c.commit('Commissioned', { author: AUTHOR })
+        ctx.commission = { state: 'done' }
       }
       // the lines queued as the mrepo's own: placed now, between passes
       stage = 'own'
@@ -372,6 +408,31 @@ export function ask ({ work, repo = null, op, timeout = 5000 }) {
     pipe.write(JSON.stringify({ op }) + '\n')
   })
 }
+
+// Where a runtime records its mrepo's commission done: in its runtime layer.
+export const COMMISSIONED = '/runtime/commission.json'
+
+// commissioned({ repo }): an mrepo's commission waited for, as its status
+// says it: until it is done or failed, or its runtime is gone. A deploy
+// waits on it. -> { state: none | done | failed, error } ; null: no runtime
+// answering. wait: the bound, in ms (a solution's commission deploys its
+// components: minutes).
+export async function commissioned ({ work, repo = null, wait = 30 * 60 * 1000 }) {
+  for (const end = Date.now() + wait; ;) {
+    const s = await ask({ work, repo, op: 'status', timeout: 2000 })
+    if (!s) return null
+    const c = s.commission ?? { state: 'none' }
+    if (c.state !== 'pending' && c.state !== 'running') return c
+    if (Date.now() >= end) return { state: 'failed', error: `not done in ${Math.round(wait / 1000)} s` }
+    await new Promise(resolve => setTimeout(resolve, 200))
+  }
+}
+
+// decommission({ repo }): an mrepo asked to decommission, its hook's lines
+// run by its runtime, waited for: what a teardown does before it stops it.
+// -> { ok, decommission: none | done } or { ok: false, error }; null: no
+// runtime answering.
+export const decommission = ({ work, repo = null, wait = 30 * 60 * 1000 }) => ask({ work, repo, op: 'decommission', timeout: wait })
 
 // start({ repo, bundle }): an mrepo's runtime by its directory, from a
 // runtime package's bundle (its entry takes the directory).

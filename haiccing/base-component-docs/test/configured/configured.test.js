@@ -3,7 +3,8 @@
 // packages it lists, their bundles read from the sources (SOURCES): every
 // hook names a protocol and an action one of them provides; and what the
 // hooks do, run with those packages' own actions on a minimal execution,
-// in memory: which protocols are open after the boot. No mrepo is built. Every hook file the component
+// in memory: which protocols are open after the boot, and through the
+// service's transitions. No mrepo is built. Every hook file the component
 // brings must be named here and run here: the tests fail when one was
 // left out.
 import test from '../../modules/node_modules/brittle/index.js'
@@ -15,8 +16,8 @@ import os from '../../modules/node_modules/bare-os/index.js'
 const pkg = join(dirname(fileURLToPath(import.meta.url)), '..', '..')
 const json = (...p) => JSON.parse(readFileSync(join(pkg, ...p), 'utf8'))
 
-// The hooks the component brings, as they are in its structure: by
-// <transition>/<name>, each its command.
+// The hooks the component brings, as they are in its structure: a file a
+// transition, by <transition>/<line>, each line's words.
 const hooksDir = join(pkg, 'mrepo', 'runtime', 'hooks')
 const brought = {}
 for (const f of existsSync(hooksDir) ? readdirSync(hooksDir).sort() : []) readFileSync(join(hooksDir, f), 'utf8').split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('#')).forEach((l, i) => { brought[`${f.replace(/\.haicc$/, '')}/${i + 1}`] = l.split(/\s+/) })
@@ -26,6 +27,7 @@ const LIST = [
   'haiccing/base-package-protocol',
   'haiccing/base-package-info',
   'haiccing/base-package-help',
+  'haiccing/base-package-service',
   'haiccing/base-docs-haicc',
   'haiccing/base-docs-hdlc',
   'haiccing/base-docs-package',
@@ -35,21 +37,25 @@ const LIST = [
   'haiccing/base-component-docs'
 ]
 // Each hook named here with its command: what the docs mrepo offers from
-// its boot, and its info extracted.
+// its boot, its commission (its service initialised and started), what its
+// initialise sets up (its info). No door: nothing sits behind it.
 const HOOKS = {
   'boot/1': ['protocol/activate', '.', 'help'],
   'boot/2': ['protocol/activate', '.', 'info'],
   'boot/3': ['protocol/activate', '.', 'runtime'],
-  'boot/4': ['info/extract']
+  'boot/4': ['protocol/activate', '.', 'service'],
+  'commission/1': ['service/initialise'],
+  'commission/2': ['service/start'],
+  'initialise/1': ['info/extract']
 }
 
 test('its list of packages, in deploy order, itself last', (t) => {
-  t.alike(json('mrepo', 'packages', 'layer.json').packages, LIST, 'the runtime, the protocol protocol, info, help, the documentation, the component')
+  t.alike(json('mrepo', 'packages', 'layer.json').packages, LIST, 'the runtime, the protocol protocol, info, help, service, the documentation, the component')
 })
 
-test('its hooks, file by file; no service', (t) => {
-  t.alike(brought, HOOKS, 'each hook file, its transition and its command; none that is not named here')
-  t.absent(existsSync(join(pkg, 'mrepo', 'runtime', 'service.json')), 'no service state: the docs mrepo is not service managed')
+test('its hooks, file by file, line by line, and the state it starts in', (t) => {
+  t.alike(brought, HOOKS, 'each hook file, its transition, each line its command; none that is not named here')
+  t.alike(json('mrepo', 'runtime', 'service.json'), { state: 'booted' }, 'the docs mrepo starts booted: a service like every mrepo')
 })
 
 // The packages it lists, from the sources: each one's protocols, their
@@ -75,8 +81,9 @@ test('the packages it lists: each in the sources, the protocols they provide', (
     help: 'haiccing/base-package-help',
     info: 'haiccing/base-package-info',
     protocol: 'haiccing/base-package-protocol',
-    runtime: 'haiccing/base-package-runtime'
-  }, 'four protocols, one a package; the documentation and the component provide none')
+    runtime: 'haiccing/base-package-runtime',
+    service: 'haiccing/base-package-service'
+  }, 'five protocols, one a package; the documentation and the component provide none')
 })
 
 test('every hook names a protocol and an action a listed package provides', (t) => {
@@ -91,7 +98,7 @@ test('every hook names a protocol and an action a listed package provides', (t) 
 // component lays them in, the protocols loaded; a command run with the
 // listed packages' own actions.
 function world () {
-  const files = {}
+  const files = { '/runtime/service.json': Buffer.from(JSON.stringify(json('mrepo', 'runtime', 'service.json'))) }
   { const texts = {}; for (const [name, command] of Object.entries(brought)) { const tr = name.split('/')[0]; texts[tr] = (texts[tr] ?? '') + command.join(' ') + '\n' } for (const [tr, text] of Object.entries(texts)) files[`/runtime/hooks/${tr}.haicc`] = Buffer.from(text) }
   const commands = []
   const exec = {
@@ -111,25 +118,41 @@ function world () {
       commands.push(command.join(' '))
       if (!actions[p]?.[a]) throw new Error(`no action: ${first}`)
       // (a hook is the mrepo's own: its URI one segment, no prefix)
-      return actions[p][a](exec, { protocol: p, action: a, uri: [uri], args })
-    }
+      const form = { protocol: p, action: a, uri: [uri], args }
+      const r = await actions[p][a](exec, form)
+      // a transition waiting for its hook file: its lines run here, as the
+      // runtime runs them, then the action resumed
+      if (r === null && p === 'service') { for (const name of of(a)) await exec.run(brought[name]); return actions[p][a]({ ...exec, resumed: { output: [] } }, form) }
+      return r
+    },
+    resumed: null,
+    wait: () => null,
   }
   const active = () => Object.keys(files).filter(u => u.startsWith('/protocols/')).map(u => u.slice('/protocols/'.length, -'.json'.length)).sort()
-  return { exec, commands, active }
+  const state = () => JSON.parse(files['/runtime/service.json'].toString()).state
+  return { exec, commands, active, state }
 }
+const of = transition => Object.keys(brought).filter(n => n.startsWith(`${transition}/`)).sort()
 
-test('what its hooks do: the boot opens help, info and runtime, and extracts the info', async (t) => {
+test('what its hooks do: the boot opens help, info, runtime and service; its commission initialises it (its info extracted) and starts it', async (t) => {
   const w = world()
   // the boot: the runtime places these as its own, in name order
-  for (const name of Object.keys(brought).sort()) await w.exec.run(brought[name])
-  t.alike(w.active(), ['help', 'info', 'runtime'], 'after the boot: help, info, and the runtime\'s')
+  for (const name of of('boot')) await w.exec.run(brought[name])
+  t.alike(w.active(), ['help', 'info', 'runtime', 'service'], 'after the boot: help, info, the runtime\'s and the service\'s')
   t.absent(w.active().includes('protocol'), 'the protocol protocol: not a hook\'s, the runtime opens it itself')
-  t.ok(w.commands.includes('info/extract'), 'its info extracted, by its hook')
+  t.absent(w.commands.includes('info/extract'), 'nothing set up at the runtime\'s start: its setup is its initialise')
+  // its commission: what the runtime runs once, as it starts after the deploy
+  const commissioned = []
+  for (const name of of('commission')) commissioned.push(await w.exec.run(brought[name]))
+  t.alike(commissioned, [{ service: 'initialised', state: 'initialised' }, { service: 'started', state: 'started' }], 'its commission: initialised, then started')
+  t.ok(w.commands.includes('info/extract'), 'initialise: its info extracted, by its hook')
+  t.alike(w.active(), ['help', 'info', 'runtime', 'service'], 'started: nothing behind a door, the same open')
+  // every hook file ran: its command among those executed
   const ran = Object.entries(brought).filter(([, c]) => w.commands.includes(c.join(' '))).map(([n]) => n).sort()
-  t.alike(ran, Object.keys(brought).sort(), 'every hook the component brings was run here')
+  t.alike(ran, Object.keys(brought).sort(), 'every hook the component brings was run here: one added without its place in this walk fails this')
 })
 
 test('every protocol the listed packages provide is opened by a hook, or closed on purpose', (t) => {
   const opened = Object.values(brought).filter(c => c[0] === 'protocol/activate').map(c => c[2]).sort()
-  t.alike(Object.keys(provided).filter(p => !opened.includes(p)).sort(), ['protocol'], 'only the protocol protocol is left closed: a package added to the list without a hook for its protocol fails this')
+  t.alike(Object.keys(provided).filter(p => !opened.includes(p)).sort(), ['protocol'], 'only the protocol protocol is opened by no hook: the runtime opens it itself')
 })

@@ -1,6 +1,6 @@
 // teardown(exec, { uri }): the boot protocol's teardown (README.md beside it).
 import { rmSync } from 'bare-fs'
-import { stop } from 'mrepo-base-runtime'
+import { stop, decommission } from 'mrepo-base-runtime'
 import { segmented, joined } from 'mycelium-uri'
 import { query, REGISTRY, MAIN } from 'mrepo-base-xpath'
 import { child } from '../../internal/child.js'
@@ -32,6 +32,14 @@ export async function teardown (exec, { uri }) {
   // Else its runtime stopped first (when it runs), waited for until its
   // process has ended (mrepo-base-runtime's stop: asked, then SIGTERM, then
   // SIGKILL), and its folder removed.
+  // Its decommission first, by its runtime (a pair's: by the container's
+  // platform, its own teardown): what the mrepo does before it goes, what
+  // it deployed torn down. A line that fails stops the teardown, nothing
+  // removed. Its runtime not answering: nothing to ask, torn down all the same.
+  if (recorded.how !== 'container') {
+    const d = await exec.step('decommission', r => ({ decommission: r?.decommission ?? null, ...(r?.error ? { error: r.error } : {}) }), () => decommission({ repo: c.dir }))
+    if (d && !d.ok) throw new Error(`not torn down: ${c.at}: its ${d.error}`)
+  }
   const pair = recorded.how === 'container' ? await teardownPair(exec, c, recorded) : null
   const stopped = pair ? null : await exec.step('runtime', r => ({ pid: recorded.runtime?.pid ?? null, stopped: r ?? null }), () => stop({ repo: c.dir, pid: recorded.runtime?.pid }))
   if (!pair) await exec.step('folder', { dir: c.dir }, async () => rmSync(c.dir, { recursive: true, force: true }))
