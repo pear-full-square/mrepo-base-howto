@@ -138,14 +138,13 @@ test('schemas: each package placed registers the schemas it carries, its own and
   } finally { for (const d of [pkgs, store, dir]) rmSync(d, { recursive: true, force: true }) }
 })
 
-test('deploy from a target package\'s list, placed by its unique URI, its link recorded; redeploy; teardown; a script answered as a continuation; the mrepo registry, several torn down; a swarm\'s node', async (t) => {
+test('deploy from a target package\'s list, placed by its unique URI, its link recorded; redeploy; teardown; the mrepo registry, several torn down; a swarm\'s node', async (t) => {
   const work = mkdtempSync(join(tmpdir(), 'deploy-'))
   const pkgs = mkdtempSync(join(tmpdir(), 'deploy-src-'))
   try {
     source(pkgs, {
       'haiccing/base': { 'runtime/layer.json': { mode: 'atomic' }, 'runtime/kind.json': { kind: 'base' }, 'runtime/hooks/boot/base.json': ['x/y'], 'inbox/layer.json': { mode: 'non-atomic' } },
-      'haiccing/target': { '/scripts/start.haicc': 'service/initialise\nservice/start\n', '/scripts/broken.haicc': '# nothing\n', 'main/layer.json': { mode: 'atomic' }, 'runtime/kind.json': { kind: 'target' }, 'packages/layer.json': { mode: 'replicated', packages: ['haiccing/base', 'haiccing/target'] } },
-      'haiccing/solution': { '/scripts/solution.haicc': 'boot/deploy one haiccing/target\n', '/scripts/start.haicc': 'service/start\n', 'main/layer.json': { mode: 'atomic' }, 'packages/layer.json': { mode: 'replicated', packages: ['haiccing/base', 'haiccing/solution'] } }
+      'haiccing/target': { 'main/layer.json': { mode: 'atomic' }, 'runtime/kind.json': { kind: 'target' }, 'packages/layer.json': { mode: 'replicated', packages: ['haiccing/base', 'haiccing/target'] } }
     })
     const dir = await parent(work, [parseSource(`folder:${pkgs}`)])
     const backend = p2pgitBackend(join(dir, '.git'), { fs })
@@ -207,30 +206,6 @@ test('deploy from a target package\'s list, placed by its unique URI, its link r
     t.absent(existsSync(host), 'removed')
     t.alike([await repo.read('/main/host/.shortcuts.json').catch(() => null), await repo.read('/main/host/.node.json').catch(() => null), (await repo.select('/links/*')).filter(([p]) => !p.endsWith('layer.json')).length], [null, null, 0], 'its shortcut and its node out of main, what was local out of the runtime layer')
     await t.exception(teardown(exec, { uri: ['main', 'host'] }), /not deployed/)
-    // a continuation asked for: a script of the package deployed, answered with the deploy
-    await t.exception(deploy(exec, { uri: ['main', 'scripted'], args: ['haiccing/target'], flags: { continuation: 'nope' } }), /no script: nope \(haiccing\/target has broken, start\)/, 'a script the package has not: refused, with those it has')
-    t.absent(existsSync(join(work, 'mrepos', 'local', 'scripted')), 'before anything is built')
-    await t.exception(deploy(exec, { uri: ['main', 'scripted'], args: ['haiccing/target'], flags: { continuation: 'broken' } }), /not a script: haiccing\/target broken \(no command in it\)/)
-    exec.continued = null
-    await deploy(exec, { uri: ['main', 'scripted'], args: ['haiccing/target'], flags: { continuation: 'start' } })
-    await commit()
-    t.alike(exec.continued, { at: 'scripted', script: 'service/initialise\nservice/start\n' }, 'deploy with continuation=start: the package\'s script of that name answered as its continuation, run for the deployed mrepo\'s position')
-    exec.continued = null
-    await redeploy(exec, { uri: ['main', 'scripted'] })
-    await commit()
-    t.is(exec.continued, null, 'not asked for: none')
-    await teardown(exec, { uri: ['main', 'scripted'] })
-    await commit()
-    // a solution: its script answered with every deploy of it, at this mrepo's own position
-    await t.exception(deploy(exec, { uri: ['main', 'bench'], args: ['haiccing/solution'], flags: { continuation: 'start' } }), /a solution goes on with its own script, solution: no continuation/, 'a continuation asked for besides: refused')
-    t.absent(existsSync(join(work, 'mrepos', 'local', 'bench')), 'nothing built')
-    exec.continued = null
-    const sol = await deploy(exec, { uri: ['main', 'bench'], args: ['haiccing/solution'] })
-    await commit()
-    t.alike([sol.deployed, sol.mrepo, sol.solution], ['bench', 'local/bench', 'solution'], 'deployed as any mrepo, by its name; said a solution')
-    t.alike(exec.continued, { at: '.', script: 'boot/deploy one haiccing/target\n' }, 'its script, solution, answered as the continuation, for the deployer\'s own position: what it deploys lands beside it')
-    await teardown(exec, { uri: ['main', 'bench'] })
-    await commit()
     // the mrepo registry, where main has the node `registry` (the boot mrepo): an mrepo's node by its unique URI
     exec.put('/main/registry/.node.json', Buffer.from('{}\n'))
     await commit()
@@ -367,4 +342,43 @@ test('deploy the runtime: the child\'s runtime started from its own packages, it
     t.absent(spawnSync('kill', ['-0', String(d.runtime.pid)], { stdio: 'ignore' }).status === 0, 'its process ended')
     t.absent(existsSync(host), 'and removed')
   } finally { rmSync(work, { recursive: true, force: true }) }
+})
+
+test('commission and decommission: the deploy waits for the child\'s commission, a failed one leaving nothing; the teardown asks for its decommission first, a failed one removing nothing', { timeout: 120000, skip: !haveRuntime }, async (t) => {
+  const work = mkdtempSync(join(tmpdir(), 'deploy-cm-'))
+  const pkgs = mkdtempSync(join(tmpdir(), 'deploy-cm-src-'))
+  const alive = pid => spawnSync('kill', ['-0', String(pid)], { stdio: 'ignore' }).status === 0
+  try {
+    // packages on the runtime alone, each its hooks: lines of the protocols the runtime brings
+    const on = hooks => ({ 'main/layer.json': { mode: 'atomic' }, ...Object.fromEntries(Object.entries(hooks).map(([h, text]) => [`runtime/hooks/${h}.haicc`, text])) })
+    source(pkgs, {
+      'haiccing/good': { ...on({ commission: 'protocol/activate . info\n', decommission: 'protocol/deactivate . info\n' }), 'packages/layer.json': { mode: 'replicated', packages: ['haiccing/base-package-runtime', 'haiccing/good'] } },
+      'haiccing/bad': { ...on({ commission: 'protocol/activate . info\nnope/nothing\n' }), 'packages/layer.json': { mode: 'replicated', packages: ['haiccing/base-package-runtime', 'haiccing/bad'] } },
+      'haiccing/stuck': { ...on({ decommission: 'nope/nothing\n' }), 'packages/layer.json': { mode: 'replicated', packages: ['haiccing/base-package-runtime', 'haiccing/stuck'] } }
+    })
+    const dir = await parent(work, [parseSource(`folder:${pkgs}`), parseSource(`folder:${SOURCES}`)])
+    const { exec, commit } = context(dir, p2pgitBackend(join(dir, '.git'), { fs }), work)
+    const good = await deploy(exec, { uri: ['main', 'good'], args: ['haiccing/good'] })
+    await commit()
+    t.is(good.commission, 'done', 'its commission done before the deploy answers: said')
+    t.ok(exec.entries.some(e => e.event === 'commission' && e.state === 'done'), 'a step of the deploy, logged')
+    t.alike((await ask({ repo: join(work, 'mrepos', 'local', 'good'), op: 'status' }))?.commission, { state: 'done' }, 'in the child\'s status')
+    exec.entries = []
+    t.alike(await teardown(exec, { uri: ['main', 'good'] }), { tornDown: 'good' })
+    await commit()
+    t.ok(exec.entries.some(e => e.event === 'decommission' && e.decommission === 'done'), 'its decommission first: done, logged')
+    await t.exception(deploy(exec, { uri: ['main', 'bad'], args: ['haiccing/bad'] }), /its commission failed: line 2: nope\/nothing: .*nothing of it left/, 'a commission that fails: the deploy fails, the line said')
+    t.absent(existsSync(join(work, 'mrepos', 'local', 'bad')), 'nothing of it left: its folder gone')
+    t.absent(await ask({ repo: join(work, 'mrepos', 'local', 'bad'), op: 'status' }), 'its runtime stopped')
+    const stuck = await deploy(exec, { uri: ['main', 'stuck'], args: ['haiccing/stuck'] })
+    await commit()
+    t.is(stuck.commission, 'none', 'no commission hook: none')
+    await t.exception(teardown(exec, { uri: ['main', 'stuck'] }), /not torn down: stuck: its decommission: line 1: nope\/nothing/, 'a decommission that fails: the teardown refused, the line said')
+    t.ok(existsSync(join(work, 'mrepos', 'local', 'stuck', '.git')) && alive(stuck.runtime.pid), 'nothing removed: its folder, its runtime')
+    await ask({ repo: join(work, 'mrepos', 'local', 'stuck'), op: 'stop' })
+    for (let i = 0; i < 100 && alive(stuck.runtime.pid); i++) await new Promise(resolve => setTimeout(resolve, 100))
+  } finally {
+    rmSync(work, { recursive: true, force: true })
+    rmSync(pkgs, { recursive: true, force: true })
+  }
 })

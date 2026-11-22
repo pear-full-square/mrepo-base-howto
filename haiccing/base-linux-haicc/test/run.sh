@@ -185,6 +185,7 @@ is "$(running | wc -l | tr -d ' ')" 1 "one runtime running: the boot mrepo's"
 # stored, one line; --output: the output alone
 out=$(haicc --raw . boot/deploy host haiccing/base-component-haicc 2>&1); is $? 0 "haicc --raw . boot/deploy host haiccing/base-component-haicc"
 has "$out" '"deployed":"host","mrepo":"local/host","package":"haiccing/base-component-haicc"' "its output: the haicc mrepo deployed at host, its unique URI local/host"
+has "$out" '"commission":"done","service":"started"' "its commission done before the deploy answered: its service initialised and started, as its package says"
 has "$out" '"topic":"/haicc/terminal"' "--raw: the response record as it is stored, the core addressed back to the terminal"
 is "$(printf '%s\n' "$out" | wc -l | tr -d ' ')" 1 "one line"
 out=$(haicc . info/get 2>&1); is $? 0 "haicc . info/get: by default the record unpacked"
@@ -192,7 +193,7 @@ has "$out" '    "topic": "/haicc/terminal", "key": "' "across lines, indented, i
 has "$out" '      "command": ["info/get"], "protocol": "info",' "the form three deep, packed too"
 has "$out" '"keyword": "."' "and its output, opened below: an entry that does not fit a line of its own"
 [ "$(printf '%s\n' "$out" | wc -l | tr -d ' ')" -gt 5 ] && ok "several lines" || no "several lines" "$out"
-out=$(haicc host info/get 2>&1 >/dev/null); is "$out" "haicc: no info extracted in this mrepo yet (info/extract)" "the host, booted: info active from boot, extracted by its initialise hook, not yet"
+has "$(haicc --output host info/get 2>&1)" '"title":"base-component-haicc"' "the host, commissioned: its info extracted by its initialise hook"
 # nothing of a record changed by the unpacking: what is printed, its line
 # breaks and spaces taken off, is the record as it is stored in the outbox,
 # its spaces taken off the same way (an output, an error; the exact check,
@@ -213,9 +214,11 @@ out=$(haicc output wide 2>&1 >/dev/null); is "$?" "2" "haicc output wide: no wid
 is "$(haicc output auto 2>&1)" "auto: 80 (the output is no terminal)" "haicc output auto: back to the default"
 out=$(haicc . boot/deploy host haiccing/base-component-haicc 2>&1 >/dev/null); is $? 1 "deployed again: exit 1"
 is "$out" "haicc: deployed already: host" "its error on stderr: host is there already"
-out=$(haicc host boot/deploy node-1 haiccing/base-package-runtime 2>&1 >/dev/null); is $? 1 "the host booted: its boot protocol behind the service's door"
-is "$out" "haicc: not now: boot deploy (boot is not active; the service is booted)" "said: boot is activated by the service's start"
-is "$(haicc --output host service/initialise 2>&1)" '{"service":"initialised","state":"initialised"}' "haicc --output host service/initialise: passed through to the haicc mrepo; what was done, the state now"
+is "$(haicc --output host service/initialise 2>&1)" "haicc: not now: service initialise (the service is started)" "initialised and started by its commission: not again"
+is "$(haicc --output host service/stop 2>&1)" '{"service":"stopped","state":"initialised"}' "haicc --output host service/stop: passed through to the haicc mrepo; what was done, the state now"
+out=$(haicc host boot/deploy node-1 haiccing/base-package-runtime 2>&1 >/dev/null); is $? 1 "the host stopped: its boot protocol behind the service's door"
+is "$out" "haicc: not now: boot deploy (boot is not active; the service is initialised)" "said: boot is activated by the service's start"
+is "$(running | wc -l | tr -d ' ')" 2 "stopped, its runtime still running: only a teardown stops it"
 is "$(haicc --output host service/start 2>&1)" '{"service":"started","state":"started"}' "haicc host service/start"
 
 # 8. what is missing is said: an argument, a protocol
@@ -265,7 +268,7 @@ out=$(haicc --output . boot/teardown host --flags help 2>&1); has "$out" '"door"
 is "$(running | wc -l | tr -d ' ')" 3 "nothing of it executed: the host and its node still running"
 out=$(haicc --output host haicc node-1 crud/read . --flags help 2>&1); has "$out" '"door":"refused here: no protocol: crud' "through a chain: answered by the node, where it would run (no crud there)"
 out=$(haicc host crud/read swarms --flags nope 2>&1 >/dev/null); is $? 1 "a flag that is none: not run, exit 1"
-is "$out" "haicc: not run: no flag: nope (container, continuation, feedback, help, layer, log)" "said why"
+is "$out" "haicc: not run: no flag: nope (container, feedback, help, layer, log)" "said why"
 out=$(haicc host --flags help -- crud/read swarms 2>&1 >/dev/null); is "$out" "haicc: not run: help: on the last command only (it rewrites the command it is on)" "help on a command that passes its words on: not the last, not run"
 out=$(haicc host crud/read swarms --flags help 2>&1); has "$out" "To run it: crud/read swarms" "by default its answer in natural language, a line each"
 hasnt "$out" '"topic":' "not the record (--raw for it)"
@@ -373,7 +376,7 @@ has "$out" '"run":false' "completed, not failed: not run"
 has "$out" '"event":"request.flag"' "each reason a warning in its log"
 hasnt "$out" '"event":"crud.read.' "nothing of the command executed"
 out=$(haicc --raw host --flags nope log=verbose -- crud/read . 2>&1); is "$?" "1" "a flag there is none of, before the --: that step not run, exit 1"
-has "$out" '"why":["no flag: nope (container, continuation, feedback, help, layer, log)"]' "said why"
+has "$out" '"why":["no flag: nope (container, feedback, help, layer, log)"]' "said why"
 hasnt "$out" '"event":"crud.read.' "the command after it not sent on"
 out=$(haicc host --flags log=debug crud/read . 2>&1 >/dev/null); is "$?" "1" "a list not closed where a command follows: exit 1"
 has "$out" "no command after the flags of haicc (-- closes a flag list, the command follows it)" "said: only -- or the end of the command closes a list"
@@ -383,17 +386,14 @@ out=$(haicc --output registry/local crud/read '*' 2>&1)
 has "$out" '"uri":["main","registry/local","host"]' "haicc registry/local crud/read '*': the host, in the mrepo registry by its unique URI"
 has "$out" '"uri":"local/host","at":"host","how":"deployed","folder":"../local/host","package":"haiccing/base-component-haicc"' "what the install knows of it: which mrepo, linked where, how it came, where it is, what it came from"
 is "$(haicc --output host crud/read registry 2>&1)" '[]' "no registry in the host: the boot mrepo keeps it"
-# a continuation: a deploy asked for a script of its package answers with
-# it, and the haicc command sends it on to the root, haicc/script with the
-# deployed mrepo as its URI: its lines executed there, each after the one
-# before
-out=$(haicc . boot/deploy demo haiccing/base-component-haicc --flags continuation=start 2>&1); is $? 0 "haicc . boot/deploy demo haiccing/base-component-haicc --flags continuation=start: the deploy, then its script, each command done"
-has "$out" '"continuation": {' "the deploy's response: its continuation, the script"
-has "$out" 'haicc . haicc/script demo' "the script sent on as one command to the root, its URI the deployed mrepo"
-has "$out" '"line": "service/initialise"' "its lines executed there, each with what it answered"
-has "$out" '"line": "service/start"' "in order"
+# commission and decommission: what a package does once deployed, run by
+# the mrepo's runtime as it starts, the deploy waiting for it; and before
+# its teardown. Each a hook of the package's, its lines the mrepo's own
+out=$(haicc --output . boot/deploy demo haiccing/base-component-haicc 2>&1); is $? 0 "haicc . boot/deploy demo haiccing/base-component-haicc: deployed and commissioned in one command"
+has "$out" '"commission":"done","service":"started"' "its commission done: in service"
 is "$(haicc --output demo crud/read . 2>&1)" '[{"uri":["main","."],"value":{},"children":[]}]' "the mrepo brought into service by it: its crud answering"
-out=$(haicc . boot/deploy demo-2 haiccing/base-component-haicc --flags continuation=nope 2>&1 >/dev/null); has "$out" "no script: nope (haiccing/base-component-haicc has cluster, start)" "a script the package has not: refused, with those it has"
+out=$(haicc . boot/deploy demo-2 haiccing/base-component-haicc --flags continuation=start 2>&1 >/dev/null); is $? 1 "a deploy asked for a continuation: no such flag any more"
+has "$out" "no flag: continuation" "said: what the package does once deployed is its commission"
 [ ! -e "$T/home/work/mrepos/local/demo-2" ] && ok "nothing built for it" || no "nothing built for it"
 is "$(haicc --output . boot/teardown demo 2>&1)" '{"tornDown":"demo"}' "torn down again"
 haicc . boot/deploy extra-1 haiccing/base-package-runtime >/dev/null 2>&1; haicc . boot/deploy extra-2 haiccing/base-package-runtime >/dev/null 2>&1
@@ -473,20 +473,23 @@ is "$(running | wc -l | tr -d ' ')" 1 "still one runtime"
 # 12. Splectral: an mrepo of its own beside the host, deployed by the
 # boot mrepo; its server started with its service, following the boot
 # mrepo's outbox folder: every command from here on a line of its page
-out=$(haicc --output . boot/deploy splectral haiccing/base-package-splectral --flags continuation=start 2>&1); is $? 0 "haicc . boot/deploy splectral haiccing/base-package-splectral --flags continuation=start: Splectral deployed and brought into service"
+out=$(haicc --output . boot/deploy splectral haiccing/base-package-splectral 2>&1); is $? 0 "haicc . boot/deploy splectral haiccing/base-package-splectral: Splectral deployed and brought into service by its commission"
 has "$out" '"deployed":"splectral","mrepo":"local/splectral"' "an mrepo of its own, beside the host: local/splectral"
+has "$out" '"commission":"done","service":"started"' "in service"
 out=$(haicc --output splectral splectral/status 2>&1)
 has "$out" '{"running":true,"url":"http://127.0.0.1:' "haicc splectral splectral/status: its server running, started by the service's start hook"
 has "$out" "\"outbox\":\"$T/home/work/mrepos/boot/outbox\"" "following the boot mrepo's outbox folder"
 splectral=$(printf '%s' "$out" | sed -n 's/.*"url":"\([^"]*\)".*/\1/p')
 has "$(curl -s "$splectral/")" "<title>Splectral</title>" "its page served"
-has "$(curl -s "$splectral/records")" '"command":"haicc splectral service/start","ok":true,"error":null,"through":["local/splectral"]' "its lines: the commands of the install so far, each with where it was sent on to"
+has "$(curl -s "$splectral/records")" '"command":"boot/deploy splectral haiccing/base-package-splectral","ok":true,"error":null,"through":[]' "its lines: the commands of the install so far, each with where it was sent on to"
 
-# 12b. the cluster: the host deployed with the cluster script: itself in
-# service, a swarm in its main, two nodes deployed below it and in service,
-# each with its replica in a container, in service too
+# 12b. the cluster: the host deployed (in service by its commission), then
+# the cluster script sent to it: a swarm in its main, two nodes deployed
+# below it, each in service by its commission, each with its replica in a
+# container, in service by its own as its container starts
 docker version --format '{{.Server.Version}}' >/dev/null 2>&1 && ok "Docker answers: the nodes can have their containers" || no "Docker answers: the nodes can have their containers" "no Docker daemon answers: the container checks below fail"
-out=$(haicc --output . boot/deploy host haiccing/base-component-haicc --flags continuation=cluster 2>&1); is $? 0 "haicc . boot/deploy host haiccing/base-component-haicc --flags continuation=cluster: the host and its cluster, every command of the script done"
+haicc . boot/deploy host haiccing/base-component-haicc >/dev/null 2>&1; is $? 0 "haicc . boot/deploy host haiccing/base-component-haicc: the host again, in service"
+out=$(haicc --output . haicc/script host < "$pkg/../base-component-haicc/scripts/cluster.haicc" 2>&1); is $? 0 "haicc . haicc/script host < cluster.haicc: its cluster, every command of the script done"
 has "$out" '"deployed":"swarms/swarm-1/node-1","mrepo":"swarm-1/node-1"' "node-1 deployed by the host at swarms/swarm-1/node-1: a swarm's node, its unique URI swarm-1/node-1"
 has "$out" '"deployed":"swarms/swarm-1/node-2","mrepo":"swarm-1/node-2"' "node-2 too"
 has "$out" '"created":"container","mrepo":"swarm-1/node-1/container"' "node-1's replica made: linked at container, its unique URI the node's with container behind it"
@@ -502,7 +505,7 @@ N="host haicc swarms/swarm-1/node-1"
 out=$(haicc --output $N container/status 2>&1)
 has "$out" '{"replica":"container","mrepo":"swarm-1/node-1/container","container":"haicc-swarm-1-node-1-' "haicc host haicc swarms/swarm-1/node-1 container/status: its replica, its container"
 has "$out" '"state":"running"}' "running"
-is "$(haicc --output $N haicc container service/start 2>&1 >/dev/null)" "haicc: not now: service start (the service is started)" "the replica in service already: the script brought it there, through its node"
+is "$(haicc --output $N haicc container service/start 2>&1 >/dev/null)" "haicc: not now: service start (the service is started)" "the replica in service already: its commission, as its container started"
 has "$(haicc --output $N haicc container crud/create notes/a '{"x":1}' 2>&1)" '{"uri":["main","notes/a"],"value":{"x":1},"children":[],"outcome":"created"}' "a command sent on into the container: a node created in the replica's main"
 is "$(haicc --output host/swarms/swarm-1/node-1/container crud/read notes/a 2>&1)" '[{"uri":["main","notes/a"],"value":{"x":1},"children":[]}]' "read back with one URI through three shortcuts: the host, the node, its container"
 out=$(haicc $N haicc container container/create 2>&1 >/dev/null); is "$out" "haicc: a replica makes no replica of its own: swarm-1/node-1/container" "a replica makes no replica of its own"

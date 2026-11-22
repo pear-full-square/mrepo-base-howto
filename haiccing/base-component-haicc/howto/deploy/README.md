@@ -12,11 +12,10 @@ swarm node's name: `swarm-1/node-1`.
 ```sh
 # the swarm: a node in the host's main, its document saying it is one
 haicc host crud/create swarms/swarm-1 '{"kind":"swarm"}'
-# the node: an mrepo of its own, built from the haicc component
+# the node: an mrepo of its own, built from the haicc component; its
+# commission, run by its runtime as it starts, brings it into service
+# (made ready, its info extracted; its door opened) before the deploy answers
 haicc host boot/deploy swarms/swarm-1/node-1 haiccing/base-component-haicc
-# made ready, its info extracted; its door opened (at the host's position, then on at the node's shortcut)
-haicc host haicc swarms/swarm-1/node-1 service/initialise
-haicc host haicc swarms/swarm-1/node-1 service/start
 # the check: the node answers with its root
 haicc host haicc swarms/swarm-1/node-1 crud/read .
 ```

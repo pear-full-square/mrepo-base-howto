@@ -34,8 +34,9 @@ history, and each package and module has its own repository).
   `base-package-runtime`, `-protocol`, `-info`, `-help`, `-haici`, `-boot`,
   `-service`, `-haicc`, `-crud`, `-container`, `-swarm`, `-rns`, `-log`,
   `-dispatch`, `-splectral` (one package, one protocol); the solution
-  `base-solution-workbench` (the workbench: one deploy installs the docs
-  mrepo, the host and Splectral; its `howtos` namespace); the components
+  `base-solution-workbench` (the workbench, the local manager in the
+  host's role: one deploy, its commission deploying the docs mrepo and
+  Splectral below it; its `howtos` namespace); the components
   `base-component-boot` (the boot mrepo and the program that puts it in
   place), `base-component-haicc` (the haicc mrepo, a host),
   `base-component-node` (a swarm's node: the haicc mrepo with `rns`,

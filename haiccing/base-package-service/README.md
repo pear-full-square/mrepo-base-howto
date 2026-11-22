@@ -2,12 +2,11 @@
 
 The service protocol: it manages the service state of an mrepo's external API.
 
-An mrepo that links it is service managed. Its state starts at `booted`;
-`service/initialise` and `service/start` open its external API,
-`service/stop` and `service/shutdown` close it again. Each action first
-runs the hooks of its transition, then moves the state. The door is two
-hooks: one on `start` that activates what sits behind it, one on `stop`
-that deactivates it again.
+Every mrepo is service managed, its list including this package; the
+boot mrepo, the root, is the one exception: nothing upstream manages
+it. The state starts at `booted`; `initialise` and `start` open its
+external API, `stop` and `shutdown` close it, the runtime running on.
+Each action runs its transition's hooks, then moves the state.
 
 ## Links
 
@@ -20,6 +19,18 @@ that deactivates it again.
 - [test](test/)
 - [test-reports](test-reports/)
 - [modules](modules/)
+
+## The service
+
+- **Setup**: an mrepo's setup is its `initialise` hook, a visible state,
+  not its runtime's start.
+- **The door**: a `start` hook that activates what sits behind it, a
+  `stop` hook that deactivates it.
+- **Refused, not held**: a request its state does not allow is
+  received and answered `not now`.
+- **Into service**: a package's `commission` hook brings its mrepo into
+  service after its deploy (typically `service/initialise`, then
+  `service/start`).
 
 ## Included packages
 

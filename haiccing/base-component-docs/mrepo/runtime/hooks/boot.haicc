@@ -1,5 +1,5 @@
-# boot: run by the runtime as it starts, a line a command
+# boot: run by the runtime as it starts, a line a command: the activations only
 protocol/activate . help
 protocol/activate . info
 protocol/activate . runtime
-info/extract
+protocol/activate . service

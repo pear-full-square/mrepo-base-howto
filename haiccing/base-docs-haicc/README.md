@@ -23,8 +23,10 @@ docs mrepo: `haicc docs info/get <keywords>`.
 - **The boot mrepo**, `local/boot`: the root of an install, the first
   mrepo, put in place by the boot. It deploys the others, keeps the
   mrepo registry, and takes commands at `.`: `haicc . <protocol>/<action>`.
-- **The docs mrepo**, `local/docs`: deployed in the boot mrepo, the
-  platform's documentation, read with `info`.
+  The one mrepo with no service: nothing upstream manages it.
+- **The docs mrepo**, `local/docs`: deployed in the boot mrepo (or by
+  the workbench, at `workbench/docs`), the platform's documentation,
+  read with `info`.
 - **The host**, `local/host`: the mrepo a machine is managed with,
   service managed; applications, swarms and their nodes are deployed in
   it. `haicc host <protocol>/<action>`.
@@ -42,10 +44,12 @@ docs mrepo: `haicc docs info/get <keywords>`.
   container, linked as `container`; or it runs in a container on its
   own haicc install, a pair (`boot/deploy ... --flags container`).
 - **The workbench**, `local/workbench`: a solution, the development and
-  testing environment. One command on a fresh install, `haicc .
-  boot/deploy workbench haiccing/base-solution-workbench`, deploys it
-  and, by its script run at the root, the docs mrepo, the host and
-  Splectral beside it, in service. Its `main` holds the `howtos`
+  testing environment, the local manager in the host's role. One
+  command on a fresh install, `haicc . boot/deploy workbench
+  haiccing/base-solution-workbench`, deploys it; its commission deploys
+  its components below it, the docs mrepo and Splectral
+  (`workbench/docs`, `workbench/splectral`), each commissioned by its
+  own, then brings it into service. Its `main` holds the `howtos`
   namespace, where how-tos are installed by their key.
 - **Splectral**, `local/splectral`: an app platform beside the host. It
   deploys its components with the boot protocol, installs their
@@ -106,9 +110,9 @@ organisation of its own, beside haicc's own, `haiccing`.
   its own copies of what it needs.
 - **component**: a package that is a list of packages deployed together.
 - **solution**: a package that is the mrepos an install is made of: its
-  own mrepo's list and a script, `scripts/solution.haicc`, answered with
-  every deploy of it and run at the deployer, deploying the others
-  beside it; named by the segment it is deployed at (`workbench`).
+  own mrepo's list, and its commission deploying its components below
+  it; named by the segment it is deployed at (`workbench`). Not a kind
+  the boot knows: what it does is its hooks'.
 - **module**: code, carried by packages; a documented method is a
   folder, `external/` for a protocol's actions, `internal/` for code.
 - **family**: packages that follow one package specification: `base`.
@@ -135,11 +139,24 @@ organisation of its own, beside haicc's own, `haiccing`.
 - **shortcut**: a node in `main` leading to another mrepo; `haicc` hops
   through it.
 - **hook**: what an mrepo runs on a status transition, a file a
-  transition of simple commands: its runtime starting, its service's
-  `initialise`, `start`, `stop`, `shutdown`.
+  transition of simple commands, its own lines: its runtime starting
+  (`boot`, the activations); `commission`, once after its deploy; its
+  service's `initialise` (its setup), `start`, `stop`, `shutdown`;
+  `decommission`, at the start of its teardown.
+- **lifecycle**: an mrepo's whole: deploy, its `commission`; its
+  service, `initialise`, `start` ⇄ `stop`, `shutdown`; its
+  `decommission`, teardown. The runtime starts at its deploy and stops
+  at its teardown only; what each hook holds is its package's.
+- **commission**, **decommission**: the hooks of a deploy's end and a
+  teardown's start: what the mrepo does once deployed (its components
+  deployed, each commissioned by its own, the cascade; its service
+  initialised, started) and before it goes (what it deployed torn down).
+  The deploy and the teardown wait for them; a line that fails fails
+  them.
 - **script**: lines, each a simple command, run where the `haicc` points
   (`haicc <URI> haicc/script <URI> '<lines>'`).
-- **continuation**: a script a command answers with, to go on with.
+- **continuation**: a script a command answers with, to go on with,
+  run in the context of the command it continues.
 - **docs mrepo**: the install's documentation, every package's pages,
   read with `info/get`; any other mrepo answers about itself.
 - **HDLC**: the haicc delivery lifecycle, how work is done.

@@ -1,0 +1,4 @@
+# decommission: asked by its teardown before its runtime is stopped: its
+# components torn down, each decommissioned by its own
+boot/teardown splectral
+boot/teardown docs

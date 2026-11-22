@@ -56,7 +56,7 @@ W=$H/work/mrepos/swarm-1
 sh "$pkg/haicc-install.sh" --home="$H" --bin="$T/bin" >/dev/null
 haicc sources link "$SOURCES" >/dev/null; haicc prereq >/dev/null
 label=boot; step boot/deploy; is $? 0 "haicc boot/deploy"
-label=host; step --output . boot/deploy host haiccing/base-component-haicc --flags continuation=start; has "$out" '"state":"started"' "the host deployed and in service"
+label=host; step --output . boot/deploy host haiccing/base-component-haicc; has "$out" '"service":"started"' "the host deployed and in service"
 
 # 1. a swarm, its master, the lookup db
 out=$(haicc --output host swarm/deploy swarms/swarm-1/node-1); has "$out" "not a swarm made here: swarms/swarm-1 (swarm/create swarms/swarm-1)" "a node below no swarm: refused, saying how one is made"
@@ -170,7 +170,7 @@ is "$(states "$out")" "swarm-1/master=active swarm-1/node-1=active" "and out of 
 is "$(running | wc -l | tr -d ' ')" 8 "eight processes left"
 
 # 6. the log viewer: a Splectral component, the master's logs in a browser
-label=splectral; step --output . boot/deploy splectral haiccing/base-package-splectral --flags continuation=start; has "$out" '"state":"started"' "Splectral deployed and in service"
+label=splectral; step --output . boot/deploy splectral haiccing/base-package-splectral; has "$out" '"service":"started"' "Splectral deployed and in service"
 URL=$(haicc --output splectral splectral/status | sed -n 's/.*"url":"\([^"]*\)".*/\1/p')
 has "$URL" "http://127.0.0.1:" "its server: $URL"
 haicc --output splectral boot/deploy log haiccing/base-package-service >/dev/null

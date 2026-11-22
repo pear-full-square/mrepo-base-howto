@@ -1,37 +1,43 @@
 # install
 
-A fresh machine to the workbench: host, docs and Splectral in service, by one deploy.
+A fresh machine to the workbench: the local manager, its docs mrepo and Splectral in service, by one deploy.
+
+Pattern: commission
 
 The `haicc` command is installed and its sources linked
 (`base-linux-haicc`, the how-to `install`). The boot mrepo is put in
-place, then the workbench deployed at `workbench`: its mrepo,
-`local/workbench`, and its script, run at the root after it, deploys the
-docs mrepo, the host and Splectral beside it and brings the host and
-Splectral into service.
+place, then the workbench deployed at `workbench`, `local/workbench`. Its
+runtime, as it starts, runs its `commission`, and the deploy waits for
+it: the workbench's components deployed below it (`workbench/docs`,
+`workbench/splectral`), each commissioned by its own, then the workbench
+itself initialised and started.
 
 ## Steps
 
 ```sh
 # the boot mrepo, the root of the install
 haicc boot/deploy
-# the workbench: its mrepo, then the install's mrepos beside it
+# the workbench: deployed, commissioned: its components, then itself in service
 haicc . boot/deploy workbench haiccing/base-solution-workbench
-# what the install is made of: the registry
-haicc . crud/read "registry/local/*"
-# the host answers, in service (started again: not now, the service is started)
-haicc host crud/read .
-haicc host service/start
+# what the workbench deployed: its own registry
+haicc workbench crud/read "registry/local/*"
 # Splectral in service: its server's address
-haicc splectral splectral/status
+haicc workbench/splectral splectral/status
 # the documentation
-haicc docs info/get
+haicc workbench/docs info/get
 # the howtos namespace, in the workbench
 haicc workbench crud/read howtos
+# torn down: its decommission first, its components with it
+haicc . boot/teardown workbench
 ```
 
 ## Notes
 
-- **Once on an install**: a second deploy of it stops at the docs mrepo,
-  `deployed already: docs`.
-- **Torn down** one by one (`haicc . boot/teardown workbench`, then each
-  of the others), or with the install, `haicc boot/teardown`.
+- **The host's role**: the workbench is the local manager, its list the
+  haicc component's packages; swarms and their nodes are deployed in it
+  as in a host.
+- **Once on an install**: a second one's commission stops at its first
+  component, `in the way`: their unique URIs (`local/docs`) are the
+  install's; nothing of the second is left.
+- **What runs it**: the commission is a hook, the mrepo's own lines; a
+  line that fails fails the deploy, saying which.

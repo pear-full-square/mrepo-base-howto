@@ -36,7 +36,7 @@ is for.
 | `protocol.js` | provides protocols: their configs and actions; linked into an mrepo, its protocols are loaded by the runtime; they are offered to the outside once activated |
 | `modules/`, `package.json` | carries its own dependencies |
 | `mrepo/` | comes with an mrepo, by layers |
-| `scripts/` | has scripts: lists of commands to go on with after it is deployed, a file each (`<name>.haicc`, a simple command a line), answered as the deploy's continuation when asked for by name, sent on by the terminal as `haicc/script`; `solution.haicc`, with a list, makes it a solution: the mrepos an install is made of, deployed beside its own by that script, answered unasked with every deploy for the deployer's own position |
+| `scripts/` | has scripts: lists of commands, a file each (`<name>.haicc`, a simple command a line), run by name where the `haicc` command points (`haicc/script`); nothing runs one with a deploy: what an mrepo does once deployed is its `commission` hook (`mrepo/runtime/hooks/`) |
 | `schemas/` | carries schemas: AVRO, a file each (`<name>.json`), named by its URI, `<org>/<package>/<name>`, its AVRO fullname by the data-name mapping (`base-docs-uri`, "Schemas"); sealed in its bundle, registered in the install's registry when it is deployed ("Schemas") |
 | `howto/` | has how-tos: what can be done with it, a folder each (`<name>/`), its README the how-to: what it does and its steps as typed commands, each with why; a pattern's how-to names it, `Pattern: <name>`; pages of the package, read with `info` |
 | `test/` | has tests and test sets |

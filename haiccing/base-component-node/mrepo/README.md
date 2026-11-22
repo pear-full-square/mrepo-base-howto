@@ -16,6 +16,9 @@ The component's part of the structure: the list of the packages a swarm's node i
 - **At `boot`**: `haicc`, `haici`, `help`, `info`, `runtime` and
   `service` activated. A closed node can be addressed, inspected and
   tested.
+- **`commission`**, run once by its runtime as it starts after its
+  deploy, the deploy waiting for it: `service/initialise`, then
+  `service/start`: deployed, it is in service.
 - **At `initialise`**: its info extracted.
 - **At `start`**: `boot`, `container`, `crud`, `rns`, `log` and
   `dispatch` activated, then the two programs started beside the mrepo: the rns',

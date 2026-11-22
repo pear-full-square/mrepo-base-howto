@@ -23,6 +23,7 @@ here.
 - [base-package-protocol](../base-package-protocol/)
 - [base-package-info](../base-package-info/)
 - [base-package-help](../base-package-help/)
+- [base-package-service](../base-package-service/)
 - [base-docs-haicc](../base-docs-haicc/)
 - [base-docs-hdlc](../base-docs-hdlc/)
 - [base-docs-package](../base-docs-package/)
@@ -35,8 +36,8 @@ here.
 Beyond its list, `"documents": "sources"`: every package the sources
 offer, placed as documentation only (its bundle; nothing laid in, nothing
 run), each at its keyword below the top: `haicc docs info/get boot`.
-What is installed is what is documented; later the solution's list
-names them.
+What is installed is what is documented; later a solution's list may
+name them.
 
 ## Log
 
@@ -64,9 +65,12 @@ pattern (written where packages are built: `package howto package`).
 
 ## Deploying
 
-By the boot mrepo, with a command at the root: it is not deployed with
-the boot, you deploy it. No service: its boot hooks activate `info` and
-`help`, and extract the info.
+By the boot mrepo, or the workbench (`workbench/docs`), with a command:
+it is not deployed with the boot, you deploy it. A service like every
+mrepo: its boot hooks activate `help`, `info`, `runtime` and `service`;
+its `commission`, run as its runtime starts, initialises it (its info
+extracted, by its `initialise` hook) and starts it before the deploy
+answers.
 
 ```
 haicc . boot/deploy docs haiccing/base-component-docs

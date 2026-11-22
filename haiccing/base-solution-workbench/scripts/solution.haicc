@@ -1,9 +1,0 @@
-# solution: the install's mrepos, deployed beside the workbench by the
-# deployer (its position), each brought into service
-boot/deploy docs haiccing/base-component-docs
-boot/deploy host haiccing/base-component-haicc
-haicc host service/initialise
-haicc host service/start
-boot/deploy splectral haiccing/base-package-splectral
-haicc splectral service/initialise
-haicc splectral service/start

@@ -64,9 +64,12 @@ command as typed and a GUID. Each step's outcome is logged in it.
 
 - Its unique URI is `local/boot`. It is the root: commands are addressed
   to it, and it passes on those for the mrepos linked in it.
-- No `service`: it is not service managed. Its `boot` hooks, fired by its
-  runtime each time it starts, activate its protocols, extract its
-  info, and make sure the node `registry` is in its `main`.
+- No `service`: the one mrepo that is not service managed, every other
+  is. It is the root: nothing upstream manages it, it is put in place by
+  the boot program, not deployed, and takes commands from the start. Its
+  `boot` hooks, fired by its runtime each time it starts, activate its
+  protocols, extract its info, and make sure the node `registry` is in
+  its `main`.
 - **It keeps the mrepo registry**: the mrepos of the install, a node
   each by its unique URI under `registry` in its `main`
   (`registry/local/host`), written by `boot/deploy` and `boot/teardown`:

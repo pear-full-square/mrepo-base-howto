@@ -23,7 +23,7 @@ folders. Offered by `haiccing/base-package-container`.
 haicc swarms/swarm-1/node-1 container/create
 haicc swarms/swarm-1/node-1 container/start
 haicc swarms/swarm-1/node-1 container/status
-haicc swarms/swarm-1/node-1 haicc container service/initialise
+haicc swarms/swarm-1/node-1 haicc container crud/read .
 haicc swarms/swarm-1/node-1 container/stop
 haicc swarms/swarm-1/node-1 container/remove
 ```
