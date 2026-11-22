@@ -1,8 +1,8 @@
 {
   "package": "haiccing/base-package-haicc",
-  "content": "8687bf2dee06599a27aca94c4903a400d93a345ba919632dae714d00f1d890f1",
+  "content": "77911d7907b76a6b32a57ceb639b6ad989f8475ec9a2881c8a31fa634ccc3637",
   "bare": "v1.36.0",
-  "date": "2026-11-22T05:47:55.727Z",
+  "date": "2026-11-22T15:04:58.188Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -75,12 +75,12 @@
       "unit": "/test/modules/pear-full-square/mrepo-base-haicc",
       "ok": true,
       "tests": {
-        "passed": 8,
-        "total": 8
+        "passed": 6,
+        "total": 6
       },
       "asserts": {
-        "passed": 57,
-        "total": 57
+        "passed": 50,
+        "total": 50
       },
       "failures": []
     },
@@ -118,8 +118,8 @@
         "total": 5
       },
       "asserts": {
-        "passed": 55,
-        "total": 55
+        "passed": 54,
+        "total": 54
       },
       "failures": []
     },

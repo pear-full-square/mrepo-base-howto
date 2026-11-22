@@ -14,18 +14,21 @@ standing for the parent's.
   below `main`, a target needed; `deploy` with its package required,
   `redeploy` with it optional, `teardown` with none; no state of its own.
 - **Its config in effect**: a request checked: no target, no package,
-  not activated, each refused as it should be; a deeper position and a
-  query into the registry allowed.
+  not activated, each refused as it should be; a deeper position
+  allowed.
 - **`deploy`**: each refusal, before anything is built: the mrepo itself,
   not a name, a position whose node above is not there, the swarm
-  `local`, a position below a shortcut,
-  deployed already, data in `main` at that position, a folder
-  in the way, no package, no store, a package in no source. A refusal
-  writes nothing and leaves no folder.
+  `local`, a position below a shortcut, deployed already from another
+  package, data in `main` at that position, a folder in the way, no
+  package, no store, a package in no source. From the same package: a
+  repeat, nothing written. A refusal after its link was written (linked
+  first) removes it again: nothing left, no folder.
 - **`teardown`**: a child without a runtime: its folder, its node, its
-  shortcut and what was local about it removed; not deployed, data in `main` there, the mrepo itself, refused.
+  shortcut and what was local about it removed; again, not deployed: a
+  repeat, a warning; data in `main` there, the mrepo itself, refused.
 - **`redeploy`**: torn down first and that committed, then the deploy,
-  from the package it was deployed from when none is given.
+  from the package it was deployed from when none is given; nothing
+  deployed and no package: refused.
 - **Nothing forgotten**: the last test fails when the config names an
   action that was not run here, or one that wrote nothing into the
   request's log as it ran.

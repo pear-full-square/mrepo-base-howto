@@ -11,10 +11,10 @@ export const protocols = {
     package: 'haiccing/base-package-service',
     description: 'The service of the mrepo\'s external API, moved between its states: booted, initialised, started.',
     actions: {
-      initialise: { ...at(['booted']), description: 'From booted to initialised: the mrepo made ready.' },
-      start: { ...at(['initialised']), description: 'From initialised to started: the external API open.' },
-      stop: { ...at(['started']), description: 'From started back to initialised: the external API closed.' },
-      shutdown: { ...at(['initialised']), description: 'From initialised back to booted.' }
+      initialise: { ...at(['booted', 'initialised', 'started']), description: 'From booted to initialised: the mrepo made ready. Repeated (initialised, started): its hook run again, a warning, the state as it is.' },
+      start: { ...at(['initialised', 'started']), description: 'From initialised to started: the external API open. Repeated (started): its hook run again, a warning.' },
+      stop: { ...at(['started', 'initialised']), description: 'From started back to initialised: the external API closed. Repeated (initialised): its hook run again, a warning.' },
+      shutdown: { ...at(['initialised', 'booted']), description: 'From initialised back to booted. Repeated (booted): its hook run again, a warning.' }
     }
   }
 }

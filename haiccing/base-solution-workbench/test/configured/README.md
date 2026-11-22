@@ -11,7 +11,7 @@ then against the packages, read from the sources.
 - **Its list**: the haicc component's packages (it fulfils the host's
   role), the solution last.
 - **Its hooks, file by file, line by line**: its `commission` (its
-  registry, its components deployed, its service initialised and
+  components deployed, its service initialised and
   started), its `decommission` (its components torn down), its `boot`
   (the activations only), its `initialise` (its info, its `howtos`
   node), its `start` and `stop` (the door); its service state, `booted`;
@@ -22,8 +22,8 @@ then against the packages, read from the sources.
   package provides.
 - **What its hooks do**: run with the listed packages' own actions, on a
   minimal execution in memory, its components' deploys and teardowns
-  stood in for: the boot, the commission (the registry first, the
-  components before its own `initialise`), stop, shutdown, the
+  stood in for: the boot, the commission (the components before its
+  own `initialise`, no registry of its own), stop, shutdown, the
   decommission. Every hook file must have run.
 - **Nothing left closed by forgetting**: every protocol is opened by a
   hook but the protocol protocol; what `start` opens, `stop` closes.

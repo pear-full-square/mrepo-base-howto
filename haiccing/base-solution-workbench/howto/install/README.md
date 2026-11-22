@@ -19,8 +19,8 @@ itself initialised and started.
 haicc boot/deploy
 # the workbench: deployed, commissioned: its components, then itself in service
 haicc . boot/deploy workbench haiccing/base-solution-workbench
-# what the workbench deployed: its own registry
-haicc workbench crud/read "registry/local/*"
+# what the workbench deployed: its links, docs and splectral
+haicc workbench crud/read "*"
 # Splectral in service: its server's address
 haicc workbench/splectral splectral/status
 # the documentation

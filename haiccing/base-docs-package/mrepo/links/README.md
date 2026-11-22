@@ -50,8 +50,9 @@ A document by the link's own key:
   its key, and from an mrepo or a position by what the records say
   (`*[uri='local/host']`, `*[at='host']`): the mrepo's own lookups,
   either way.
-- **Not for the outside**: what an install's mrepos are is asked of the
-  boot mrepo's registry ([main](../main/), "The mrepo registry").
+- **Not for the outside**: what an install's mrepos are is the work
+  folder's `mrepos/`, the install's registry, its system
+  administration's ([main](../main/), "The registry").
 
 ## Not yet
 

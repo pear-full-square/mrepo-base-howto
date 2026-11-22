@@ -69,13 +69,13 @@ scenario () {
     is "$(docker ps -q --filter "label=haicc.folder=$H/work/containers/swarm-1/node-1" | wc -l | tr -d ' ')" 1 "pair: the container running, labelled with the pair's folder"
     is "$(ls "$H/work/mrepos/swarm-1" 2>/dev/null)" "" "pair: nothing of the node in the host's mrepos"
   fi
-  label=initialise; step --output $N service/initialise; has "$out" "not now: service initialise (the service is started)" "$mode: the node in service by its commission, at its deploy (a pair's: in its container)"
+  label=initialise; step --output $N service/initialise; has "$out" '"state":"started","again":true' "$mode: the node in service by its commission, at its deploy (a pair's: in its container); initialise again: a repeat"
   label=create; step --output $N crud/create notes/a '{"x":1}'; has "$out" '"outcome":"created"' "$mode: a node made in the node's main"
   label=read; step --output $N crud/read notes/a; has "$out" '"value":{"x":1}' "$mode: read back"
   label=script; step --output $N haicc/script . 'crud/create notes/b
 crud/read notes/b'; has "$out" '"line":"crud/read notes/b"' "$mode: a script's lines at the node"
   label=sub; step --output $N boot/deploy sub haiccing/base-component-haicc; has "$out" '"deployed":"sub"' "$mode: the node deploys an mrepo of its own"
-  label=sub-start; step --output $N/sub service/start; has "$out" "not now: service start (the service is started)" "$mode: in service by its commission, through the node"
+  label=sub-start; step --output $N/sub service/start; has "$out" '"state":"started","again":true' "$mode: in service by its commission, through the node (a start again: a repeat)"
   label=sub-read; step --output $N/sub crud/read .; has "$out" '"uri":["main","."]' "$mode: reached through the node"
   if [ "$mode" = pair ]; then
     is "$(ls "$H/work/mrepos/swarm-1" 2>/dev/null)" "" "pair: the node's mrepo is the container's: nothing of it in the host's mrepos"

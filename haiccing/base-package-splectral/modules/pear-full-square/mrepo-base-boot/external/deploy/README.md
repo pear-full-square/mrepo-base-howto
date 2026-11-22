@@ -5,7 +5,32 @@ Builds a child mrepo inside its parent from a target package, links its packages
 The target package's `mrepo/packages/layer.json` lists the packages the
 child is made of, in order. Each is fetched into the work folder's store,
 which the parent's packages manifest names. Their `mrepo/` parts are laid
-in, in that order, and the child is built at `<parent>/main/<name>/`.
+in, in that order, and the child is built at its place in the work
+folder, `<work>/mrepos/<unique URI>`.
+
+## The sequence
+
+1. **Checked**: its position, its unique URI (never a prefix of
+   another's), its place free.
+2. **Linked first**: its node, its shortcut and its link's record
+   written in this mrepo and committed: from then on the child is known
+   here, while it is built.
+3. **Built at its place**, `<work>/mrepos/<unique URI>`: its packages
+   placed; each package's scripts placed in the work folder's
+   `scripts/`, `<work>/scripts/<org>/<package>/<name>.haicc`, where the
+   haicc command reads them (`haicc/file`, `haicc scripts`).
+4. **Its runtime started**: its boot hook, then its commission, waited
+   for.
+5. **Its link's record completed**: its runtime's process, its
+   commission, its service's state.
+
+A step that fails undoes what was done: nothing of the child left, its
+link out again.
+
+**Idempotent**: a position deployed already from the same package (or
+no package given) is allowed: a warning in its log, `deployed already`,
+nothing done, its record as the answer with `again: true`. From another
+package: refused (`boot/redeploy` changes it).
 
 ## Signature
 
@@ -21,7 +46,7 @@ in, in that order, and the child is built at `<parent>/main/<name>/`.
 
 ## Returns
 
-`{ deployed, mrepo, package, packages, layers, runtime: { pid }, commission, service }`;
+`{ deployed, mrepo, package, packages, layers, scripts, runtime: { pid }, commission, service }` (`scripts`: those placed, `<org>/<package>/<name>`, when any);
 `deployed` is the position as written at `main`; `mrepo` is the child's unique URI.
 
 **Its commission**: the child's runtime, as it starts, runs its
@@ -52,7 +77,7 @@ for it are forwarded as to any linked mrepo, through its inbox and
 outbox folders. Answers `{ deployed, mrepo, package, container: { name,
 image } }`.
 
-What it writes in the parent:
+What it writes in the parent, first (step 2):
 
 - `main/<name>/.node.json`: the child's node, an empty document.
 - `main/<name>/.shortcuts.json`: its shortcut, `[{ "mrepo", "link" }]`:
@@ -62,11 +87,13 @@ What it writes in the parent:
   key: what is local to this machine about it: its URI, the position
   that links to it (`at`), how it came about (`deployed`), where it is
   (`folder`, from this mrepo's own folder), the package it was deployed
-  from, the packages placed, its layers, its runtime's process.
-- `main/registry/<unique URI>/.node.json`: the same record as a node
-  of the mrepo registry, by its unique URI, a path, each node above it
-  there an empty document; only where `main` has the node `registry`:
-  the boot mrepo.
+  from, the packages placed, its layers, the scripts placed, its
+  runtime's process, its commission, its service's state (completed in
+  step 5).
+
+The link is the managing mrepo's, in forward visibility only. The
+install's registry, for its system administration, is the work
+folder's `mrepos/` itself: nothing in an mrepo copies it.
 
 Where the child is built: by its unique URI under the work folder's
 `mrepos/`, `<work>/mrepos/<unique URI>`, side by side with the others;
@@ -82,15 +109,16 @@ nothing of it inside this mrepo's folder.
   a how-to's path that starts with `local`, or is one name only: `not a
   unique URI`.
 - Its unique URI a prefix of another's, or another's a prefix of its
-  own (an mrepo's folder, or its registry record, above it; registry
-  nodes below it; a folder in its place is in the way): `a unique URI is never a prefix of
-  another's`. Nothing is built.
+  own (an mrepo's folder above it in `mrepos/`, or one below its place):
+  `a unique URI is never a prefix of another's`. Nothing is built.
 - The node above it not there: `no node there: <above> (crud/create
   <above>)`.
 - A position below a shortcut: `<above> is a shortcut: a URI does not
   run through it`.
 - No package: `missing argument: package`.
-- The child is deployed already, or its folder is in the way.
+- The child is deployed already from another package: `deployed
+  already: <position>, from <package>`. Its folder in the way: `in the
+  way`.
 - The position exists locally, as data in `main`: the boot protocol
   cannot target it.
 - The parent's packages manifest names no store.

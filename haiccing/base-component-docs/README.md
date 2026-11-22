@@ -59,7 +59,7 @@ The levels and the entries: `package mrepo request`.
 
 The how-tos are each package's, below its keyword: `<keyword> howto`,
 then a how-to's name. `boot howto` (the boot, a deploy, the docs mrepo,
-the registry), `haicc howto` (a hop, a script, a cluster), `splectral
+the registry, `mrepos/`), `haicc howto` (a hop, a script, a cluster), `splectral
 howto`, and `package howto`: making a package of your own, a how-to a
 pattern (written where packages are built: `package howto package`).
 

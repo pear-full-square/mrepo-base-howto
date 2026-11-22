@@ -3,11 +3,11 @@
 // test), then `boot/deploy workbench haiccing/base-solution-workbench` at
 // the root: the workbench mrepo at local/workbench, the deploy answering
 // once its commission is done: its components deployed below it (the docs
-// mrepo, Splectral), each commissioned by its own, in its own registry;
-// then itself initialised (its info, its howtos namespace) and started.
-// In the workbench: an mrepo deployed below its howtos node, its unique URI
-// the path below it, placed and registered by it; torn down through the
-// registry by the how-to's key. The workbench torn down: its decommission
+// mrepo, Splectral), each commissioned by its own, linked in it (the
+// install's registry the work folder's mrepos/); then itself initialised
+// (its info, its howtos namespace) and started. In the workbench: an mrepo
+// deployed below its howtos node, its unique URI the path below it, placed
+// by it in mrepos/, linked at its position; torn down there. The workbench torn down: its decommission
 // tears its components down. Nothing left running. Splectral's pages, the
 // docs read: the `haicc` command's end to end (base-linux-haicc,
 // test/splectral.sh).
@@ -61,15 +61,18 @@ test('the workbench on a fresh install: deployed by its segment, commissioned (i
     const doc = async p => wrepo.read(p).then(b => JSON.parse(b.toString()), () => null)
     t.alike(await doc('/main/howtos/.node.json'), { kind: 'howtos' }, 'its initialise: the node howtos, a namespace\'s root')
     t.alike((await doc('/runtime/service.json'))?.state, 'started', 'started')
-    // its components: below it, in its registry, each in service by its own commission
+    // its link's record, by the shortcut at a position: what the workbench knows of what it deployed
+    const linkAt = async at => { const l = (await doc(`/main/${at}/.shortcuts.json`))?.[0]; return l ? doc(`/links/${l.link}.json`) : null }
+    // its components: below it, linked in it, each in service by its own commission
     for (const [at, pkg] of [['docs', 'haiccing/base-component-docs'], ['splectral', 'haiccing/base-package-splectral']]) {
-      const r = await doc(`/main/registry/local/${at}/.node.json`)
-      t.alike([r?.at, r?.package, r?.commission, r?.service], [at, pkg, 'done', 'started'], `${at}: deployed by its commission at workbench/${at}, in its registry, in service`)
+      const r = await linkAt(at)
+      t.alike([r?.uri, r?.at, r?.package, r?.commission, r?.service], [`local/${at}`, at, pkg, 'done', 'started'], `${at}: deployed by its commission at workbench/${at}, linked there, in service`)
       const s2 = await ask({ repo: viewOf(work, `local/${at}`), op: 'status' })
       pids.push(s2?.pid)
       t.is(s2?.repository?.uri, `local/${at}`, `${at}: its unique URI local/${at}, its folder <work>/mrepos/local/${at}`)
     }
-    t.absent(await repo.read('/main/registry/local/docs/.node.json').then(() => true, () => false), 'not in the install\'s registry: the workbench\'s')
+    t.absent(await repo.read('/main/docs/.shortcuts.json').then(() => true, () => false), 'not linked in the boot mrepo: the workbench\'s, forward visibility')
+    t.absent(await doc('/main/registry/.node.json'), 'no registry in the workbench: the install\'s is mrepos/')
     // an mrepo below its howtos node, by a how-to's key: deployed by the workbench
     const made = await typed(['haicc', 'workbench', 'crud/create', `howtos/${HOWTO}`])
     t.absent(made?.error, `the how-to's nodes below howtos ${made?.error ?? ''}`)
@@ -79,10 +82,10 @@ test('the workbench on a fresh install: deployed by its segment, commissioned (i
     const hs = await ask({ repo: placed, op: 'status' })
     pids.push(hs?.pid)
     t.alike(hs?.repository?.uri, `${HOWTO}/boot`, 'placed by it, <work>/mrepos/<its path>, its runtime running, knowing its unique URI')
-    t.is(JSON.parse((await wrepo.read(`/main/registry/${HOWTO}/boot/.node.json`)).toString()).at, `howtos/${HOWTO}/boot`, 'in the workbench\'s registry by its path')
-    // torn down through the registry by the how-to's key
-    const down = await typed(['haicc', 'workbench', 'boot/teardown', `registry/${HOWTO}/*`])
-    t.alike(down?.output, [{ tornDown: `howtos/${HOWTO}/boot` }], `a how-to's mrepos torn down by its key ${down?.error ?? ''}`)
+    t.is((await linkAt(`howtos/${HOWTO}/boot`))?.uri, `${HOWTO}/boot`, 'linked in the workbench at its position')
+    // torn down at its position
+    const down = await typed(['haicc', 'workbench', 'boot/teardown', `howtos/${HOWTO}/boot`])
+    t.alike(down?.output, { tornDown: `howtos/${HOWTO}/boot` }, `a how-to's mrepo torn down ${down?.error ?? ''}`)
     t.absent(existsSync(placed), 'its folder gone')
     const gone = await typed(['boot/teardown', 'workbench', '--flags', 'log=verbose'])
     t.alike(gone?.output, { tornDown: 'workbench' }, `the workbench torn down as any mrepo ${gone?.error ?? ''}`)

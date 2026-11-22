@@ -67,7 +67,7 @@ test('its config, value by value: each action at the mrepo itself, in the states
   t.is(cfg.package, 'haiccing/base-package-service', 'the package that brings it')
   t.ok(cfg.description, 'its description')
   t.alike(Object.keys(cfg).sort(), ['actions', 'description', 'package'], 'nothing else: no default action')
-  t.alike(Object.fromEntries(Object.entries(cfg.actions).map(([n, a]) => [n, a.states])), { initialise: ['booted'], start: ['initialised'], stop: ['started'], shutdown: ['initialised'] }, 'the state machine: booted, initialised, started, and back')
+  t.alike(Object.fromEntries(Object.entries(cfg.actions).map(([n, a]) => [n, a.states])), { initialise: ['booted', 'initialised', 'started'], start: ['initialised', 'started'], stop: ['started', 'initialised'], shutdown: ['initialised', 'booted'] }, 'the state machine: booted, initialised, started, and back; each also in the state it leads to (or past it): a repeat, idempotent')
   for (const [name, a] of Object.entries(cfg.actions)) {
     t.alike(a.uris, ['.'], `${name}: at the mrepo itself, nowhere else`)
     t.ok(a.description, `${name}: its description`)
@@ -78,7 +78,8 @@ test('its config, value by value: each action at the mrepo itself, in the states
 test('its config in effect: a request checked on each state, allowed only where the action names it', (t) => {
   const protocols = mounted.protocols
   const active = { service: protocols.service }
-  const allowed = { booted: ['initialise'], initialised: ['shutdown', 'start'], started: ['stop'] }
+  // (a repeat allowed: in the state an action leads to, or past it)
+  const allowed = { booted: ['initialise', 'shutdown'], initialised: ['initialise', 'shutdown', 'start', 'stop'], started: ['initialise', 'start', 'stop'] }
   for (const [state, can] of Object.entries(allowed)) {
     const now = Object.keys(protocols.service.actions).filter(action => check({ protocol: 'service', action, uri: ['main', '.'] }, { service: { state }, protocols, active }) === null).sort()
     t.alike(now, can, `${state}: ${can.join(', ')} allowed, the others refused`)
@@ -129,7 +130,7 @@ test('a hook file dropped in by a package that defines the mrepo: each transitio
   const dropped = { 'start/1': ['x/first'], 'start/2': ['protocol/activate', '.', 'boot'], 'shutdown/1': ['x/last'] }
   const { exec, waited, now, writes } = execution('initialised', dropped)
   t.is(await act('start', exec), null, 'start: waits for its own lines')
-  t.alike(await act('stop', { ...exec }), { service: 'stopped', state: 'initialised' }, 'stop: no file of its own, at once')
+  t.alike(await act('stop', { ...exec }), { service: 'stopped', state: 'initialised', again: true }, 'stop: no file of its own, at once; on an initialised service a repeat, the state as it is')
   await t.exception(act('shutdown', { ...exec, resumed: { error: 'line 1: x/last: refused' } }), /hook shutdown: line 1: x\/last: refused/, 'a line that failed: the transition fails, saying which')
   t.alike([now(), waited.length], ['initialised', 1], 'the state not moved by the failure')
   t.ok(writes.every(w => w === '/runtime/service.json'))

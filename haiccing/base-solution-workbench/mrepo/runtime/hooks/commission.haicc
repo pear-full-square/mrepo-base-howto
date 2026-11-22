@@ -1,8 +1,7 @@
-# commission: run by the runtime once, as it starts after its deploy; the
+# commission: run by the runtime as it starts (a deploy; again at a
+# restart, its lines idempotent: a deploy of what is there a warning); the
 # deploy waits for it. Its components first, each commissioned by its own
-# (the cascade), in its registry (made first: a deploy registers where the
-# deployer has one); then its own service, initialised, started.
-crud/create registry
+# (the cascade), linked in it; then its own service, initialised, started.
 boot/deploy docs haiccing/base-component-docs
 boot/deploy splectral haiccing/base-package-splectral
 service/initialise

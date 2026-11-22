@@ -11,7 +11,7 @@ function setup () {
   const home = mkdtempSync(join(tmpdir(), 'haicc-app-'))
   const out = []; const err = []
   const run = (argv, env = {}) => { out.length = 0; err.length = 0; return main(argv, { env: { HAICC_HOME: home, ...env }, bare: '/no/bare', io: { out: l => out.push(l), err: l => err.push(l), stdio: 'ignore' } }) }
-  return { home, root: join(home, 'work', 'mrepos', 'boot'), out, err, run, remove: () => rmSync(home, { recursive: true, force: true }) }
+  return { home, work: join(home, 'work'), root: join(home, 'work', 'mrepos', 'boot'), out, err, run, remove: () => rmSync(home, { recursive: true, force: true }) }
 }
 // The next record in the root's inbox answered, as its runtime would.
 function answer (root, result) {
@@ -217,9 +217,10 @@ test('the install\'s scripts: haicc scripts lists them; haicc/file <URI> <name> 
   try {
     t.is(await s.run(['scripts']), 0, 'none yet: exit 0')
     t.alike(s.out, [], 'nothing listed')
-    mkdirSync(join(s.home, 'scripts', 'haiccing', 'base-component-haicc'), { recursive: true })
-    writeFileSync(join(s.home, 'scripts', 'check.haicc'), 'crud/read .\n')
-    writeFileSync(join(s.home, 'scripts', 'haiccing', 'base-component-haicc', 'node.haicc'), 'service/initialise\nservice/start\n')
+    // in the work folder's scripts/: a package's placed by a deploy, the user's beside them
+    mkdirSync(join(s.work, 'scripts', 'haiccing', 'base-component-haicc'), { recursive: true })
+    writeFileSync(join(s.work, 'scripts', 'check.haicc'), 'crud/read .\n')
+    writeFileSync(join(s.work, 'scripts', 'haiccing', 'base-component-haicc', 'node.haicc'), 'service/initialise\nservice/start\n')
     t.is(await s.run(['scripts']), 0)
     t.alike(s.out, ['check', 'haiccing/base-component-haicc/node'], 'the user\'s, then each package\'s, by name')
     mkdirSync(join(s.root, 'inbox'), { recursive: true }); mkdirSync(join(s.root, 'outbox'), { recursive: true })

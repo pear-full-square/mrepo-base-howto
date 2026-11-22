@@ -21,8 +21,9 @@ docs mrepo: `haicc docs info/get <keywords>`.
   packages downloaded from their releases, Bare put in place, the
   sources. Every command starts here.
 - **The boot mrepo**, `local/boot`: the root of an install, the first
-  mrepo, put in place by the boot. It deploys the others, keeps the
-  mrepo registry, and takes commands at `.`: `haicc . <protocol>/<action>`.
+  mrepo, put in place by the boot, which sorts the work folder first
+  (`mrepos/`, the install's registry; `scripts/`). It deploys the others
+  and takes commands at `.`: `haicc . <protocol>/<action>`.
   The one mrepo with no service: nothing upstream manages it.
 - **The docs mrepo**, `local/docs`: deployed in the boot mrepo (or by
   the workbench, at `workbench/docs`), the platform's documentation,
@@ -125,8 +126,7 @@ organisation of its own, beside haicc's own, `haiccing`.
 - **unique URI**: an mrepo's name across the install, a path: its
   namespace, then its name (`local/host`, `swarm-1/node-1`,
   `haiccing/base-package-crud/howto/query/boot`); its folder
-  `<work>/mrepos/<unique URI>/`, its node in the registry
-  `registry/<unique URI>`. Never a prefix of another's: no mrepo's
+  `<work>/mrepos/<unique URI>/`, the install's registry. Never a prefix of another's: no mrepo's
   folder inside another's. Unique with respect to its install: what is
   in `local`, and a how-to's mrepos, only within it; a swarm's node
   (`<swarm>/<name>`) independent of the install it runs on. Beyond the
@@ -144,9 +144,20 @@ organisation of its own, beside haicc's own, `haiccing`.
   sources folder.
 - **shortcut**: a node in `main` leading to another mrepo; `haicc` hops
   through it.
+- **link**: what an mrepo knows of one it deployed: its shortcut in
+  `main` and its record in the `links` layer (where it is, its package,
+  its runtime). The managing mrepo's, in forward visibility only.
+- **registry**: the install's mrepos, the work folder's `mrepos/`, a
+  folder each by its unique URI; for the install's system
+  administration. Made at the initial boot, kept by deploy and
+  teardown; no mrepo copies it.
+- **idempotent**: every action can be repeated; a repeat is allowed and
+  may warn; what it does again is the action's own to say
+  (`base-docs-hdlc`, "Every action is idempotent").
 - **hook**: what an mrepo runs on a status transition, a file a
   transition of simple commands, its own lines: its runtime starting
-  (`boot`, the activations); `commission`, once after its deploy; its
+  (`boot`, the activations); `commission`, after its boot at every start
+  (a deploy, a restart), its lines idempotent; its
   service's `initialise` (its setup), `start`, `stop`, `shutdown`;
   `decommission`, at the start of its teardown.
 - **lifecycle**: an mrepo's whole: deploy, its `commission`; its
@@ -160,7 +171,9 @@ organisation of its own, beside haicc's own, `haiccing`.
   The deploy and the teardown wait for them; a line that fails fails
   them.
 - **script**: lines, each a simple command, run where the `haicc` points
-  (`haicc <URI> haicc/script <URI> '<lines>'`).
+  (`haicc <URI> haicc/script <URI> '<lines>'`); a package's, placed by
+  a deploy in the work folder's `scripts/`, run by name (`haicc <URI>
+  haicc/file <URI> <org>/<package>/<name>`).
 - **continuation**: a script a command answers with, to go on with,
   run in the context of the command it continues.
 - **docs mrepo**: the install's documentation, every package's pages,
