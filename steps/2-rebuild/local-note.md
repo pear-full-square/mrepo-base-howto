@@ -6,108 +6,114 @@ and the release records, are in git's history. The local machine works
 offline: every download kept in a local source (`~/haicc-mirror/`), so
 `tools/install.sh` and `tools/release.js` run with no network.
 
-## 2026-11-21: `004dbc7` built and tested; the help viewer set up for the human
+## 2026-11-22: `8661d03` built and tested (arm64, haici-feedback); the products synced to it
 
-"The next run" (below), step by step. Test only: no release, no
-product repository.
+"The next run" (below), step by step, then what the human asked after
+it.
 
-1. **The clone:** `main` at `004dbc7a4b4a56610b27e3a565da57156147a548`.
-   The human's install torn down first (4 runtimes): its sources are
-   this clone's `sources/`, rebuilt next.
-2. **The dependencies, the sources:** `tools/install.sh` exit 0, 1 s
-   ("0 fetched, 207 kept, 0 linked": `mrepo-base-help`'s link was
-   already there). `release.js` exit 0, 38 s: `sources/haiccing/`
-   twenty bundles (`base-package-help` new), `sources/splectral/` one,
-   each with its manifest, every entry's commit `004dbc7a`; `git status`
-   no change.
+**Before the run, the products reset** (the human, 2026-11-22: "the
+product repositories were wrongly updated with unfinished work"): every
+product repository written back to this repository's state at
+`973b5cb4` (the content tested at `004dbc7`), as a new commit on top,
+never force-pushed: 22 packages by `tools/packages.sh`, 12 modules by
+the merge `tools/products.sh` makes, without its "split already in the
+head" shortcut (it would have skipped exactly the modules wrongly
+updated: their history held that split already). The wrong commits stay
+in each repository's history. Repositories that exist only for the
+work under review (e.g. for `mycelium-value-avro`, if any) were not
+touched, nor the release `r-62af3e4`.
+
+1. **The clone:** detached at `8661d0343a2d34e8308fe907c555776a204d392e`
+   (2026-11-21, "Merge branch 'execute/main'"). The human's install torn
+   down first (5 runtimes).
+2. **The dependencies, the sources:** `install.sh` exit 0 ("0 fetched,
+   207 kept, 1 linked": `mrepo-base-haici`). `release.js` exit 0, 42 s:
+   `sources/haiccing/` twenty-one bundles, `sources/splectral/` one,
+   every entry's commit `8661d034`; `sources/holepunchto/` both Bare
+   tarballs (`linux-x64`, `linux-arm64`, 1.36.0); `git status` no change.
 3. **The checks:** `release.js --strict` exit 0 (24 s), every report
-   `current`; `code-check.js` "24 modules, 22 packages: 0 problems";
-   `info-extract.js --files` "445 READMEs, 0 problems".
-4. **The tests:** nothing left after any (`pgrep`: 0 bare; `docker ps
-   -a --filter label=haicc.folder`: 0).
+   `current`, `"platforms": ["linux-x64","linux-arm64"]`; `code-check.js`
+   "25 modules, 23 packages: 0 problems"; `info-extract.js --files`
+   "462 READMEs, 0 problems".
+4. **The tests:** nothing left after any (0 bare, 0 containers).
 
    | test | runs | result | time each |
    |---|---|---|---|
-   | boot `/test/validate` | 3 | `"ok":true` each | 110, 110, 109 s |
-   | `run.sh` | 3 | 319/319 each | 399, 384, 376 s |
-   | `splectral.sh` | 3 | 55/55 each | 82, 80, 83 s |
-   | `container.sh` | 1 | 18/18 | 42 s |
-   | `pair.sh` | 1 | **41/41** | 191 s |
+   | boot `/test/validate` | 3 | `"ok":true` each | 82, 85, 84 s |
+   | `run.sh` | 4 | **341/341** in runs 2, 3, 4; run 1 324/341 (a sleep, below) | 433, 434, 329 s |
+   | `splectral.sh` | 3 | 55/55 each | 76, 77, 67 s |
+   | `container.sh` | 1 | 18/18 | 41 s |
+   | `pair.sh` | 1 | 41/41 | 205 s |
 
-   `splectral.sh`'s page timings (ms, the three runs alike): `/help/`
-   1300–1400 the first time; `hdlc/validation` 2400–2600 first, 11
-   kept; `?at=splectral` 1300–1500; `?at=.` 490–610; `?raw` 1400–1530;
-   a command typed 1280–1390, the teardown one ~620; site pages 6–13.
-   **Slowest: `/help/no/such/thing`, 4022, 4112, 4524**: a keyword that
-   is not there takes three times a found page's time (each missing
-   level asked?). Not wrong, but it is the page a human mistyping
-   meets; worth a look.
-5. **Every bundle's own tests:** twenty-one, exit 0, `"ok":true` each
-   (`base-package-help`: 14 units, 248 tests, 19 s). The help viewer's
-   (27 units, 364 tests, ~150 s) six times in all: **one failed**, run
-   2: the unit `mrepo-base-execute`, "no test ran: no summary reported",
-   the run 26151 s long. The laptop slept during it: the kernel log
-   shows the clock "jumped backwards" twice (WSL resyncing after the
-   host woke), then Bare aborted (signal 6) eight minutes later, inside
-   the test "the flag unit: a folder a flag ... strict". Runs 1, 3, 4,
-   5, 6 passed, and `mrepo-base-execute`'s own tests five times (10/10,
-   98/98 each, 15–22 s). Read as the sleep, not the code. No
-   `runtime-stall.json`: not a stall, an abort. Open: a test that
-   aborts rather than fails when the clock jumps; harmless in the cloud,
-   noted in case it shows again.
-6. **By hand, for the human:** `~/.haicc`, sources this clone's
-   `sources/` (`haicc sources`: `folder:` the clone's). The eight
-   commands, exit 0 each: `boot/deploy` 1.6 s, `docs` 7.0 s, `host`
-   12.4 s, `splectral` 12.5 s, `help` 2.2 s, `splectral/install` 3.3 s,
-   `service/initialise` 2.3 s, `service/start` 3.1 s.
+   `run.sh`'s new checks pass: Bare for `linux-arm64` pinned and in the
+   sources; an `aarch64` machine choosing `linux-arm64`; a platform not
+   pinned, exit 3, said; the feedback flag (recorded, its record, read
+   by protocol, at the root, asked directly, no text not run).
 
-   The command line:
+   **Run 1 of `run.sh`: the laptop slept**, again, though Windows had a
+   keep-awake request (`SetThreadExecutionState`, system required: it
+   does not hold against a lid closed or a sleep asked for). The
+   journal shows WSL's clock correction every ~30 s while awake; it
+   stops at 18:23 on 11-21 and is back only at 21:00 on 11-22. The
+   first failure, test 221 (`boot/deploy demo ... --flags
+   continuation=start`, "no response in 180 s"), at 18:26: the sleep
+   mid-request; 16 more after it, each a consequence (the demo mrepo's
+   runtimes). The run took 96606 s. A fourth run, after, passed whole.
 
-   | command | exit | what it said |
-   |---|---|---|
-   | `haicc host crud/read swarms --flags help` | 0 | help: does, "door: taken here, now", arguments none, `run`, `more: info/get crud/read` |
-   | `haicc . boot/teardown docs --flags help` | 0 | help, "taken here, now"; the docs mrepo still there after (`haicc docs info/get` exit 0) |
-   | `haicc host crud/update swarms --flags help` | 0 | help, "door: refused here: no action: crud update (create, delete, read)" |
-   | `haicc host crud/read swarms --flags nope` | 1 | `{"run":false,...}`, "no flag: nope (container, continuation, help, layer, log)"; last line `haicc: not run: ...` |
-   | `haicc host --flags help -- crud/read swarms` | 1 | `{"run":false,...}`, "help: on the last command only (it rewrites the command it is on)" |
+   `splectral.sh`'s page timings (ms): `/help/` 1030–1480 first;
+   `hdlc/validation` 1890–2690; `?raw` 1040–1580; a command typed
+   1080–1750; kept pages 5–15. `/help/no/such/thing` again the slowest:
+   4878, 3948, 3401. One timing negative, -161 ms (`?raw`, run 1):
+   WSL's clock stepped back during the request; the test times with
+   the wall clock, harmless.
+5. **Every bundle's own tests:** twenty-two, exit 0, `"ok":true` each.
+   `base-package-haici` three times (14 units, 248 tests; 20, 13, 13 s),
+   the help viewer three times (364 tests; 124, 109, 108 s).
+6. **The feedback flag, by hand** (`~/.haicc`, sources this clone's):
+   deploys exit 0 (boot 1.6 s, docs 7.2 s, host 18.3 s).
+   - `haicc host crud/read swarms --flags feedback the list is empty, a
+     swarm was expected`: exit 0, "Feedback on crud/read swarms
+     recorded: request `0f2aedb2-…`." and "To read it back: crud/read
+     done/0f2aedb2-….json --flags layer=request"; run as `haicc host
+     <that>`: exit 0, the record (`haici/feedback`, args the text then
+     `crud/read`, `rewritten: feedback`).
+   - `haicc --output host crud/read "done/*[value/value/protocol='haici']"
+     --flags layer=request`: exit 0, the one record.
+   - `haicc . boot/teardown host --flags feedback do not, it is in use`:
+     exit 0, recorded at the root; `haicc host crud/read swarms` after:
+     exit 0, `[]`: the host still there.
+   - `haicc host haici/feedback swarms "asked directly" crud/read`:
+     exit 0, the same answer.
+   - `haicc host crud/read swarms --flags feedback`: exit 1, "not run:
+     feedback: its text follows it (--flags feedback <text>)".
+   - Read by protocol after: the host 2 records (as expected); **the
+     root 3**, where 1 (the teardown's) was expected: the two given at
+     the host seem to be in the root's request layer too (the command
+     goes through it). Worth a look: is that intended?
+   - `haicc boot/teardown`: 3 runtimes, 0.7 s, nothing left.
+7. **arm64 in a container:** `docker run --rm --platform linux/arm64
+   debian:bookworm-slim uname -m` → "exec /usr/bin/uname: exec format
+   error" (69 s, the image pulled): no emulator registered here
+   (`binfmt_misc` has only WSL's). Stopped there, nothing installed.
+8. **The products synced to `8661d03`** (the human: "build and test the
+   arm stuff and the feedback stuff and update after each test
+   passes"): from the detached checkout, the scripts' steps run inline,
+   the commit named `8661d03` (the scripts name `main`'s, then
+   `cbe8aa15`, not what was tested). 23 packages committed ("arm64 and
+   haici-feedback, tested locally; written from …@8661d03"),
+   `base-package-haici` among them; 6 modules merged (`haicc-base-app`,
+   `mrepo-base-execute`, `-haici`, `-help`, `-request`, `-runtime`),
+   20 already that state. Checked after: all 49 repositories' content
+   the same as this folder at `8661d03` (LICENSE aside; two empty
+   fixture files a third-party `.gitignore` keeps out of git, as
+   always). No release.
 
-   The help viewer, `http://127.0.0.1:4400/help/`, left running.
-   Headless Chromium, light and dark, 1280 px and 390 px:
-
-   - **The drop-downs:** the mrepo `. (the root)`, `docs`, `host`,
-     `splectral`, `help` (indented under `splectral`), as the prompt
-     says. A level's choices its parent's answer (`hdlc`'s: `test`,
-     `autonomy`, ... `validation`, `tooling`); `haicc (4)` shows a count.
-     `–` first in each level, to `./` and to `hdlc` from
-     `hdlc/validation`: one level up, right. They navigate on change.
-   - **`raw`:** the whole response as the terminal prints it, `page` to
-     go back. Its `command` is `["haicc","docs","info/get","hdlc/validation"]`;
-     it differs from the terminal's only where it must: topic
-     `/splectral`, header `"by":"splectral"`, keys and times. One thing:
-     **long lines are cut at the box's edge** (the `page` string), with
-     no wrap; at 390 px that is most lines. A wrap, or a scroll that
-     shows, would help.
-   - **Another mrepo:** `?at=host` and `?at=.` answer, the drop-down on
-     it. `/help/crud?at=host` 3 ms after `crud/read?at=host` (the level
-     above asked with it, kept).
-   - **The command box:** `host crud/read swarms` answered, "taken here,
-     now" in green; `. boot/teardown docs` answered, the docs mrepo
-     there after; `host crud/update x`: the door in red, "does: –";
-     `host crud/read x --flags nope`: a red bar, "not run: no flag:
-     nope ...". Below each, the command actually sent (`... --flags
-     help`; for the last one `--flags help nope`). `read more` is a
-     link to the page (`crud/read?at=host`), 200; `raw` on a command
-     page works too.
-   - **390 px:** no horizontal scroll; the drop-downs wrap to two lines,
-     `raw` under them; the command box and `help` button fit.
-   - **Times:** a page 0.4–1.9 s the first time, ~3 ms after (kept); a
-     command typed 0.5–1.0 s every time (not kept, rightly: it is asked).
-
-   The address is the mrepo (`?at=`) and the keywords, a command typed
-   `?cmd=`: as agreed (roadmap-2, `tasks/splectral/design.md`, "Not taken up: the address as
-   the command"). As the human uses it, the command box gives the
-   like for like: what is typed after `haicc` is what is answered.
-7. **This note**, committed alone to `main`.
+**For the cloud session:** the products now hold `8661d03`. A push from
+`main`'s head would put the work under review back out (avro, swarm-
+cluster, path URIs, the workbench, commission): products from a commit
+a local run has passed only. Proposed for `handover-local.md` and the
+handover: the local agent pushes the products after its run, from the
+commit it tested; the cloud session does not.
 
 ## The next run (2026-11-21, from the cloud session): read this first
 
