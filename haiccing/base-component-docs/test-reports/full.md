@@ -1,6 +1,6 @@
 # Test report: haiccing/base-component-docs
 
-The package passed its `full` set: all 11 units, 73 of 73 tests and 419 of 419 asserts.
+The package passed its `full` set: all 11 units, 73 of 73 tests and 426 of 426 asserts.
 
 | | |
 |---|---|
@@ -9,16 +9,16 @@ The package passed its `full` set: all 11 units, 73 of 73 tests and 419 of 419 a
 | Result | passed |
 | Units | 11 of 11 passed |
 | Tests | 73 of 73 passed |
-| Asserts | 419 of 419 passed |
-| Run | 2026-11-21 03:54 UTC |
+| Asserts | 426 of 426 passed |
+| Run | 2026-11-22 05:38 UTC |
 | Bare | v1.36.0 |
-| Content | `7b943c0cc3953421b25d4119117f0c76bbea671294a3d3a75a604b08108c1558` |
+| Content | `2a5b2aa92178f8ae912164dcf4fbeeb64701894b0c0a38ce58d063df54208811` |
 
 ## Units
 
 | Unit | Result | Tests | Asserts |
 |---|---|---|---|
-| `/test/configured` | passed | 6 of 6 | 18 of 18 |
+| `/test/configured` | passed | 6 of 6 | 25 of 25 |
 | `/test/info` | passed | 1 of 1 | 2 of 2 |
 | `/test/code` | passed | 1 of 1 | 2 of 2 |
 | `/test/mrepo` | passed | 1 of 1 | 1 of 1 |

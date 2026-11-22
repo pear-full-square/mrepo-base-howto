@@ -352,9 +352,9 @@ test('commission and decommission: the deploy waits for the child\'s commission,
     // packages on the runtime alone, each its hooks: lines of the protocols the runtime brings
     const on = hooks => ({ 'main/layer.json': { mode: 'atomic' }, ...Object.fromEntries(Object.entries(hooks).map(([h, text]) => [`runtime/hooks/${h}.haicc`, text])) })
     source(pkgs, {
-      'haiccing/good': { ...on({ commission: 'protocol/activate . info\n', decommission: 'protocol/deactivate . info\n' }), 'packages/layer.json': { mode: 'replicated', packages: ['haiccing/base-package-runtime', 'haiccing/good'] } },
-      'haiccing/bad': { ...on({ commission: 'protocol/activate . info\nnope/nothing\n' }), 'packages/layer.json': { mode: 'replicated', packages: ['haiccing/base-package-runtime', 'haiccing/bad'] } },
-      'haiccing/stuck': { ...on({ decommission: 'nope/nothing\n' }), 'packages/layer.json': { mode: 'replicated', packages: ['haiccing/base-package-runtime', 'haiccing/stuck'] } }
+      'haiccing/good': { ...on({ commission: 'protocol/activate . info\n', decommission: 'protocol/deactivate . info\n' }), 'packages/layer.json': { mode: 'replicated', packages: ['haiccing/base-package-runtime', 'haiccing/base-package-protocol', 'haiccing/base-package-info', 'haiccing/good'] } },
+      'haiccing/bad': { ...on({ commission: 'protocol/activate . info\nnope/nothing\n' }), 'packages/layer.json': { mode: 'replicated', packages: ['haiccing/base-package-runtime', 'haiccing/base-package-protocol', 'haiccing/base-package-info', 'haiccing/bad'] } },
+      'haiccing/stuck': { ...on({ decommission: 'nope/nothing\n' }), 'packages/layer.json': { mode: 'replicated', packages: ['haiccing/base-package-runtime', 'haiccing/base-package-protocol', 'haiccing/base-package-info', 'haiccing/stuck'] } }
     })
     const dir = await parent(work, [parseSource(`folder:${pkgs}`), parseSource(`folder:${SOURCES}`)])
     const { exec, commit } = context(dir, p2pgitBackend(join(dir, '.git'), { fs }), work)

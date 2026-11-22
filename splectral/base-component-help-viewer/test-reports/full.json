@@ -1,8 +1,8 @@
 {
   "package": "splectral/base-component-help-viewer",
-  "content": "39d9e571829353adaa92b8331a88ae34261a6107d60287d6063c00ff2dd69222",
+  "content": "cc5bd771c68811eb476dc4571a82e1a42ddc9bbbb81a4b7c995c775b923d711f",
   "bare": "v1.36.0",
-  "date": "2026-11-21T04:13:55.203Z",
+  "date": "2026-11-22T06:48:11.269Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -101,12 +101,12 @@
       "unit": "/test/modules/pear-full-square/mrepo-base-boot",
       "ok": true,
       "tests": {
-        "passed": 7,
-        "total": 7
+        "passed": 8,
+        "total": 8
       },
       "asserts": {
-        "passed": 125,
-        "total": 125
+        "passed": 127,
+        "total": 127
       },
       "failures": []
     },
@@ -170,8 +170,8 @@
         "total": 21
       },
       "asserts": {
-        "passed": 240,
-        "total": 240
+        "passed": 238,
+        "total": 238
       },
       "failures": []
     },
@@ -179,12 +179,12 @@
       "unit": "/test/modules/pear-full-square/mrepo-base-runtime",
       "ok": true,
       "tests": {
-        "passed": 9,
-        "total": 9
+        "passed": 10,
+        "total": 10
       },
       "asserts": {
-        "passed": 150,
-        "total": 150
+        "passed": 171,
+        "total": 171
       },
       "failures": []
     },
@@ -365,8 +365,8 @@
         "total": 10
       },
       "asserts": {
-        "passed": 120,
-        "total": 120
+        "passed": 121,
+        "total": 121
       },
       "failures": []
     }
