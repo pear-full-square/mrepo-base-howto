@@ -115,115 +115,103 @@ a local run has passed only. Proposed for `handover-local.md` and the
 handover: the local agent pushes the products after its run, from the
 commit it tested; the cloud session does not.
 
-## The next run (2026-11-21, from the cloud session): read this first
+## The next run (2026-11-23, from the cloud session): read this first
 
 The prompt for this run, here so it is read with the notes. Write your
 own section above this one, as always; this one stays until the next
 prompt replaces it.
 
 What it needs on the local machine: as before (Linux x86-64; git, curl,
-tar; Docker, its daemon running). **Test only**: no release, no product
-repository, no `gh`.
+tar; Docker, its daemon running), and **push access to the product
+repositories** (`github.com/pear-full-square/<module>`,
+`github.com/<org>/<package>`). **Build, test, then push the products**
+(the human, 2026-11-23: "local will push the product repositories";
+your proposal of 2026-11-22, the local agent pushes them from the commit
+it tested). **No release.**
 
-**Why this run** (`splectrum/roadmap-2`, `tasks/review/`, items 1 and
-2): the human (2026-11-21), "arm64 and feedback complete": the two
-built today are completed by a local build and test. Everything else
-merged into `main` today is under review, so this run is **not on
-`main`'s head**: it is on the commit that has these two and nothing
-after them,
+**Why this run**: the service-every-mrepo work is finished (roadmap-2,
+`tasks/service-every-mrepo/`), a milestone: `main`'s head, built and
+tested here in full, then every product repository brought to it.
 
-    8661d0343a2d34e8308fe907c555776a204d392e   (8661d03, "arm64 merged with haici-feedback")
+**The commit**: `main`'s head when you pull, the commit of this note
+(it changes `steps/` only: what it builds is `5a6df6d4`'s). The
+scripts push from `main`, so `main` must still be the commit you
+tested when you push: if it has moved, stop before step 6 and say so.
 
-What is new in it since your last run (`004dbc7`):
+What is new since your last run (`8661d03`), in short:
 
-- **`haici-feedback`**: `--flags feedback <text>` on any command records
-  the text where the command would run, nothing of the command executed
-  (`haici/feedback` at the same URI, its arguments the text then the
-  command); answered in natural language with its request's id, read
-  back from the request layer (`--flags layer=request`). A new package
-  and module, `haiccing/base-package-haici`, `mrepo-base-haici`.
-- **`arm64`**: the sources for `linux-arm64` too: every bundle carries
-  both platforms' native addons, both Bare runtimes are in the sources
-  (`sources/holepunchto/`), the pins a build a platform
-  (`haiccing/base-linux-haicc/pins`), and the installer and `haicc
-  prereq` choose by machine (`uname`: `aarch64` → `linux-arm64`). The
-  development tools stay `linux-x64`. Proven in the cloud under
-  emulation up to the boot's runtime, which did not answer under
-  qemu-user (Bare's JIT, most likely); a real Pi is the proof, at home.
+- **Every mrepo a service** (the boot mrepo the one exception): the
+  runtime fires `commission` after its `boot` hook; `boot/deploy`
+  links first, installs at `<work>/mrepos/<uri>`, commissions;
+  deploy and teardown idempotent (a repeat is a warning, `again:true`).
+- **The registry**: `<work>/mrepos/`, the install's; `haicc/mrepos
+  [xpath]` lists the mrepos (`uri`, `position`, `package`, `running`);
+  the packages' scripts placed in `<work>/scripts`.
+- **The docs mrepo** split on package (a keyword in its package's
+  context, `haiccing/base-package-boot/deploy`), built from the store at
+  `initialise`, removed at shutdown (`info/clear`); `crud` and `haici`
+  in it: feedback recorded and read back where the documentation is
+  read.
+- **The workbench** (`haiccing/base-solution-workbench`): its
+  commission deploys the docs mrepo and Splectral, installs the help
+  viewer; the help viewer reads `local/docs` wherever it is.
+- Also on `main` since: `mycelium-value-avro`, the swarm (`rns`,
+  `log`, `dispatch`, `base-component-node`, the log viewer), relative
+  path URIs.
 
-> Build the sources from `8661d03` and test them; then try arm64 in a
-> container if this machine can emulate it.
->
-> 1. **The clone.** `git fetch origin`, then `git checkout --detach
->    8661d0343a2d34e8308fe907c555776a204d392e`. Write down `git log -1`.
->    Tear down your own install first if one runs (`haicc boot/teardown`):
->    its sources are this clone's `sources/`, rebuilt next.
-> 2. **The dependencies, the sources.** `sh tools/install.sh` (one
->    module new, `mrepo-base-haici`), then `tools/bare tools/release.js`:
->    `sources/haiccing/` twenty-one bundles (`base-package-haici` new),
->    `sources/splectral/` one, each with its manifest, every entry's
->    commit `8661d034`; `sources/holepunchto/` both Bare tarballs,
->    `linux-x64` and `linux-arm64`. `git status` must show no change
->    after it; if it does, say so and stop.
-> 3. **The checks and the reports.** `tools/bare tools/release.js
->    --strict` (exit 0, every report `current`, `"platforms":
->    ["linux-x64","linux-arm64"]`); `tools/bare tools/code-check.js` and
+> 1. **The clone.** `git checkout main`, `git pull`. Write down `git log
+>    -1`. Tear down your own install first if one runs (`haicc
+>    boot/teardown`): its sources are this clone's `sources/`. An
+>    install from before this run is not migrated: torn down with the
+>    old `haicc`.
+> 2. **The dependencies, the sources.** `sh tools/install.sh`, then
+>    `tools/bare tools/release.js`: twenty-nine bundles
+>    (`sources/haiccing/`, `sources/splectral/`), each with its
+>    manifest, every entry's commit the one you wrote down;
+>    `sources/holepunchto/` both Bare tarballs. `git status` no change
+>    after it; if it changes, say so and stop.
+> 3. **The checks.** `tools/bare tools/release.js --strict` (exit 0,
+>    every report `current`); `tools/bare tools/code-check.js` and
 >    `tools/bare tools/info-extract.js --files` (0 problems each). Do not
 >    run `tools/package-test.js`: the reports are the cloud session's.
-> 4. **The tests**: the boot's test three times (`SOURCES=$PWD/sources
->    tools/bare sources/haiccing/base-component-boot.bundle
->    /test/validate`, `"ok":true`); `sh haiccing/base-linux-haicc/test/run.sh`
->    three times (it has new checks: every pinned platform's Bare in the
->    sources, an `aarch64` machine choosing `linux-arm64`, the feedback
->    flag; say its count), `sh haiccing/base-linux-haicc/test/splectral.sh`
->    three times, `test/container.sh` and `test/pair.sh` once. Every
->    check passing; each one's count and time. Nothing left after each:
->    `pgrep -fa "bin/bare"`, `docker ps -a --filter label=haicc.folder`.
+>    A report not `current`: say which and stop.
+> 4. **The full test** (`base-docs-hdlc`, "Validation"): every check
+>    passing; each one's count and time; nothing left after each
+>    (`pgrep -fa "bin/bare"`, `docker ps -a --filter label=haicc.folder`).
+>    Keep the laptop awake: both last runs lost one to a sleep.
+>
+>    | test | runs | the cloud session's count |
+>    |---|---|---|
+>    | boot `/test/validate` | 3 | `"ok":true` |
+>    | `sh haiccing/base-linux-haicc/test/run.sh` | 2 | 370 |
+>    | `test/splectral.sh` | 2 | 85 |
+>    | `test/swarm.sh` | 3 (a race shows one run in a few) | 92 |
+>    | `test/container.sh` | 1 | 17 |
+>    | `test/pair.sh` | 1 | 39 |
+>
 >    A run that hangs: look for `runtime-stall.json` under its temporary
->    folder and copy what it says into your note.
-> 5. **Every bundle's own tests**, both organisations:
->    `SOURCES=$PWD/sources tools/bare sources/<org>/<package>.bundle
->    /test/full` (exit 0, last line `"ok":true`; twenty-two),
->    `base-package-haici`'s and the help viewer's three times. Keep the
->    laptop awake: last run's one failure was a sleep.
-> 6. **The feedback flag, by hand** (your install, `~/.haicc`, its
->    sources this clone's `sources/`):
->    ```sh
->    haicc boot/deploy
->    haicc . boot/deploy docs haiccing/base-component-docs
->    haicc . boot/deploy host haiccing/base-component-haicc --flags continuation=start
->    haicc host crud/read swarms --flags feedback the list is empty, a swarm was expected
->    ```
->    It answers "Feedback on crud/read swarms recorded: request
->    `<id>`." and the command to read it back, as typed after the
->    position: run it as `haicc host <that command>`. Then, each
->    with its exit code and what it said:
->    ```sh
->    haicc --output host crud/read "done/*[value/value/protocol='haici']" --flags layer=request
->    haicc . boot/teardown host --flags feedback do not, it is in use
->    haicc host crud/read swarms
->    haicc host haici/feedback swarms "asked directly" crud/read
->    haicc host crud/read swarms --flags feedback
->    ```
->    (every feedback there, read by protocol; the teardown not run, the
->    host still answering after it; asked directly, the same answer; no
->    text, not run, exit 1, said why). Then
->    `haicc boot/teardown`, nothing left running.
-> 7. **arm64 in a container, if this machine can** (optional; no more
->    than an hour on it). First `docker run --rm --platform linux/arm64
->    debian:bookworm-slim uname -m`. If it does not answer `aarch64`,
->    say what it said and stop this step: do not install binfmt or
->    change Docker's settings. If it does: an arm64 container as
->    `test/container.sh` makes one (read it: the sources read only at
->    the same path, the installer mounted, `HAICC_TIMEOUT=120`), with
->    `--platform linux/arm64`; in it the installer, `haicc sources link
->    <the sources>`, `haicc prereq` (it says `platform: linux-arm64`),
->    `haicc boot/deploy`, `haicc . crud/read .`. Each step's exit code,
->    what it said and how long it took. Under emulation the boot's
->    runtime may not answer (as in the cloud): say so, with
->    `top`'s CPU for its `bare` while it waits, and leave it there.
->    Remove the container after.
-> 8. **Your note**: a section at the top of this file, as always: the
->    commit, each step's result and timings, anything that looked wrong
->    or slow. Then `git checkout main`, `git pull`, write the note there,
->    commit it alone to `main` and push.
+>    folder and copy what it says into your note. A run lost to a sleep:
+>    run it again, and say so.
+> 5. **Every bundle's own tests**: `SOURCES=$PWD/sources tools/bare
+>    sources/<org>/<package>.bundle /test/full` for each of the
+>    twenty-nine (exit 0, last line `"ok":true`).
+> 6. **The products, only when 2 to 5 passed whole.** From the clone's
+>    root, `main` checked out and still the commit tested:
+>    - the modules, one at a time so that one missing does not stop the
+>      rest: `for m in $(ls pear-full-square); do sh tools/products.sh
+>      "$m" || echo "$m: FAILED"; done`;
+>    - the packages: `for p in $(ls -d haiccing/*/ splectral/*/ | sed
+>      's:/$::'); do sh tools/packages.sh -m "service-every-mrepo: every
+>      mrepo a service, the registry, the docs mrepo split on package,
+>      the workbench; tested locally" "$p" || echo "$p: FAILED"; done`.
+>
+>    One line each ("up to date", or its new commit). A repository that
+>    does not exist: do not create it (the human creates repositories);
+>    list it in your note. A push refused: say which and why. Then check:
+>    each repository's `main` the same content as its folder here
+>    (LICENSE aside), as you did last time.
+> 7. **Your note**: a section at the top of this file, as always: the
+>    commit, each step's result and timings, each product's line, the
+>    repositories missing, anything that looked wrong or slow. Commit it
+>    alone to `main` and push.
+
