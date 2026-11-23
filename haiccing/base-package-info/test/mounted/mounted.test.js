@@ -61,18 +61,18 @@ test('its config, value by value; the layer it brings', (t) => {
   t.ok(cfg.description, 'its description')
   t.alike(Object.keys(cfg).sort(), ['actions', 'default', 'description', 'package'], 'nothing else: not behind a state')
   t.is(cfg.default, 'get', 'its default action: info alone is info/get')
-  t.alike(Object.keys(cfg.actions).sort(), ['extract', 'get'])
-  t.alike([cfg.actions.get.uris, cfg.actions.extract.uris], [['**'], ['.']], 'get: its keywords where the URI is; extract: at the mrepo itself')
+  t.alike(Object.keys(cfg.actions).sort(), ['clear', 'extract', 'get'])
+  t.alike([cfg.actions.get.uris, cfg.actions.extract.uris, cfg.actions.clear.uris], [['**'], ['.'], ['.']], 'get: its keywords where the URI is; extract and clear: at the mrepo itself')
   for (const [name, a] of Object.entries(cfg.actions)) {
     t.ok(a.description, `${name}: its description`)
     t.absent('states' in a || 'target' in a, `${name}: no states, no target`)
   }
-  t.alike(['args' in cfg.actions.get, 'args' in cfg.actions.extract], [false, false], 'no argument asked for: get\'s keywords are its URI, none the top')
+  t.alike(['args' in cfg.actions.get, 'args' in cfg.actions.extract, 'args' in cfg.actions.clear], [false, false, false], 'no argument asked for: get\'s keywords are its URI, none the top')
   const layer = JSON.parse(readFileSync(join(pkg, 'mrepo', 'info', 'layer.json'), 'utf8'))
   t.alike([layer.mode, Boolean(layer.description)], ['atomic', true], 'its structure: the info layer, atomic')
 })
 
-test('extract, then get: the layer from the packages, read by keywords', async (t) => {
+test('extract, then get, then clear: the layer from the packages, read by keywords in a package\'s context, its build removed', async (t) => {
   const dir = mkdtempSync(join(os.tmpdir(), 'info-mounted-'))
   try {
     bundle(dir, 'haiccing/base-package-one', {
@@ -101,10 +101,13 @@ test('extract, then get: the layer from the packages, read by keywords', async (
     const go = await act('get', exec, { uri: ['main', 'haiccing/base-package-one/go'] })
     t.alike([go.choices[0].title, go.choices[0].oneliner], ['go', 'Goes.'], 'an action, reached by a jump into its module')
     await t.exception(act('get', exec, { uri: ['main', 'haiccing/base-package-one/stop'] }), /no haiccing\/base-package-one\/stop here: nearest haiccing\/base-package-one, below it go/, 'not there: the nearest, and what is below it')
+    t.is((await act('get', exec, { uri: ['main', 'go'] })).context, 'haiccing/base-package-one', 'a short keyword: the package that has it, its context said')
+    t.ok((await act('clear', exec, { uri: ['.'] })).removed > 0, 'clear: the build removed')
+    await t.exception(act('get', exec, {}), /no info extracted in this mrepo yet/, 'nothing to read after it')
   } finally { rmSync(dir, { recursive: true, force: true }) }
 })
 
 test('every action the config names was run here', (t) => {
-  t.alike([...ran].sort(), Object.keys(mounted.protocols.info.actions).sort(), 'extract and get')
+  t.alike([...ran].sort(), Object.keys(mounted.protocols.info.actions).sort(), 'extract, get and clear')
   t.alike([...logged].sort(), Object.keys(mounted.protocols.info.actions).sort(), 'and each wrote into the request\'s log as it ran: an action that logs nothing fails this')
 })

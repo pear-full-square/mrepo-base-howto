@@ -9,14 +9,12 @@ registered in the install's registry (`internal/schemas`).
 
 ## Signature
 
-`place({ dir, store, sources, list, documented })`: `sources` as
-`parseSource` returns them; `list` the packages, `<org>/<package>`;
-`documented` those documented only (default none): each its bundle, no
-addon, marked `documented` with no entry: nothing of it runs.
+`place({ dir, store, sources, list })`: `sources` as `parseSource`
+returns them; `list` the packages, `<org>/<package>`.
 
 ## Returns
 
-`{ packages: { <org>/<package>: { sha256, id, entries, addons, documented? } }, committed }`.
+`{ packages: { <org>/<package>: { sha256, id, entries, addons } }, committed }`.
 `committed` is false when the manifest is unchanged; `schemas` each
 package's registered schemas, `{ <org>/<package>: [{ fingerprint, uri, added }] }`.
 

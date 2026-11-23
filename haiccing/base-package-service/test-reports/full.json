@@ -1,8 +1,8 @@
 {
   "package": "haiccing/base-package-service",
-  "content": "ab07831ec02306d06903511fe39bce231bfa0875a3dea7c613afdbf7228d8c59",
+  "content": "9c4d27162925e07e3c43eb5fffc774dc71b8d69bd96ab9e5f7b771e6b49088da",
   "bare": "v1.36.0",
-  "date": "2026-11-22T23:47:57.993Z",
+  "date": "2026-11-23T04:32:34.103Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -75,12 +75,12 @@
       "unit": "/test/modules/pear-full-square/mrepo-base-info",
       "ok": true,
       "tests": {
-        "passed": 9,
-        "total": 9
+        "passed": 10,
+        "total": 10
       },
       "asserts": {
-        "passed": 69,
-        "total": 69
+        "passed": 86,
+        "total": 86
       },
       "failures": []
     },

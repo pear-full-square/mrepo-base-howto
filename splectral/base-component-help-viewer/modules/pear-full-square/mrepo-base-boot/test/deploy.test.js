@@ -85,7 +85,7 @@ function context (dir, backend, work) {
   return { exec, commit, repo }
 }
 
-test('documents: sources: every package the sources offer beyond the list placed, documented only: no structure laid in, no entry, no addon', async (t) => {
+test('documents: store: the list laid in and placed, nothing more: its info extraction reads the store; documents anything else refused', async (t) => {
   const pkgs = mkdtempSync(join(tmpdir(), 'documents-src-'))
   const into = mkdtempSync(join(tmpdir(), 'documents-into-'))
   const dir = mkdtempSync(join(tmpdir(), 'documents-dir-'))
@@ -93,23 +93,19 @@ test('documents: sources: every package the sources offer beyond the list placed
   try {
     source(pkgs, {
       'haiccing/base': { 'runtime/layer.json': { mode: 'atomic' } },
-      'haiccing/other': { 'other/layer.json': { mode: 'atomic' }, 'runtime/hooks/boot/x.json': ['x/y'] },
-      'haiccing/docs': { 'packages/layer.json': { mode: 'replicated', packages: ['haiccing/base', 'haiccing/docs'], documents: 'sources' } },
-      'haiccing/plain': { 'packages/layer.json': { mode: 'replicated', packages: ['haiccing/plain'] } },
-      'haiccing/odd': { 'packages/layer.json': { mode: 'replicated', packages: ['haiccing/odd'], documents: 'all' } }
+      'haiccing/other': { 'other/layer.json': { mode: 'atomic' } },
+      'haiccing/docs': { 'packages/layer.json': { mode: 'replicated', packages: ['haiccing/base', 'haiccing/docs'], documents: 'store' } },
+      'haiccing/odd': { 'packages/layer.json': { mode: 'replicated', packages: ['haiccing/odd'], documents: 'sources' } }
     })
     const sources = [parseSource(`folder:${pkgs}`)]
-    const { list, documented } = lay({ store, sources, target: 'haiccing/docs', into })
-    t.alike([list, documented], [['haiccing/base', 'haiccing/docs'], ['haiccing/odd', 'haiccing/other', 'haiccing/plain']], 'the list, and every other package the sources offer, sorted')
-    t.absent(existsSync(join(into, 'other')), 'a documented package lays nothing in')
-    t.alike(lay({ store, sources, target: 'haiccing/plain', into: mkdtempSync(join(tmpdir(), 'documents-plain-')) }).documented, [], 'no documents: nothing beyond the list')
-    t.exception(() => lay({ store, sources, target: 'haiccing/odd', into }), /haiccing\/odd: documents what\? all \(sources\)/, 'documents anything but sources: refused')
+    const { list } = lay({ store, sources, target: 'haiccing/docs', into })
+    t.alike(list, ['haiccing/base', 'haiccing/docs'], 'the list')
+    t.absent(existsSync(join(store, 'haiccing', 'other.bundle')), 'nothing beyond it fetched')
+    t.exception(() => lay({ store, sources, target: 'haiccing/odd', into }), /haiccing\/odd: documents what\? sources \(store\)/, 'documents anything but store: refused')
     lj(join(dir, 'packages'), 'replicated')
     const { dir: built } = await build({ from: dir, work: store, name: 'docs' })
-    const { packages } = await place({ dir: built, store, sources, list, documented })
-    t.alike(Object.keys(packages), [...list, ...documented], 'all placed, the list first')
-    t.alike([packages['haiccing/other'].documented, packages['haiccing/other'].entries, packages['haiccing/base'].documented], [true, [], undefined], 'the documented marked, no entry: nothing of it runs')
-    t.ok(existsSync(join(built, 'packages', 'haiccing', 'other.bundle')), 'its bundle there, for its pages')
+    const { packages } = await place({ dir: built, store, sources, list })
+    t.alike(Object.keys(packages), list, 'the list placed, nothing more')
   } finally { for (const d of [pkgs, into, dir, store]) rmSync(d, { recursive: true, force: true }) }
 })
 

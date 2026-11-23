@@ -5,8 +5,8 @@ The component's part of the structure: the list of the packages the docs mrepo i
 - **Its packages** (`packages/layer.json`): the runtime, the protocol
   protocol, the info protocol, the help protocol, the service protocol,
   the documentation packages, and this
-  component last; and `"documents": "sources"`: every other package the
-  sources offer, placed as documentation only.
+  component last; and `"documents": "store"`: every package in the
+  install's store documented, read from the store, nothing placed.
 - **Its runtime config**: its service state and its hooks, below.
 - **Nothing else**: no data. `main` stays empty.
 
@@ -16,12 +16,15 @@ The component's part of the structure: the list of the packages the docs mrepo i
   is service managed, as every mrepo.
 - **At `boot`**: `help`, `info`, `runtime` and `service` activated: the
   activations only.
-- **`commission`**, run once by its runtime as it starts after its
-  deploy, the deploy waiting for it: `service/initialise`, then
-  `service/start`.
-- **At `initialise`**: its info extracted: every package's pages, those
-  of its list and those it documents, by keywords. Its setup, in a
-  visible state rather than at its runtime's start.
+- **`commission`**, run by its runtime as it starts (again at a
+  restart, idempotent), the deploy waiting for it: `service/initialise`,
+  then `service/start`.
+- **At `initialise`**: its info built (`info/extract`): every package's
+  pages, those of its list and every one in the store, split on package.
+  Its setup, in a visible state rather than at its runtime's start;
+  again, what is new in the store added.
+- **At `shutdown`**: the build removed (`info/clear`); `initialise`
+  builds it again.
 - **No door**: nothing sits behind it; started, it answers `info/get`.
 
 Runtime config is laid in from the last package of a list only, the one

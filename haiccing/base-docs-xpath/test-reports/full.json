@@ -1,8 +1,8 @@
 {
   "package": "haiccing/base-docs-xpath",
-  "content": "ca52fb17e21f7defb8a8a41400c493b5a29851153d47bb2d21864d8fe2d33c39",
+  "content": "8d6518703b1b507b27c5cf512cb335704bf494dba8ad3217c3b18e361cb2c78b",
   "bare": "v1.36.0",
-  "date": "2026-11-22T23:36:19.665Z",
+  "date": "2026-11-23T04:20:55.122Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -75,12 +75,12 @@
       "unit": "/test/modules/pear-full-square/mrepo-base-info",
       "ok": true,
       "tests": {
-        "passed": 9,
-        "total": 9
+        "passed": 10,
+        "total": 10
       },
       "asserts": {
-        "passed": 69,
-        "total": 69
+        "passed": 86,
+        "total": 86
       },
       "failures": []
     },

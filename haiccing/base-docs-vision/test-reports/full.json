@@ -1,8 +1,8 @@
 {
   "package": "haiccing/base-docs-vision",
-  "content": "2341504e26896eba12665210aebee8a0d34e520fc07664603553aea30fd18fe3",
+  "content": "bab0c20148d9a7ade81254771aadb78706939c6d0c0077f68304d5c8a47b0c73",
   "bare": "v1.36.0",
-  "date": "2026-11-22T23:36:13.465Z",
+  "date": "2026-11-23T04:20:49.475Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -75,12 +75,12 @@
       "unit": "/test/modules/pear-full-square/mrepo-base-info",
       "ok": true,
       "tests": {
-        "passed": 9,
-        "total": 9
+        "passed": 10,
+        "total": 10
       },
       "asserts": {
-        "passed": 69,
-        "total": 69
+        "passed": 86,
+        "total": 86
       },
       "failures": []
     },

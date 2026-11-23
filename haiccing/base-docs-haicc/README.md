@@ -26,8 +26,9 @@ docs mrepo: `haicc docs info/get <keywords>`.
   and takes commands at `.`: `haicc . <protocol>/<action>`.
   The one mrepo with no service: nothing upstream manages it.
 - **The docs mrepo**, `local/docs`: deployed in the boot mrepo (or by
-  the workbench, at `workbench/docs`), the platform's documentation,
-  read with `info`.
+  the workbench, at `workbench/docs`), the install's documentation:
+  every package in its store, built at its `initialise`, split on
+  package, read with `info` in a package's context.
 - **The host**, `local/host`: the mrepo a machine is managed with,
   service managed; applications, swarms and their nodes are deployed in
   it. `haicc host <protocol>/<action>`. On an install with the
@@ -176,8 +177,13 @@ organisation of its own, beside haicc's own, `haiccing`.
   haicc/file <URI> <org>/<package>/<name>`).
 - **continuation**: a script a command answers with, to go on with,
   run in the context of the command it continues.
-- **docs mrepo**: the install's documentation, every package's pages,
-  read with `info/get`; any other mrepo answers about itself.
+- **docs mrepo**: the install's documentation, every package's pages in
+  its store, split on package, read with `info/get`; any other mrepo
+  answers about itself.
+- **context**: the package a keyword is read in, its name in front
+  (`info/get haiccing/base-package-boot/deploy`); a package's keywords
+  are its own. A short keyword: the mrepo's own package's, else a choice
+  of the packages that have it. Never kept between requests.
 - **HDLC**: the haicc delivery lifecycle, how work is done.
 - **pair**: a node run in a Docker container on its own haicc install.
   The host links it (`how: container`) and forwards every command for it

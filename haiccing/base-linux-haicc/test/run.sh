@@ -370,7 +370,7 @@ has "$out" '"event":"haicc.goto.sent on"' "haicc host --flags log=verbose -- cru
 has "$out" '"event":"crud.read.query"' "and it held down the chain: the host's steps too"
 has "$out" '"args":["crud/read","."]' "-- says where the next command starts: the command as it is"
 out=$(haicc --raw host --flags log=debug -- haicc node-1 info/get 2>&1)
-has "$out" '"event":"info.get.index"' "log=debug through two hops: the node's internals"
+has "$out" '"event":"info.get.asked"' "log=debug through two hops: the node's internals"
 has "$out" '"jump":["host","node-1"]' "under both jumps, in order"
 out=$(haicc --raw . --flags log=verbose -- crud/read . 2>&1)
 has "$out" '"event":"crud.read.query"' "haicc . --flags log=verbose -- crud/read .: at the root too"
@@ -457,7 +457,21 @@ has "$out" '{"keyword":"haiccing/base-docs-vision","oneliner":"' "vision"
 has "$(haicc --output docs info/get haiccing/base-docs-hdlc/validation 2>&1)" '"title":"Validation"' "haicc docs info/get haiccing/base-docs-hdlc/validation: a section of how work is done"
 has "$(haicc --output docs info/get haiccing/base-docs-package/mrepo/request 2>&1)" '"title":"/request"' "haiccing/base-docs-package/mrepo/request: a layer at run time, in the package specification"
 has "$(haicc --output docs info/get haiccing/base-package-info/get 2>&1)" '"title":"get"' "haiccing/base-package-info/get: the info protocol's action, documented there too"
-has "$(haicc --output docs info/get haiccing/base-package-boot/deploy 2>&1)" '"title":"deploy"' "haiccing/base-package-boot/deploy: a package the docs mrepo does not run, documented (documents: sources)"
+has "$(haicc --output docs info/get haiccing/base-package-boot/deploy 2>&1)" '"keyword":"haiccing/base-package-boot/deploy","context":"haiccing/base-package-boot"' "haiccing/base-package-boot/deploy: a package the docs mrepo does not run, documented from the install's store (documents: store), read in its context, said"
+has "$(haicc --output docs info/get base-package-boot deploy 2>&1)" '"context":"haiccing/base-package-boot"' "its name alone, unique here: the same context"
+out=$(haicc --output docs info/get config 2>&1)
+has "$out" '"keyword":"config","choices":[' "a short keyword several packages have (not the docs mrepo's own): a choice each"
+has "$out" '{"keyword":"haiccing/base-package-boot/config","title":"Config"' "each kept apart, the keyword to go on with in its context first"
+has "$out" '"context":"haiccing/base-package-boot","packages":["haiccing/base-package-boot"]' "and its context said"
+has "$out" '{"keyword":"haiccing/base-package-haicc/config"' "the host's protocol among them: in the store, documented"
+has "$(haicc --output docs info/get howto 2>&1)" '"context":"haiccing/base-component-docs"' "a short keyword its own package has: its own, the docs mrepo answering about itself"
+has "$(haicc --output host info/get howto 2>&1)" '"keyword":"haiccing/base-component-haicc/howto","context":"haiccing/base-component-haicc"' "the same short keyword asked of the host: its own package's, context help"
+# its build: removed at shutdown, built again at initialise
+haicc --output docs service/stop >/dev/null 2>&1; out=$(haicc --output docs service/shutdown 2>&1); has "$out" '"state":"booted"' "haicc docs service/shutdown: shut down, its shutdown hook run"
+out=$(haicc --output docs info/get 2>&1 >/dev/null); has "$out" "no info extracted in this mrepo yet" "its build removed (info/clear)"
+has "$(haicc --output docs service/initialise 2>&1)" '"state":"initialised"' "haicc docs service/initialise: built again"
+has "$(haicc --output docs info/get haiccing/base-docs-hdlc/validation 2>&1)" '"title":"Validation"' "its pages back"
+has "$(haicc --output docs service/initialise 2>&1)" '"again":true' "initialise again: a repeat, what is new added, nothing else"
 is "$(haicc --output . boot/teardown docs 2>&1)" '{"tornDown":"docs"}' "haicc . boot/teardown docs: torn down again"
 
 # 10. torn down: the node; the service stopped and shut down; the host

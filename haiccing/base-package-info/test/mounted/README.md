@@ -11,15 +11,17 @@ action run on a minimal execution.
 - **What it provides**: one protocol, `info`, with a function for every
   action configured and no other.
 - **Its config, value by value**: the package that brings it; `get`,
-  its default action, its keywords where the URI is, and `extract`, at
-  the mrepo itself; no argument, no state, no target.
+  its default action, its keywords where the URI is, and `extract` and
+  `clear`, at the mrepo itself; no argument, no state, no target.
 - **Its structure**: the info layer it brings, atomic.
 - **`extract`**: from bundles written for the test, a component that
   includes a protocol package: the layer, its index, its problems; run
   again, nothing written; a URI other than the mrepo itself, refused.
 - **`get`**: nothing extracted yet, said; then the top, its
   organisation, its packages by their names fully qualified, an action
-  reached by a jump; a keyword that is not there, said.
+  reached by a jump in its package's context; a short keyword, its
+  package's context said; a keyword that is not there, said.
+- **`clear`**: the build removed, nothing to read after it.
 - **Nothing forgotten**: the last test fails when the config names an
   action that was not run here, or one that wrote nothing into the
   request's log as it ran.

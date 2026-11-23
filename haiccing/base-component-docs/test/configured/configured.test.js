@@ -38,7 +38,8 @@ const LIST = [
 ]
 // Each hook named here with its command: what the docs mrepo offers from
 // its boot, its commission (its service initialised and started), what its
-// initialise sets up (its info). No door: nothing sits behind it.
+// initialise sets up (its info built), what its shutdown removes (the
+// build). No door: nothing sits behind it.
 const HOOKS = {
   'boot/1': ['protocol/activate', '.', 'help'],
   'boot/2': ['protocol/activate', '.', 'info'],
@@ -46,7 +47,8 @@ const HOOKS = {
   'boot/4': ['protocol/activate', '.', 'service'],
   'commission/1': ['service/initialise'],
   'commission/2': ['service/start'],
-  'initialise/1': ['info/extract']
+  'initialise/1': ['info/extract'],
+  'shutdown/1': ['info/clear']
 }
 
 test('its list of packages, in deploy order, itself last', (t) => {
@@ -134,7 +136,7 @@ function world () {
 }
 const of = transition => Object.keys(brought).filter(n => n.startsWith(`${transition}/`)).sort()
 
-test('what its hooks do: the boot opens help, info, runtime and service; its commission initialises it (its info extracted) and starts it', async (t) => {
+test('what its hooks do: the boot opens help, info, runtime and service; its commission initialises it (its info built) and starts it; its shutdown removes the build', async (t) => {
   const w = world()
   // the boot: the runtime places these as its own, in name order
   for (const name of of('boot')) await w.exec.run(brought[name])
@@ -147,6 +149,8 @@ test('what its hooks do: the boot opens help, info, runtime and service; its com
   t.alike(commissioned, [{ service: 'initialised', state: 'initialised' }, { service: 'started', state: 'started' }], 'its commission: initialised, then started')
   t.ok(w.commands.includes('info/extract'), 'initialise: its info extracted, by its hook')
   t.alike(w.active(), ['help', 'info', 'runtime', 'service'], 'started: nothing behind a door, the same open')
+  t.alike([await w.exec.run(['service/stop']), await w.exec.run(['service/shutdown'])], [{ service: 'stopped', state: 'initialised' }, { service: 'shut down', state: 'booted' }], 'stopped, shut down')
+  t.ok(w.commands.includes('info/clear'), 'shutdown: its build removed, by its hook')
   // every hook file ran: its command among those executed
   const ran = Object.entries(brought).filter(([, c]) => w.commands.includes(c.join(' '))).map(([n]) => n).sort()
   t.alike(ran, Object.keys(brought).sort(), 'every hook the component brings was run here: one added without its place in this walk fails this')

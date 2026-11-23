@@ -10,7 +10,8 @@ value, then against the packages listed, read from the sources.
 
 - **Its list**: the packages in deploy order, the component last.
 - **Its hooks, file by file**: each with its transition and its command
-  (`boot`, the activations only; `commission`; `initialise`, its info);
+  (`boot`, the activations only; `commission`; `initialise`, its info
+  built; `shutdown`, the build removed);
   its service state, `booted`. A hook file not named in the test fails
   it.
 - **The packages it lists**: each has its bundle in the sources; the
@@ -20,7 +21,8 @@ value, then against the packages listed, read from the sources.
 - **What its hooks do**: run with the listed packages' own actions, on a
   minimal execution in memory: after the boot `help`, `info`, `runtime`
   and `service` are open, nothing set up; its commission initialises it
-  (its info extracted) and starts it. Every hook file must have run.
+  (its info built) and starts it; stopped and shut down, its build
+  removed. Every hook file must have run.
 - **Nothing left closed by forgetting**: every protocol the listed
   packages provide is opened by a hook, except the protocol protocol, on
   purpose.
