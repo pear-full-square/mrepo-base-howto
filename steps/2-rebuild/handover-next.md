@@ -9,6 +9,9 @@ attached with `add_repo`, push, cloned beside this one): its
 `tasks/` (one folder a task, the designs in discussion beside theirs).
 What is built is documented in the packages; the history is git's.
 
+**First**: [`handback.md`](handback.md), what the `service-every-mrepo`
+substream handed back (2026-11-23).
+
 ## Starting a session
 
 A fresh clone has no `node_modules/` and no `sources/` (both ignored by
