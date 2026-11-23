@@ -22,9 +22,9 @@ $EDITOR haiccing/<pkg>/mrepo/packages/layer.json   # "documents": "sources"
 $EDITOR haiccing/<pkg>/README.md
 # deployed: the documented packages placed beside the list's
 haicc . boot/deploy <name> <pkg>
-# their pages at their keywords, below the top
+# their pages below their organisations, by their names
 haicc <name> info/get
-haicc <name> info/get <keyword>
+haicc <name> info/get <org>/<package>
 ```
 
 ## Notes

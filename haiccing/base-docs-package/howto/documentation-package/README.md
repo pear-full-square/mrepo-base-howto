@@ -26,7 +26,7 @@ tools/bare tools/package-test.js haiccing/<new>
 
 ## Notes
 
-- **Its keyword** is its name without the prefix: `base-docs-uri` is
-  `uri`, `haicc docs info/get uri`.
+- **Its keywords** are its name, fully qualified: `haicc docs info/get
+  haiccing/base-docs-uri`.
 - **Documentation follows the implementation**: what is not built is the
   vision's.

@@ -1,7 +1,7 @@
 // annotate: help/annotate <protocol>/<action> [<argument>...] at a URI: a
 // command explained where it would run, not executed (README.md beside it).
 import { check, runtimeData, segmented, joined, MAIN } from 'mrepo-base-request'
-import { get } from 'mrepo-base-info'
+import { get, packageKey } from 'mrepo-base-info'
 
 // The URI as written, where the outside stands: main's prefix not part of it.
 const written = uri => { const s = segmented(uri); return joined(s[0] === MAIN && s.length > 1 ? s.slice(1) : s) }
@@ -26,10 +26,13 @@ export async function annotate (exec, { uri = ['.'], args = [], flags = {} }) {
   const data = await runtimeData({ repo: exec.runtime, protocols })
   const refused = action ? check(form, data, { state: true }) : `no action: ${protocol} has no default action`
   // what it does: its description, and its page here when there is one
+  // (its keywords in full form: its package's organisation and keyword)
+  const pkg = protocols[protocol]?.package ?? null
+  const key = pkg ? packageKey(pkg) : protocol
   let page = null
   if (cfg) {
     // catch: no page for it here (no info, or not among its keywords): said, not thrown
-    try { page = (await get(exec, { uri: [MAIN, `${protocol}/${action}`] })).choices[0] ?? null } catch (err) { exec.log('verbose', 'no page', { keyword: `${protocol}/${action}`, why: err.message }) }
+    try { page = (await get(exec, { uri: [MAIN, `${key}/${action}`] })).choices[0] ?? null } catch (err) { exec.log('verbose', 'no page', { keyword: `${key}/${action}`, why: err.message }) }
   }
   // its arguments: those its action names, against those given
   const names = (cfg?.args ?? []).map(named)
@@ -45,7 +48,7 @@ export async function annotate (exec, { uri = ['.'], args = [], flags = {} }) {
       : (given.length && cfg ? `none named; given: ${given.length}` : 'none'),
     run: command,
     // its page; an action not there: its protocol's; a protocol not here: the top
-    more: cfg ? `info/get ${protocol}/${action}` : protocols[protocol] ? `info/get ${protocol}` : 'info/get'
+    more: cfg ? `info/get ${key}/${action}` : protocols[protocol] ? `info/get ${key}` : 'info/get'
   }
   // the same in natural language, a line each: what the haicc command prints
   const cap = s => s[0].toUpperCase() + s.slice(1)

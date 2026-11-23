@@ -23,7 +23,7 @@ The `info` protocol's, in `protocol.js`; no state.
 
 | action | offered at | arguments |
 |---|---|---|
-| `get`, the default | its keywords where the URI is (`**`): `info/get boot/deploy` | none |
+| `get`, the default | its keywords where the URI is (`**`): `info/get haiccing/base-package-boot/deploy` | none |
 | `extract` | `.`, the mrepo itself | none |
 
 `get`: nothing asked, the top page and the keywords below it; a keyword

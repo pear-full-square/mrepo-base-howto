@@ -84,26 +84,26 @@ label=start; step --output splectral/help service/start; has "$out" '"state":"st
 get /help/; is "$code" 200 "its top page"
 has "$PAGE" "<title>docs</title>" "the docs mrepo's top"
 has "$PAGE" '<a href="/help/" class="on" aria-current="page">help</a>' "in the site: its tab, shown"
-has "$PAGE" '<a href=&quot;hdlc&quot;>hdlc</a>' "the keywords below, links to the same view, relative to its section"
+has "$PAGE" '<a href=&quot;haiccing&quot;>haiccing</a>' "the keywords below (the organisations), links to the same view, relative to its section"
 has "$PAGE" '<base href=&quot;/help/&quot; target=&quot;_top&quot;>' "its page embedded in the site, its base its section's own address"
-get /help/hdlc/validation; is "$code" 200 "a page by its keywords"
-has "$PAGE" "Before every commit" "as haicc docs info/get hdlc/validation answers it, drawn"
-has "$PAGE" '<code>haicc docs info/get hdlc/validation</code>' "the command it shows"
+get /help/haiccing/base-docs-hdlc/validation; is "$code" 200 "a page by its keywords"
+has "$PAGE" "Before every commit" "as haicc docs info/get haiccing/base-docs-hdlc/validation answers it, drawn"
+has "$PAGE" '<code>haicc docs info/get haiccing/base-docs-hdlc/validation</code>' "the command it shows"
 get "/help/?at=splectral"; has "$PAGE" "<title>splectral</title>" "another mrepo, by its position: Splectral answering about itself"
 get "/help/?at=."; has "$PAGE" '<code>haicc . info/get</code>' "the root, as the command line names it"
 # the navigation: a drop-down the mrepo, the install's as the server knows them; one a level, its choices its parent's answer
-get /help/hdlc/validation
+get /help/haiccing/base-docs-hdlc/validation
 has "$PAGE" '<option value=&quot;./?at=splectral%2Fhelp&quot;>' "the mrepo's drop-down: the install's mrepos, the component's own among them"
-has "$PAGE" '<option value=&quot;hdlc/validation&quot; selected>validation</option>' "a level a keyword: validation chosen, among hdlc's below"
+has "$PAGE" '<option value=&quot;haiccing/base-docs-hdlc/validation&quot; selected>validation</option>' "a level a keyword: validation chosen, among haiccing/base-docs-hdlc's below"
 # raw, like for like: the response as the terminal prints it (no terminal: to 80), the same output
-cli=$(haicc docs info/get hdlc/validation)
-get "/help/hdlc/validation?raw"; is "$code" 200 "raw: the command's response whole"
+cli=$(haicc docs info/get haiccing/base-docs-hdlc/validation)
+get "/help/haiccing/base-docs-hdlc/validation?raw"; is "$code" 200 "raw: the command's response whole"
 # (the page's text: in the site's srcdoc, escaped twice, the site's then the page's)
 raw=$(awk '{ a = a $0 "\n" } END { o = "<pre class=&quot;raw&quot;><code>"; s = index(a, o); e = index(a, "</code></pre>"); if (s && e) printf "%s", substr(a, s + length(o), e - s - length(o)) }' "$T/page" \
   | sed -e 's/&quot;/"/g' -e 's/&amp;/\&/g' -e 's/&lt;/</g' -e 's/&gt;/>/g' -e 's/&quot;/"/g' -e "s/&#39;/'/g" -e 's/&amp;/\&/g')
 tail_of () { printf '%s\n' "$1" | sed -n '/^      "output": /,$p'; }
 [ -n "$(tail_of "$cli")" ] && [ "$(tail_of "$cli")" = "$(tail_of "$raw")" ] && ok "raw: its output printed line for line as the command line prints it" || no "raw: like for like" "$(printf '%s' "$raw" | head -c 300)"
-has "$raw" '"command": ["haicc","docs","info/get","hdlc/validation"]' "raw: the command as a terminal sends it"
+has "$(printf '%s' "$raw" | tr -d ' \n')" '"command":["haicc","docs","info/get","haiccing/base-docs-hdlc/validation"]' "raw: the command as a terminal sends it (its line breaks and spaces taken off)"
 # the command box: a command as typed after haicc, answered with help where it would run, not run
 get "/help/?cmd=docs%20info%2Fget%20hdlc"; is "$code" 200 "a command typed: a page"
 has "$PAGE" 'taken here, now' "its help: the door's answer here and now"
@@ -117,8 +117,8 @@ has "$PAGE" "srcdoc=" "its own page embedded in the content area"
 get /install; has "$PAGE" '<a href="/install" class="on"' "its own page at its own URI"
 get /help/no/such/thing; is "$code" 200 "a keyword that is not there: a page all the same"
 has "$PAGE" 'class=&quot;error&quot;' "its error said on it"
-for i in 1 2 3; do get /help/hdlc/validation; done
-get /records; has "$PAGE" '"command":"haicc docs info/get hdlc/validation"' "its data requests: commands in the install's record, as a terminal's"
+for i in 1 2 3; do get /help/haiccing/base-docs-hdlc/validation; done
+get /records; has "$PAGE" '"command":"haicc docs info/get haiccing/base-docs-hdlc/validation"' "its data requests: commands in the install's record, as a terminal's"
 is "$(ls "$F/splectral/inbox" "$F/splectral/outbox" | grep -c json)" 0 "its boxes empty: each record taken removed"
 
 # stopped, torn down
@@ -156,7 +156,7 @@ out=$(wb --output workbench/splectral splectral/status)
 URL=$(printf '%s' "$out" | sed -n 's/.*"url":"\([^"]*\)".*/\1/p')
 has "$URL" "http://127.0.0.1:" "Splectral in service, its server: $URL"
 get /install; is "$code" 200 "its site answers"
-has "$(wb workbench/docs info/get hdlc/validation)" "Before every commit" "the docs mrepo answers, its info extracted at its initialise"
+has "$(wb workbench/docs info/get haiccing/base-docs-hdlc/validation)" "Before every commit" "the docs mrepo answers, its info extracted at its initialise"
 has "$(wb --output workbench crud/read howtos)" '"value":{"kind":"howtos"}' "in the workbench: its howtos namespace, made at its initialise"
 is "$(running2 | wc -l | tr -d ' ')" 5 "five processes: the runtimes of the boot mrepo, the workbench, docs, Splectral, and Splectral's server"
 out=$(wb . boot/deploy bench-2 haiccing/base-solution-workbench); has "$out" "its commission failed: line 5: boot/deploy docs haiccing/base-component-docs: in the way" "a second on the same install: its components' places taken, its commission failed, the line of its file said"

@@ -184,8 +184,9 @@ test('the boot: put in place, its runtime started, nothing deployed; the host de
     t.absent(await repo.read(`/outbox/${far?.remote?.key}.json`).then(() => true, () => false), 'and not sent on')
     const near = await typed(['haicc', '.', 'info/get'])
     t.alike([near?.error, near?.remote], [undefined, undefined], `haicc . info/get: the root, executed here ${near?.error ?? ''}`)
-    t.alike([far?.output?.choices?.[0]?.title, far?.output?.choices?.[0]?.below.some(b => b.keyword === 'boot')], ['base-package-runtime', false], 'the host\'s own top page, its packages: no boot protocol')
-    t.alike([near?.output?.choices?.[0]?.title, near?.output?.choices?.[0]?.below.some(b => b.keyword === 'boot')], ['base-component-boot', true], 'the boot mrepo\'s own: its component, the boot protocol among its packages')
+    const packagesOf = async parts => (await typed(parts))?.output?.choices?.[0]?.below.map(b => b.keyword) ?? []
+    t.alike([far?.output?.choices?.[0]?.title, far?.output?.choices?.[0]?.below.some(b => b.keyword === 'haiccing'), (await packagesOf(['haicc', 'host', 'info/get', 'haiccing'])).includes('haiccing/base-package-boot')], ['base-package-runtime', true, false], 'the host\'s own top page, its organisation; its packages: no boot protocol')
+    t.alike([near?.output?.choices?.[0]?.title, (await packagesOf(['info/get', 'haiccing'])).includes('haiccing/base-package-boot')], ['base-component-boot', true], 'the boot mrepo\'s own: its component, the boot protocol among its packages, in full form')
     t.alike((await p2pgitBackend(gitdirOf(work, 'boot'), { fs }).listBranches()).map(([b]) => b).filter(b => b.startsWith('execute/')), [], 'no request branch left: the principal\'s removed once it was returned')
     t.is((await typed(['haicc', 'host/packages', 'info/get']))?.error, 'no action: haicc (haicc has no default action)', 'a URI running through a shortcut: sent on, what is left of it a haicc there (which this host does not link)')
     t.is((await typed(['haicc', 'nowhere', 'info/get']))?.error, 'haicc nowhere: no node there', 'a position that is not there: said')
@@ -203,9 +204,11 @@ test('the boot: put in place, its runtime started, nothing deployed; the host de
     // its info, extracted by its runtime as it started: read by keywords
     const root = await sent({ protocol: 'info', action: 'get', uri: '.' })
     t.alike([root?.error, root?.output?.choices?.[0]?.title], [undefined, 'base-component-boot'], `info get: the mrepo's top page, its own component's README ${root?.error ?? ''}`)
-    t.alike(['runtime', 'info', 'protocol', 'boot', 'haicc', 'crud', 'modules', 'third-party'].map(k => root?.output?.choices?.[0]?.below.some(b => b.keyword === k)), [true, true, true, true, true, true, true, true], 'its keywords: each package it includes, by its name without the prefix; the pages made here')
-    const tb = await sent({ protocol: 'info', action: 'get', uri: 'test/boot' })
-    t.ok(!tb?.error && tb?.output?.choices?.[0]?.title === 'boot/' && tb.output.choices[0].page, `info get test/boot, this very test: its page ${tb?.error ?? ''}`)
+    t.alike(['haiccing', 'modules', 'third-party'].map(k => root?.output?.choices?.[0]?.below.some(b => b.keyword === k)), [true, true, true], 'its keywords: its organisation; the pages made here')
+    const org = await sent({ protocol: 'info', action: 'get', uri: 'haiccing' })
+    t.alike(['runtime', 'info', 'protocol', 'boot', 'haicc', 'crud'].map(k => org?.output?.choices?.[0]?.below.some(b => b.keyword === `haiccing/base-package-${k}`)), [true, true, true, true, true, true], 'below it each package it includes, by its name fully qualified')
+    const tb = await sent({ protocol: 'info', action: 'get', uri: 'haiccing/base-component-boot/test/boot' })
+    t.ok(!tb?.error && tb?.output?.choices?.[0]?.title === 'boot/' && tb.output.choices[0].page, `info get haiccing/base-component-boot/test/boot, this very test: its page ${tb?.error ?? ''}`)
     const hostInfo = await openRepo(p2pgitBackend(join(host, '.git'), { fs })).read('/info/index.json').then(b => JSON.parse(b.toString()), () => null)
     t.is(hostInfo?.['.']?.[0]?.page, 'packages/haiccing/base-package-runtime/README.md', 'the host\'s info: extracted by its own runtime, from its own packages')
     // each package checks, in situ, what this mrepo's runtime made of its info

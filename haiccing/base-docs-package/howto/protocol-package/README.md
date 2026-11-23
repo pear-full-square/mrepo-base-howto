@@ -7,7 +7,7 @@ Pattern: protocol-package
 One package, one protocol. The package holds the config, the module
 holds the code: each action a folder `external/<action>/`, its
 `index.js` and its README. The package's menu jumps to its actions, so
-`info/get <protocol>/<action>` is one step.
+`info/get <org>/<package>/<action>` is one step.
 
 ## Steps
 

@@ -85,13 +85,13 @@ test('the usage; not a command: exit 2, said on stderr', async (t) => {
   } finally { s.remove() }
 })
 
-test('nothing booted: an mrepo command and the teardown say so, exit 3; a deploy without the boot component in the sources', async (t) => {
+test('nothing booted: an mrepo command says so, exit 3; the teardown a repeat, a warning, exit 0; a deploy without the boot component in the sources', async (t) => {
   const s = setup()
   try {
     t.is(await s.run(['host', 'service/start']), 3)
     t.alike(s.err, [`haicc: no boot mrepo at ${join(s.home, 'work')} (haicc boot/deploy)`])
-    t.is(await s.run(['boot/teardown']), 3)
-    t.alike(s.err, [`haicc: no boot mrepo at ${join(s.home, 'work')} (nothing to tear down)`])
+    t.is(await s.run(['boot/teardown']), 0, 'the teardown: idempotent, exit 0')
+    t.alike(s.err, [`haicc: warning: no boot mrepo at ${join(s.home, 'work')}: nothing to tear down`], 'a warning on stderr')
     t.is(await s.run(['.', 'help/get'], { HAICC_WORK: join(s.home, 'elsewhere') }), 3)
     t.alike(s.err, [`haicc: no boot mrepo at ${join(s.home, 'elsewhere')} (haicc boot/deploy)`], 'HAICC_WORK: another work folder')
     mkdirSync(join(s.home, 'src'))
@@ -199,16 +199,21 @@ test('a command for the mrepos: its response printed unpacked, as stored, or its
   } finally { s.remove() }
 })
 
-test('boot/teardown: what boot/deploy put in place removed, nothing else; no runtime running: none stopped', async (t) => {
+test('boot/teardown: what boot/deploy put in place removed, the packages\' scripts too, nothing else; no runtime running: none stopped; twice: a repeat', async (t) => {
   const s = setup()
   try {
     const work = join(s.home, 'work')
     for (const d of ['mrepos/boot/.git', 'mrepos/boot/inbox', 'mrepos/local/host/.git', 'mrepos/swarm-1/node-1/.git', 'packages/haiccing', 'kept']) mkdirSync(join(work, d), { recursive: true })
     writeFileSync(join(work, 'mrepo.json'), '{}')
+    mkdirSync(join(work, 'scripts', 'haiccing', 'base-component-haicc'), { recursive: true })
+    writeFileSync(join(work, 'scripts', 'haiccing', 'base-component-haicc', 'cluster.haicc'), 'crud/read .\n')
+    writeFileSync(join(work, 'scripts', 'mine.haicc'), 'crud/read .\n')
     t.is(await s.run(['boot/teardown']), 0)
     t.alike(s.out, [JSON.stringify({ tornDown: '.', runtimes: 0, containers: 0, work })], 'said: the root torn down, the runtimes stopped, the containers removed, the work folder')
-    t.alike(readdirSync(work), ['kept'], 'the mrepos, the package store and the setting removed; the rest of the work folder kept')
-    t.is(await s.run(['boot/teardown']), 3, 'twice: nothing there, exit 3')
+    t.alike(readdirSync(work).sort(), ['kept', 'scripts'], 'the mrepos, the package store and the setting removed; the rest of the work folder kept')
+    t.alike(readdirSync(join(work, 'scripts')), ['mine.haicc'], 'the packages\' scripts removed, the user\'s kept')
+    t.is(await s.run(['boot/teardown']), 0, 'twice: a repeat, exit 0')
+    t.alike(JSON.parse(s.out[0]).again, true, 'said: again')
   } finally { s.remove() }
 })
 

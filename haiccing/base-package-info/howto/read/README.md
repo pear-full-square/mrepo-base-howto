@@ -12,11 +12,13 @@ answers about what is deployed in it.
 # the top page and the keywords below it
 haicc docs info/get
 # a page by its keywords, from the top
-haicc docs info/get boot/deploy
+haicc docs info/get haiccing/base-package-boot/deploy
 # a section of a page
-haicc docs info/get hdlc/validation
-# a keyword with several meanings: each a choice
-haicc docs info/get boot
+haicc docs info/get haiccing/base-docs-hdlc/validation
+# an organisation: its packages, each by its name
+haicc docs info/get haiccing
+# the same, as words
+haicc docs info/get haiccing base-package-boot deploy
 # an mrepo's own: what is deployed in it
 haicc host info/get
 # extracted again, from its packages as they are now

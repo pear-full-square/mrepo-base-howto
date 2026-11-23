@@ -1,6 +1,6 @@
 # Test report: haiccing/base-package-splectral
 
-The package passed its `full` set: all 25 units, 356 of 356 tests and 2481 of 2481 asserts.
+The package passed its `full` set: all 25 units, 356 of 356 tests and 2488 of 2488 asserts.
 
 | | |
 |---|---|
@@ -9,10 +9,10 @@ The package passed its `full` set: all 25 units, 356 of 356 tests and 2481 of 24
 | Result | passed |
 | Units | 25 of 25 passed |
 | Tests | 356 of 356 passed |
-| Asserts | 2481 of 2481 passed |
-| Run | 2026-11-22 15:15 UTC |
+| Asserts | 2488 of 2488 passed |
+| Run | 2026-11-22 23:51 UTC |
 | Bare | v1.36.0 |
-| Content | `93349022010069d7de4e275a703a917985f3e02b69884a24bfb50245bba761ba` |
+| Content | `1fc916336cd92780f06f50affee2fc6fb40ac3d2ecef767d921b70a4ac2c613d` |
 
 ## Units
 
@@ -26,7 +26,7 @@ The package passed its `full` set: all 25 units, 356 of 356 tests and 2481 of 24
 | `/test/modules/pear-full-square/mrepo-base-boot` | passed | 8 of 8 | 125 of 125 |
 | `/test/modules/pear-full-square/mrepo-base-crud` | passed | 9 of 9 | 80 of 80 |
 | `/test/modules/pear-full-square/mrepo-base-execute` | passed | 10 of 10 | 98 of 98 |
-| `/test/modules/pear-full-square/mrepo-base-info` | passed | 9 of 9 | 62 of 62 |
+| `/test/modules/pear-full-square/mrepo-base-info` | passed | 9 of 9 | 69 of 69 |
 | `/test/modules/pear-full-square/mrepo-base-protocol` | passed | 3 of 3 | 10 of 10 |
 | `/test/modules/pear-full-square/mrepo-base-request` | passed | 21 of 21 | 238 of 238 |
 | `/test/modules/pear-full-square/mrepo-base-runtime` | passed | 10 of 10 | 172 of 172 |

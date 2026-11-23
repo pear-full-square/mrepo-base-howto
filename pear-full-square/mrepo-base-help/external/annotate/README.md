@@ -21,8 +21,9 @@ the command itself.
 command as understood; what its action does (its config's description);
 the door's answer here and now (`taken here, now`, or `refused here:`
 and why); the arguments its action names against those given; the
-command to run it here; the command that reads its page here (an action
-not there: its protocol's; a protocol not here: the top); `answer`, the
+command to run it here; the command that reads its page here, its
+keywords in full form, its package's (`info/get haiccing/base-package-crud/read`; an
+action not there: its protocol's; a protocol not here: the top); `answer`, the
 same in natural language, a line each, what the `haicc` command prints
 (the record with `--raw`).
 

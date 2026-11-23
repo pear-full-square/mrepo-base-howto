@@ -13,9 +13,9 @@ runtime would. No runtime is started.
   form of the command line is in it.
 - **Not a command**: exit 2, said on stderr, nothing printed, for each
   way a command line can be wrong.
-- **Nothing booted**: a command for the mrepos, `boot/teardown`, and
-  `boot/deploy` with no source holding the boot component, each said,
-  exit 3, nothing written.
+- **Nothing booted**: a command for the mrepos and `boot/deploy` with
+  no source holding the boot component, each said, exit 3;
+  `boot/teardown` a repeat, a warning, exit 0; nothing written.
 - **`haicc sources`**: the list read with the folders first; `no-https`,
   `https`, `unlink` and a download, with the list as written after.
 - **A command's record, value by value**: the envelope addressed to the
@@ -28,7 +28,8 @@ runtime would. No runtime is started.
   variables; an error, exit 1; a
   form not completed, exit 5; none in time, exit 4.
 - **`boot/teardown`**: what the deploy put in place removed by name, the
-  rest of the work folder kept.
+  packages' scripts too, the user's and the rest of the work folder
+  kept; twice, a repeat.
 - **Nothing forgotten**: the last test fails when a kind of command line
   was not run here.
 

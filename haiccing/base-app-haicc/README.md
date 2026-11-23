@@ -31,7 +31,8 @@ bare base-app-haicc.bundle /run <argument>...
 - **A `<protocol>/<action>` without a URI** is the machine level, above
   the root mrepo: `haicc boot/deploy` puts the boot mrepo in place and
   starts its runtime; `haicc boot/teardown` stops every runtime and
-  removes what the deploy put in place.
+  removes what the deploy put in place, the packages' scripts with it
+  (the user's kept); nothing there, a repeat: a warning, exit 0.
 - **`haicc scripts`** lists the install's scripts, `<work>/scripts`:
   a package's as `<org>/<package>/<name>`, placed there by the deploy of
   an mrepo it is in; the user's by name. `haicc

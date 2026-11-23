@@ -20,7 +20,9 @@ and the `info` protocol.
   the mrepo is made ready: at `boot` where the mrepo has no service, at
   the service's `initialise` where it has one.
 - **Read with `info`**, or `info/get [<keywords>]`: the top page, the
-  README of the mrepo's own package, and the keywords below it; a
+  README of the mrepo's own package, and the keywords below it, its
+  organisations; each package below its organisation by its name fully
+  qualified (`info/get haiccing/base-package-boot/deploy`); a
   keyword path, its page and its keywords.
 - **The keywords come from the menus**: a README's `## Links`, its
   sections, a package's `## Included packages`, each included package

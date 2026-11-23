@@ -1,8 +1,8 @@
 {
   "package": "splectral/base-component-help-viewer",
-  "content": "4d84547df294a88e9f2bf5706b51383b42dafa0255d7595e0a0b33b60a7738c4",
+  "content": "7fd20de85ee16199b6878d87d6d44bdd402411f3d83c9c6ab910dfee92a02928",
   "bare": "v1.36.0",
-  "date": "2026-11-22T15:36:16.185Z",
+  "date": "2026-11-22T23:59:15.808Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -92,8 +92,8 @@
         "total": 18
       },
       "asserts": {
-        "passed": 193,
-        "total": 193
+        "passed": 195,
+        "total": 195
       },
       "failures": []
     },
@@ -144,8 +144,8 @@
         "total": 9
       },
       "asserts": {
-        "passed": 62,
-        "total": 62
+        "passed": 69,
+        "total": 69
       },
       "failures": []
     },

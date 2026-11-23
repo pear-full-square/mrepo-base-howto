@@ -8,7 +8,7 @@ function execution ({ protocols, active = Object.keys(protocols), service = { st
   for (const p of active) files.set(`/protocols/${p}.json`, '{}')
   if (service) files.set('/runtime/service.json', JSON.stringify(service))
   if (info) {
-    files.set('/info/index.json', JSON.stringify({ 'crud/read': [{ page: 'packages/haiccing/base-package-crud/read/README.md', oneliner: 'Reads the nodes at a URI.', below: [] }] }))
+    files.set('/info/index.json', JSON.stringify({ 'haiccing/base-package-crud/read': [{ page: 'packages/haiccing/base-package-crud/read/README.md', oneliner: 'Reads the nodes at a URI.', below: [] }] }))
     files.set('/info/packages/haiccing/base-package-crud/read/README.md', '# read\n\nReads the nodes at a URI.\n')
   }
   const find = async p => (files.has(p) ? Buffer.from(files.get(p)) : null)
@@ -18,7 +18,7 @@ function execution ({ protocols, active = Object.keys(protocols), service = { st
   return { logged, runtime: { protocols, find, read, select }, find, read, select, log: (level, event, data) => logged.push([level, event, data]) }
 }
 const PROTOCOLS = {
-  crud: { default: 'read', actions: { read: { uris: ['**'], description: 'The nodes at a URI, read.' }, create: { uris: ['**'], args: ['value', 'kind?'], description: 'A node made.' } } },
+  crud: { package: 'haiccing/base-package-crud', default: 'read', actions: { read: { uris: ['**'], description: 'The nodes at a URI, read.' }, create: { uris: ['**'], args: ['value', 'kind?'], description: 'A node made.' } } },
   service: { actions: { start: { uris: ['.'], states: ['initialised'], description: 'The service started.' } } },
   help: { default: 'annotate', actions: { annotate: { uris: ['**'], args: ['command', 'arguments?'] } } }
 }
@@ -26,7 +26,7 @@ const PROTOCOLS = {
 test('annotate: a command explained on an execution written for it: what it does, the door here and now, its arguments, the commands to run it and read more', async (t) => {
   const exec = execution({ protocols: PROTOCOLS })
   const a = await annotate(exec, { uri: ['main', 'swarms'], args: ['crud/read'] })
-  t.alike(a, { help: 'crud/read swarms', does: 'The nodes at a URI, read.', door: 'taken here, now', arguments: 'none', run: 'crud/read swarms', more: 'info/get crud/read', answer: ['crud/read swarms: The nodes at a URI, read.', 'Taken here, now.', 'Arguments: none.', 'To run it: crud/read swarms', 'To read more: info/get crud/read'] }, 'each a short line in a fixed place: the command, what it does, the door, its arguments, to run it, to read more; the same in natural language')
+  t.alike(a, { help: 'crud/read swarms', does: 'The nodes at a URI, read.', door: 'taken here, now', arguments: 'none', run: 'crud/read swarms', more: 'info/get haiccing/base-package-crud/read', answer: ['crud/read swarms: The nodes at a URI, read.', 'Taken here, now.', 'Arguments: none.', 'To run it: crud/read swarms', 'To read more: info/get haiccing/base-package-crud/read'] }, 'each a short line in a fixed place: the command, what it does, the door, its arguments, to run it, to read more; the same in natural language')
   t.is((await annotate(exec, { uri: ['main', 'swarms'], args: ['crud'] })).help, 'crud/read swarms', 'the protocol alone: its default action')
   t.is((await annotate(exec, { uri: ['main', 'x'], args: ['crud/create', '{}'] })).arguments, 'value [kind]', 'the arguments its action names, an optional one in brackets')
   t.is((await annotate(exec, { uri: ['main', 'x'], args: ['crud/read'], flags: { log: 'debug' } })).run, 'crud/read x --flags log=debug', 'its other flags kept in the command to run it')
@@ -39,7 +39,7 @@ test('annotate: refused at the door, each reason; no page here; no command given
   const nope = await annotate(exec, { uri: ['main', 'x'], args: ['nope/read'] })
   t.alike([nope.door, nope.more], ['refused here: no protocol: nope (crud, help)', 'info/get'], 'a protocol not loaded here; to read more, the top')
   const update = await annotate(exec, { uri: ['main', 'x'], args: ['crud/update'] })
-  t.alike([update.door, update.does, update.more], ['refused here: no action: crud update (create, read)', null, 'info/get crud'], 'an action it does not offer: nothing it does; to read more, its protocol\'s page')
+  t.alike([update.door, update.does, update.more], ['refused here: no action: crud update (create, read)', null, 'info/get haiccing/base-package-crud'], 'an action it does not offer: nothing it does; to read more, its protocol\'s page')
   t.is((await annotate(exec, { uri: ['main', 'x'], args: ['service/start'] })).door, 'refused here: not offered: service start at x', 'not offered at that URI')
   t.is((await annotate(exec, { uri: ['main', '.'], args: ['service/start'] })).door, 'refused here: not now: service start (service is not active; the service is started)', 'not active here')
   const later = execution({ protocols: PROTOCOLS })

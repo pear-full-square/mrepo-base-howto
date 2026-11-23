@@ -47,18 +47,18 @@ test('its config, value by value', (t) => {
 })
 
 test('annotate: a command explained where it would run, nothing of it executed', async (t) => {
-  const protocols = { ...mounted.protocols, crud: { default: 'read', actions: { read: { uris: ['**'], description: 'The nodes at a URI, read.' } } } }
+  const protocols = { ...mounted.protocols, crud: { package: 'haiccing/base-package-crud', default: 'read', actions: { read: { uris: ['**'], description: 'The nodes at a URI, read.' } } } }
   const files = {
     '/protocols/help.json': '{}',
     '/protocols/crud.json': '{}',
     '/runtime/service.json': '{"state":"started"}',
-    '/info/index.json': JSON.stringify({ 'crud/read': [{ page: 'packages/haiccing/base-package-crud/read/README.md', oneliner: 'Reads.', below: [] }] }),
+    '/info/index.json': JSON.stringify({ 'haiccing/base-package-crud/read': [{ page: 'packages/haiccing/base-package-crud/read/README.md', oneliner: 'Reads.', below: [] }] }),
     '/info/packages/haiccing/base-package-crud/read/README.md': '# read\n\nReads.\n'
   }
   const exec = execution(files, protocols)
   const before = JSON.stringify(files)
   const a = await act('annotate', exec, { protocol: 'help', action: 'annotate', uri: ['main', 'swarms'], args: ['crud/read'] })
-  t.alike(a, { help: 'crud/read swarms', does: 'The nodes at a URI, read.', door: 'taken here, now', arguments: 'none', run: 'crud/read swarms', more: 'info/get crud/read', answer: ['crud/read swarms: The nodes at a URI, read.', 'Taken here, now.', 'Arguments: none.', 'To run it: crud/read swarms', 'To read more: info/get crud/read'] }, 'what it does, the door here and now, its arguments, to run it, to read more; the same in natural language')
+  t.alike(a, { help: 'crud/read swarms', does: 'The nodes at a URI, read.', door: 'taken here, now', arguments: 'none', run: 'crud/read swarms', more: 'info/get haiccing/base-package-crud/read', answer: ['crud/read swarms: The nodes at a URI, read.', 'Taken here, now.', 'Arguments: none.', 'To run it: crud/read swarms', 'To read more: info/get haiccing/base-package-crud/read'] }, 'what it does, the door here and now, its arguments, to run it, to read more; the same in natural language')
   t.is((await act('annotate', exec, { protocol: 'help', action: 'annotate', uri: ['main', 'x'], args: ['crud/update'] })).door, 'refused here: no action: crud update (read)', 'refused: said why')
   t.is(JSON.stringify(files), before, 'nothing written')
 })

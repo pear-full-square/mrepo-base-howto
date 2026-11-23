@@ -71,7 +71,7 @@ out=$(haicc --output host haicc/script . 'crud/create notes
 crud/create notes/a
 crud/read notes/a'); is $? 0 "haicc host haicc/script: lines run at the host"
 has "$out" '"uri":["main","notes/a"]' "what they made read back"
-out=$(haicc --output . info/get boot); has "$out" '"keyword":"boot"' "haicc . info/get boot: the install's info"
+out=$(haicc --output . info/get haiccing/base-package-boot); has "$out" '"keyword":"haiccing/base-package-boot"' "haicc . info/get haiccing/base-package-boot: the install's info, in full form"
 out=$(haicc --output host service/stop); has "$out" '"service":"stopped"' "haicc host service/stop"
 
 # 5. The teardown: every runtime stopped, nothing left running in the
