@@ -1,33 +1,38 @@
 # documents
 
-An mrepo that documents every package the sources offer, beyond the packages it is made of.
+An mrepo that documents every package in the install's store, beyond the packages it is made of.
 
 Pattern: documents
 
-A list (`mrepo/packages/layer.json`) with `"documents": "sources"`: as
-the mrepo is deployed, every package the sources offer that the list
-does not name is placed beside the others, its bundle only, marked
-`documented` in the packages manifest. Nothing of it is laid in or
-runs: no structure, no protocol loaded, no addon; its pages are
-extracted with the rest, each package at its keyword below the top. What
-is installed is what is documented: the docs mrepo, the solution's
-manual.
+A list (`mrepo/packages/layer.json`) with `"documents": "store"`: its
+info extraction reads, besides its own packages, every package in the
+install's store, `<work>/packages/`, through its packages manifest's
+mapping, read only. Nothing of them is placed in the mrepo or runs.
+Their pages are split on package, each below its organisation, in its
+own context. What is installed is what is documented: the docs mrepo,
+the install's manual.
 
 ## Steps
 
 ```sh
 # the list: what the mrepo is made of, and what it documents beyond it
-$EDITOR haiccing/<pkg>/mrepo/packages/layer.json   # "documents": "sources"
+$EDITOR haiccing/<pkg>/mrepo/packages/layer.json   # "documents": "store"
+# its hooks: the build at initialise, removed at shutdown
+$EDITOR haiccing/<pkg>/mrepo/runtime/hooks/initialise.haicc   # info/extract
+$EDITOR haiccing/<pkg>/mrepo/runtime/hooks/shutdown.haicc     # info/clear
 # its README: what it documents, beside its included packages
 $EDITOR haiccing/<pkg>/README.md
-# deployed: the documented packages placed beside the list's
+# deployed, initialised: the store's packages documented
 haicc . boot/deploy <name> <pkg>
-# their pages below their organisations, by their names
-haicc <name> info/get
-haicc <name> info/get <org>/<package>
+# their pages in their contexts: an organisation, a package, a keyword
+haicc <name> info/get <org>
+haicc <name> info/get <org>/<package>/<keyword>
+haicc <name> info/get <keyword>
 ```
 
 ## Notes
 
-- **Only `sources`** for now: later, a solution's list.
-- **A documented package is not run**: `runtime/run` refuses it.
+- **Only `store`**: a list documents nothing else.
+- **`initialise` again** adds what is new in the store; **`shutdown`**
+  removes the build, `initialise` builds it again.
+- **Nothing of a documented package runs**: it is not in the mrepo.

@@ -1,6 +1,6 @@
 # Test report: haiccing/base-package-crud
 
-The package passed its `full` set: all 16 units, 272 of 272 tests and 1747 of 1747 asserts.
+The package passed its `full` set: all 16 units, 273 of 273 tests and 1764 of 1764 asserts.
 
 | | |
 |---|---|
@@ -8,11 +8,11 @@ The package passed its `full` set: all 16 units, 272 of 272 tests and 1747 of 17
 | Set | `full` |
 | Result | passed |
 | Units | 16 of 16 passed |
-| Tests | 272 of 272 passed |
-| Asserts | 1747 of 1747 passed |
-| Run | 2026-11-22 23:43 UTC |
+| Tests | 273 of 273 passed |
+| Asserts | 1764 of 1764 passed |
+| Run | 2026-11-23 04:27 UTC |
 | Bare | v1.36.0 |
-| Content | `594453d1e6b9d2f118ce028ccb1065ffc46d48e321a365096069a7ce04c9e14a` |
+| Content | `555bc6046d3140601032f87555e8875ee3508421f14ca8b4e72e80f8f9c5fb33` |
 
 ## Units
 
@@ -24,7 +24,7 @@ The package passed its `full` set: all 16 units, 272 of 272 tests and 1747 of 17
 | `/test/mrepo` | passed | 1 of 1 | 1 of 1 |
 | `/test/package` | passed | 1 of 1 | 1 of 1 |
 | `/test/modules/pear-full-square/mrepo-base-crud` | passed | 9 of 9 | 80 of 80 |
-| `/test/modules/pear-full-square/mrepo-base-info` | passed | 9 of 9 | 69 of 69 |
+| `/test/modules/pear-full-square/mrepo-base-info` | passed | 10 of 10 | 86 of 86 |
 | `/test/modules/pear-full-square/mrepo-base-request` | passed | 21 of 21 | 238 of 238 |
 | `/test/modules/pear-full-square/mrepo-base-xpath` | passed | 5 of 5 | 54 of 54 |
 | `/test/modules/pear-full-square/mycelium-container-document` | passed | 1 of 1 | 8 of 8 |

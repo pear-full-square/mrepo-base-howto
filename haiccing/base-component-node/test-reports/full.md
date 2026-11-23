@@ -1,6 +1,6 @@
 # Test report: haiccing/base-component-node
 
-The package passed its `full` set: all 11 units, 73 of 73 tests and 472 of 472 asserts.
+The package passed its `full` set: all 11 units, 74 of 74 tests and 489 of 489 asserts.
 
 | | |
 |---|---|
@@ -8,11 +8,11 @@ The package passed its `full` set: all 11 units, 73 of 73 tests and 472 of 472 a
 | Set | `full` |
 | Result | passed |
 | Units | 11 of 11 passed |
-| Tests | 73 of 73 passed |
-| Asserts | 472 of 472 passed |
-| Run | 2026-11-22 23:35 UTC |
+| Tests | 74 of 74 passed |
+| Asserts | 489 of 489 passed |
+| Run | 2026-11-23 04:20 UTC |
 | Bare | v1.36.0 |
-| Content | `d21da744753f403de55dbff880f402c649153c0eaf5acfba16a609f6b5af66ec` |
+| Content | `ba4d4cd58ea6374365fc3ea17897735e0a6cb6b9b750b4a0110f9a70b96e58ab` |
 
 ## Units
 
@@ -23,7 +23,7 @@ The package passed its `full` set: all 11 units, 73 of 73 tests and 472 of 472 a
 | `/test/code` | passed | 1 of 1 | 2 of 2 |
 | `/test/mrepo` | passed | 1 of 1 | 1 of 1 |
 | `/test/package` | passed | 1 of 1 | 1 of 1 |
-| `/test/modules/pear-full-square/mrepo-base-info` | passed | 9 of 9 | 69 of 69 |
+| `/test/modules/pear-full-square/mrepo-base-info` | passed | 10 of 10 | 86 of 86 |
 | `/test/modules/pear-full-square/mycelium-container-document` | passed | 1 of 1 | 8 of 8 |
 | `/test/modules/pear-full-square/mycelium-uri` | passed | 21 of 21 | 195 of 195 |
 | `/test/modules/pear-full-square/mycelium-value-avro` | passed | 8 of 8 | 57 of 57 |

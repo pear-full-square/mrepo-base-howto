@@ -57,6 +57,13 @@ inspect. One line a check, the count last; exit 0 passed, 1 failed.
    name (`haicc/file`). **The registry**: `mrepos/`, the host there by
    its unique URI; its link's record in the boot mrepo. A teardown again:
    a repeat allowed.
+   **Info**: the pages by keywords, split on package: the top, its
+   organisations, a package's pages in its context, its name in front; a
+   short keyword, the mrepo's own package's, else a choice of the
+   packages that have it, each kept apart. **The docs mrepo**: every
+   package in the install's store documented; its build removed at
+   `shutdown`, built again at `initialise`, a repeat adding what is
+   new.
 10. **Torn down**: the node; the service stopped, its boot protocol
     deactivated; shut down; the host.
 11. **The boot again**: there already, kept.

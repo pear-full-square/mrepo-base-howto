@@ -56,8 +56,9 @@ let all = 0
 for (const c of components) {
   const def = JSON.parse(readFileSync(join(dev, c, 'mrepo', 'packages', 'layer.json')))
   const list = def.packages
-  // documents: sources: every other package the sources offer, documented only
-  const documented = def.documents === 'sources' ? offered().filter(p => !list.includes(p)) : []
+  // documents: store: every other package, documented only (here, the
+  // sources stand for an install's store: all of them)
+  const documented = def.documents === 'store' ? offered().filter(p => !list.includes(p)) : []
   const out = resolve(flag('out', join(dev, 'sources', 'info')), c.split('/').pop())
   const files = extract([...list.map(pkg => read(pkg)), ...documented.map(pkg => read(pkg, true))])
   if (existsSync(out)) rmSync(out, { recursive: true })
@@ -66,7 +67,7 @@ for (const c of components) {
   const byCheck = {}
   for (const p of problems) byCheck[p.check] = (byCheck[p.check] ?? 0) + 1
   for (const p of problems) console.log(`${c}\t${p.page ?? p.keyword}\t${p.check}\t${p.detail}`)
-  console.log(JSON.stringify({ component: c, out, packages: list.length, documented: documented.length, keywords: Object.keys(JSON.parse(files['/index.json'].toString())).length, problems: problems.length, byCheck }))
+  console.log(JSON.stringify({ component: c, out, packages: list.length, documented: documented.length, keywords: Object.entries(files).filter(([p]) => p.endsWith('index.json')).reduce((n, [, b]) => n + Object.keys(JSON.parse(b.toString())).length, 0), problems: problems.length, byCheck }))
   all += problems.length
 }
 process.exit(all ? 1 : 0)

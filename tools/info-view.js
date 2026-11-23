@@ -3,8 +3,8 @@
 // `haicc docs info/get <keywords>` would, the command shown. A transient
 // install: the haicc command installed in a temporary folder, the sources
 // linked, the boot, the docs mrepo deployed (base-component-docs: its list
-// and every other package the sources offer, documented), its info layer
-// read, all torn down and removed. What is installed is what is shown.
+// and every package in the store, documented), its info layer read, all
+// torn down and removed. What is installed is what is shown.
 //   tools/bare tools/info-view.js [--sources=<folder>] [--out=<file>] [--keep]
 // The sources: sources/ here (tools/release.js); the page written to
 // sources/info-view.html by default. Its page template:
@@ -56,7 +56,14 @@ try {
   const json = async p => JSON.parse((await repo.read(p)).toString())
   const index = await json('/info/index.json')
   problems = await json('/info/problems.json')
-  const listed = (await json('/packages/manifest.json')).packages
+  const listed = await json('/info/packages.json')
+  // each package's own index, its keywords written in its context, as
+  // info/get asks them: one index to browse
+  for (const pkg of Object.keys(listed)) {
+    const own = await json(`/info/packages/${pkg}/index.json`)
+    const full = k => (k === '.' ? pkg : `${pkg}/${k}`)
+    for (const [k, choices] of Object.entries(own)) index[full(k)] = choices.map(c => ({ ...c, below: c.below.map(full) }))
+  }
   const pages = {}
   for (const page of new Set(Object.values(index).flat().map(c => c.page))) pages[page] = (await repo.read(`/info/${page}`)).toString()
   const targets = [{ name: `haiccing/${COMPONENT}`, kind: 'mrepo', at: MREPO, index, problems }]

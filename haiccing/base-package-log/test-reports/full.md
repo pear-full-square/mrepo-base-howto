@@ -1,6 +1,6 @@
 # Test report: haiccing/base-package-log
 
-The package passed its `full` set: all 15 units, 85 of 85 tests and 531 of 531 asserts.
+The package passed its `full` set: all 15 units, 86 of 86 tests and 548 of 548 asserts.
 
 | | |
 |---|---|
@@ -8,11 +8,11 @@ The package passed its `full` set: all 15 units, 85 of 85 tests and 531 of 531 a
 | Set | `full` |
 | Result | passed |
 | Units | 15 of 15 passed |
-| Tests | 85 of 85 passed |
-| Asserts | 531 of 531 passed |
-| Run | 2026-11-22 23:44 UTC |
+| Tests | 86 of 86 passed |
+| Asserts | 548 of 548 passed |
+| Run | 2026-11-23 04:29 UTC |
 | Bare | v1.36.0 |
-| Content | `29eea09bbb6a6a8b61fa45953bde3d569bd716f773241982c49e94e7fed579a4` |
+| Content | `f1ce3644becf7b48a6d9b21924fff550145372a25228ee364c38ddf6b789e27b` |
 
 ## Units
 
@@ -23,7 +23,7 @@ The package passed its `full` set: all 15 units, 85 of 85 tests and 531 of 531 a
 | `/test/code` | passed | 1 of 1 | 2 of 2 |
 | `/test/mrepo` | passed | 1 of 1 | 1 of 1 |
 | `/test/package` | passed | 1 of 1 | 1 of 1 |
-| `/test/modules/pear-full-square/mrepo-base-info` | passed | 9 of 9 | 69 of 69 |
+| `/test/modules/pear-full-square/mrepo-base-info` | passed | 10 of 10 | 86 of 86 |
 | `/test/modules/pear-full-square/mrepo-base-log` | passed | 2 of 2 | 24 of 24 |
 | `/test/modules/pear-full-square/mrepo-base-rns` | passed | 3 of 3 | 40 of 40 |
 | `/test/modules/pear-full-square/mycelium-container-document` | passed | 1 of 1 | 8 of 8 |

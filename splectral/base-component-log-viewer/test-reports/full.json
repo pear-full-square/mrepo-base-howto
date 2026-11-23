@@ -1,8 +1,8 @@
 {
   "package": "splectral/base-component-log-viewer",
-  "content": "6228c36b5cbae1e686acee4984502f7315d3cdf7fb548d0e60db995fd04ac6d0",
+  "content": "d953d7f2db574ca45baaff8923ad9d093433712d6ffe5985daf6e29e301d94fc",
   "bare": "v1.36.0",
-  "date": "2026-11-23T00:02:39.846Z",
+  "date": "2026-11-23T04:46:19.409Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -92,8 +92,8 @@
         "total": 8
       },
       "asserts": {
-        "passed": 125,
-        "total": 125
+        "passed": 122,
+        "total": 122
       },
       "failures": []
     },
@@ -127,12 +127,12 @@
       "unit": "/test/modules/pear-full-square/mrepo-base-info",
       "ok": true,
       "tests": {
-        "passed": 9,
-        "total": 9
+        "passed": 10,
+        "total": 10
       },
       "asserts": {
-        "passed": 69,
-        "total": 69
+        "passed": 86,
+        "total": 86
       },
       "failures": []
     },
