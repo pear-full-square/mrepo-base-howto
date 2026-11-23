@@ -6,114 +6,91 @@ and the release records, are in git's history. The local machine works
 offline: every download kept in a local source (`~/haicc-mirror/`), so
 `tools/install.sh` and `tools/release.js` run with no network.
 
-## 2026-11-22: `8661d03` built and tested (arm64, haici-feedback); the products synced to it
+## 2026-11-24: `8a4a9ae` built and tested (service-every-mrepo); the products pushed; Codeberg synced
 
-"The next run" (below), step by step, then what the human asked after
-it.
+"The next run" (below), step by step. No release.
 
-**Before the run, the products reset** (the human, 2026-11-22: "the
-product repositories were wrongly updated with unfinished work"): every
-product repository written back to this repository's state at
-`973b5cb4` (the content tested at `004dbc7`), as a new commit on top,
-never force-pushed: 22 packages by `tools/packages.sh`, 12 modules by
-the merge `tools/products.sh` makes, without its "split already in the
-head" shortcut (it would have skipped exactly the modules wrongly
-updated: their history held that split already). The wrong commits stay
-in each repository's history. Repositories that exist only for the
-work under review (e.g. for `mycelium-value-avro`, if any) were not
-touched, nor the release `r-62af3e4`.
-
-1. **The clone:** detached at `8661d0343a2d34e8308fe907c555776a204d392e`
-   (2026-11-21, "Merge branch 'execute/main'"). The human's install torn
-   down first (5 runtimes).
-2. **The dependencies, the sources:** `install.sh` exit 0 ("0 fetched,
-   207 kept, 1 linked": `mrepo-base-haici`). `release.js` exit 0, 42 s:
-   `sources/haiccing/` twenty-one bundles, `sources/splectral/` one,
-   every entry's commit `8661d034`; `sources/holepunchto/` both Bare
-   tarballs (`linux-x64`, `linux-arm64`, 1.36.0); `git status` no change.
-3. **The checks:** `release.js --strict` exit 0 (24 s), every report
-   `current`, `"platforms": ["linux-x64","linux-arm64"]`; `code-check.js`
-   "25 modules, 23 packages: 0 problems"; `info-extract.js --files`
-   "462 READMEs, 0 problems".
-4. **The tests:** nothing left after any (0 bare, 0 containers).
+1. **The clone:** `main` at `8a4a9aeb6974b928d72527358e237093b0f11dec`
+   (2026-11-23, "Merge branch 'execute/main'"). Nothing running before.
+2. **The dependencies, the sources:** `install.sh` exit 0, 9 s ("1
+   fetched, 207 kept, 8 linked"). `release.js` exit 0, 55 s:
+   twenty-nine bundles (`sources/haiccing/` 27, `sources/splectral/`
+   2), every entry's commit `8a4a9aeb`; `sources/holepunchto/` both Bare
+   tarballs; `git status` no change.
+3. **The checks:** `release.js --strict` exit 0 (39 s), every report
+   `current`, platforms `linux-x64`, `linux-arm64`; `code-check.js` "33
+   modules, 30 packages: 0 problems"; `info-extract.js --files` "608
+   READMEs, 0 problems".
+4. **The full test:** nothing left after any (0 bare, 0 containers).
 
    | test | runs | result | time each |
    |---|---|---|---|
-   | boot `/test/validate` | 3 | `"ok":true` each | 82, 85, 84 s |
-   | `run.sh` | 4 | **341/341** in runs 2, 3, 4; run 1 324/341 (a sleep, below) | 433, 434, 329 s |
-   | `splectral.sh` | 3 | 55/55 each | 76, 77, 67 s |
-   | `container.sh` | 1 | 18/18 | 41 s |
-   | `pair.sh` | 1 | 41/41 | 205 s |
+   | boot `/test/validate` | 3 | `"ok":true` each | 109, 111, 105 s |
+   | `run.sh` | 2 | 370/370 each | 414, 506 s |
+   | `splectral.sh` | 2 | 85/85 each | 205, 203 s |
+   | `swarm.sh` | 3 | 92/92 each | 354, 355, 353 s |
+   | `container.sh` | 2 | run 1 2/17, run 2 **17/17** | 2, 32 s |
+   | `pair.sh` | 2 | run 1 27/39, run 2 **39/39** | 147, 184 s |
 
-   `run.sh`'s new checks pass: Bare for `linux-arm64` pinned and in the
-   sources; an `aarch64` machine choosing `linux-arm64`; a platform not
-   pinned, exit 3, said; the feedback flag (recorded, its record, read
-   by protocol, at the root, asked directly, no text not run).
+   **Runs 1 of `container.sh` and `pair.sh` failed by my doing, not
+   the code's**: "exec sh failed: Exec format error". My arm64 check in
+   the last run (`docker run --platform linux/arm64
+   debian:bookworm-slim`) had replaced the local `debian:bookworm-slim`
+   with its arm64 image, which this machine cannot run. Pulled the
+   amd64 one back (`docker pull --platform linux/amd64`), before any
+   bundle test that makes containers; both run again, whole. For a
+   later arm64 check: a tag of its own, never the shared one.
 
-   **Run 1 of `run.sh`: the laptop slept**, again, though Windows had a
-   keep-awake request (`SetThreadExecutionState`, system required: it
-   does not hold against a lid closed or a sleep asked for). The
-   journal shows WSL's clock correction every ~30 s while awake; it
-   stops at 18:23 on 11-21 and is back only at 21:00 on 11-22. The
-   first failure, test 221 (`boot/deploy demo ... --flags
-   continuation=start`, "no response in 180 s"), at 18:26: the sleep
-   mid-request; 16 more after it, each a consequence (the demo mrepo's
-   runtimes). The run took 96606 s. A fourth run, after, passed whole.
-
-   `splectral.sh`'s page timings (ms): `/help/` 1030–1480 first;
-   `hdlc/validation` 1890–2690; `?raw` 1040–1580; a command typed
-   1080–1750; kept pages 5–15. `/help/no/such/thing` again the slowest:
-   4878, 3948, 3401. One timing negative, -161 ms (`?raw`, run 1):
-   WSL's clock stepped back during the request; the test times with
-   the wall clock, harmless.
-5. **Every bundle's own tests:** twenty-two, exit 0, `"ok":true` each.
-   `base-package-haici` three times (14 units, 248 tests; 20, 13, 13 s),
-   the help viewer three times (364 tests; 124, 109, 108 s).
-6. **The feedback flag, by hand** (`~/.haicc`, sources this clone's):
-   deploys exit 0 (boot 1.6 s, docs 7.2 s, host 18.3 s).
-   - `haicc host crud/read swarms --flags feedback the list is empty, a
-     swarm was expected`: exit 0, "Feedback on crud/read swarms
-     recorded: request `0f2aedb2-…`." and "To read it back: crud/read
-     done/0f2aedb2-….json --flags layer=request"; run as `haicc host
-     <that>`: exit 0, the record (`haici/feedback`, args the text then
-     `crud/read`, `rewritten: feedback`).
-   - `haicc --output host crud/read "done/*[value/value/protocol='haici']"
-     --flags layer=request`: exit 0, the one record.
-   - `haicc . boot/teardown host --flags feedback do not, it is in use`:
-     exit 0, recorded at the root; `haicc host crud/read swarms` after:
-     exit 0, `[]`: the host still there.
-   - `haicc host haici/feedback swarms "asked directly" crud/read`:
-     exit 0, the same answer.
-   - `haicc host crud/read swarms --flags feedback`: exit 1, "not run:
-     feedback: its text follows it (--flags feedback <text>)".
-   - Read by protocol after: the host 2 records (as expected); **the
-     root 3**, where 1 (the teardown's) was expected: the two given at
-     the host seem to be in the root's request layer too (the command
-     goes through it). Worth a look: is that intended?
-   - `haicc boot/teardown`: 3 runtimes, 0.7 s, nothing left.
-7. **arm64 in a container:** `docker run --rm --platform linux/arm64
-   debian:bookworm-slim uname -m` → "exec /usr/bin/uname: exec format
-   error" (69 s, the image pulled): no emulator registered here
-   (`binfmt_misc` has only WSL's). Stopped there, nothing installed.
-8. **The products synced to `8661d03`** (the human: "build and test the
-   arm stuff and the feedback stuff and update after each test
-   passes"): from the detached checkout, the scripts' steps run inline,
-   the commit named `8661d03` (the scripts name `main`'s, then
-   `cbe8aa15`, not what was tested). 23 packages committed ("arm64 and
-   haici-feedback, tested locally; written from …@8661d03"),
-   `base-package-haici` among them; 6 modules merged (`haicc-base-app`,
-   `mrepo-base-execute`, `-haici`, `-help`, `-request`, `-runtime`),
-   20 already that state. Checked after: all 49 repositories' content
-   the same as this folder at `8661d03` (LICENSE aside; two empty
-   fixture files a third-party `.gitignore` keeps out of git, as
-   always). No release.
-
-**For the cloud session:** the products now hold `8661d03`. A push from
-`main`'s head would put the work under review back out (avro, swarm-
-cluster, path URIs, the workbench, commission): products from a commit
-a local run has passed only. Proposed for `handover-local.md` and the
-handover: the local agent pushes the products after its run, from the
-commit it tested; the cloud session does not.
+   `splectral.sh`'s page timings (ms, the two runs alike): `/help/`
+   1900–2170 first; `hdlc/validation` **4210–4370** first (1890–2690
+   last run: slower); `?at=` 1330–1450; a command typed 1300–1370;
+   `/help/no/such/thing` 4050–4270; two new pages at the end, 2960 and
+   **6110**: the slowest of the script. Kept pages 6–13.
+5. **Every bundle's own tests:** twenty-nine, exit 0, `"ok":true`
+   each; the longest `base-component-boot` 262 s,
+   `base-solution-workbench` 215 s, `base-package-container` 187 s.
+6. **The products**, from `main` at `8a4a9ae`. While the tests ran,
+   `origin/main` moved to `2953eaf`: one commit, a note
+   (`steps/2-rebuild/handback.md`, `handover-next.md`, a line of
+   `CLAUDE.md`), no product folder touched; the local `main` stayed the
+   commit tested, the scripts push from it, so pushed (pulled after).
+   - **Modules** (`tools/products.sh`, one at a time): 22 merged;
+     `mrepo-base-crud` and `mycelium-value-avro` "up to date"; 7
+     repositories missing.
+   - **Packages** (`tools/packages.sh`, `PACKAGES` a temporary folder,
+     removed after): 23 committed, `base-solution-workbench` among
+     them; 6 repositories missing.
+   - **The check after**: 50 the same as their folders here, one not:
+     `mrepo-base-crud`. "Up to date" was wrong: the split was in its
+     history from the push by mistake of 2026-11-21, its content the
+     reset's. Merged by content (`501d52a8`), the same after. All 51
+     repositories that exist: their content this commit's.
+   - **Missing, for the human to create (13)**: packages
+     `haiccing/base-component-node`, `base-package-dispatch`,
+     `base-package-log`, `base-package-rns`, `base-package-swarm`,
+     `splectral/base-component-log-viewer`; modules
+     `pear-full-square/mrepo-base-dispatch`, `mrepo-base-log`,
+     `mrepo-base-rns`, `mrepo-base-swarm`, `p2p-local`, `p2p-topic`,
+     `splectral-base-log-viewer`.
+   - **For a release**: `base-component-haicc` and
+     `base-solution-workbench` list `haiccing/base-package-swarm`
+     among their packages: no haiccing release that installs a host
+     until its repository exists. Splectral has none yet either: its
+     manifest's repository, `splectral/base-docs-splectral`, is not
+     there.
+7. **Codeberg** (`~/codeberg-sync.sh update`, the human's, 2026-11-24):
+   the network poor all along (connections reset, TLS cut). The first
+   try stopped at "Codeberg token rejected": a dropped connection, the
+   token fine (200 three times after). The second: 7 failures, six of
+   them the network; the third, for the owners that had them: one,
+   `pear-full-square/mrepo-base-crud`, "create on Codeberg", twice.
+   Created by hand through the API (201; its description set after,
+   200), the cause not found (not its description's apostrophe: that
+   one was taken). A last run for `pear-full-square`: "done". GitHub
+   and Codeberg's `main` the same, checked for five of today's.
+8. **The responsibilities** (the human, 2026-11-24): written into
+   `handover-local.md` ("Who does what", "Codeberg") and a line of
+   `CLAUDE.md`, pushed (`f49a6d6`).
 
 ## The next run (2026-11-23, from the cloud session): read this first
 
