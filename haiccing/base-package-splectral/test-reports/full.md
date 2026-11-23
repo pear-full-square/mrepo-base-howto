@@ -1,6 +1,6 @@
 # Test report: haiccing/base-package-splectral
 
-The package passed its `full` set: all 25 units, 357 of 357 tests and 2502 of 2502 asserts.
+The package passed its `full` set: all 25 units, 357 of 357 tests and 2508 of 2508 asserts.
 
 | | |
 |---|---|
@@ -9,10 +9,10 @@ The package passed its `full` set: all 25 units, 357 of 357 tests and 2502 of 25
 | Result | passed |
 | Units | 25 of 25 passed |
 | Tests | 357 of 357 passed |
-| Asserts | 2502 of 2502 passed |
-| Run | 2026-11-23 04:35 UTC |
+| Asserts | 2508 of 2508 passed |
+| Run | 2026-11-23 08:27 UTC |
 | Bare | v1.36.0 |
-| Content | `4fa6305e2d7b647b6e5fc5d66d310b78cd1d723e90a881deb33c5c0c0894a2a6` |
+| Content | `b7a5f996c122e573f8c5d158eedd67730fbfcbc75909fe92d17ccac30aeb7614` |
 
 ## Units
 
@@ -42,6 +42,6 @@ The package passed its `full` set: all 25 units, 357 of 357 tests and 2502 of 25
 | `/test/modules/pear-full-square/p2p-replicate` | passed | 1 of 1 | 10 of 10 |
 | `/test/modules/pear-full-square/p2p-store` | passed | 5 of 5 | 20 of 20 |
 | `/test/modules/pear-full-square/pkgm-base-check` | passed | 23 of 23 | 70 of 70 |
-| `/test/modules/pear-full-square/splectral-server` | passed | 10 of 10 | 122 of 122 |
+| `/test/modules/pear-full-square/splectral-server` | passed | 10 of 10 | 128 of 128 |
 
 Written by the package's pre-release from `full.json`, beside it. The content is the hash of the bundle that was tested, its test reports left out.

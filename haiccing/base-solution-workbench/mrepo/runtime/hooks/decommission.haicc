@@ -1,4 +1,6 @@
 # decommission: asked by its teardown before its runtime is stopped: its
-# components torn down, each decommissioned by its own
+# components torn down, each decommissioned by its own, the help viewer
+# first, from its Splectral
+haicc splectral boot/teardown help
 boot/teardown splectral
 boot/teardown docs

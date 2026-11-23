@@ -388,6 +388,12 @@ has "$out" "no command after the flags of haicc (-- closes a flag list, the comm
 [ -d "$T/home/work/mrepos/local/host/.git" ] && [ -d "$T/home/work/mrepos/boot/.git" ] && ok "the install's registry: mrepos/, the host at local/host" || no "the install's registry: mrepos/"
 out=$(haicc --output . crud/read '*' --flags layer=links 2>&1)
 has "$out" '"uri":"local/host","at":"host","how":"deployed","folder":"../local/host","package":"haiccing/base-component-haicc"' "its link's record, the boot mrepo's: which mrepo, linked where, how it came, where it is, what it came from"
+# the registry consulted: haicc/mrepos, each mrepo where it is from the mrepo asked
+out=$(haicc --output . haicc/mrepos 2>&1)
+has "$out" '{"uri":"local/boot","position":".","package":"haiccing/base-component-boot","running":true}' "haicc . haicc/mrepos: the boot mrepo, itself"
+has "$out" '{"uri":"local/host","position":"host","package":"haiccing/base-component-haicc","running":true}' "the host, linked at host"
+is "$(haicc --output . haicc/mrepos "*/*[package='haiccing/base-component-haicc']" 2>&1)" '[{"uri":"local/host","position":"host","package":"haiccing/base-component-haicc","running":true}]' "an xpath: filtered on what the records say"
+has "$(haicc --output host haicc/mrepos local/boot 2>&1)" '"position":null' "asked of the host: the boot mrepo not forward of it, no position"
 # commission and decommission: what a package does once deployed, run by
 # the mrepo's runtime as it starts, the deploy waiting for it; and before
 # its teardown. Each a hook of the package's, its lines the mrepo's own

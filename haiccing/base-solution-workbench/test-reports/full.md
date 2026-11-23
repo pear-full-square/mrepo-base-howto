@@ -1,6 +1,6 @@
 # Test report: haiccing/base-solution-workbench
 
-The package passed its `full` set: all 24 units, 341 of 341 tests and 2296 of 2296 asserts.
+The package passed its `full` set: all 24 units, 341 of 341 tests and 2302 of 2302 asserts.
 
 | | |
 |---|---|
@@ -9,16 +9,16 @@ The package passed its `full` set: all 24 units, 341 of 341 tests and 2296 of 22
 | Result | passed |
 | Units | 24 of 24 passed |
 | Tests | 341 of 341 passed |
-| Asserts | 2296 of 2296 passed |
-| Run | 2026-11-23 04:39 UTC |
+| Asserts | 2302 of 2302 passed |
+| Run | 2026-11-23 08:32 UTC |
 | Bare | v1.36.0 |
-| Content | `ad3eed71b3986a838cf24fa0f5eaa68d9efe34ec27240f8077ad03abe3456340` |
+| Content | `0653954ffa6e78ae1913537956d3e564d1b789ff5fcf6a3a33c2ee2a69258212` |
 
 ## Units
 
 | Unit | Result | Tests | Asserts |
 |---|---|---|---|
-| `/test/configured` | passed | 6 of 6 | 58 of 58 |
+| `/test/configured` | passed | 6 of 6 | 64 of 64 |
 | `/test/workbench` | passed | 1 of 1 | 23 of 23 |
 | `/test/info` | passed | 1 of 1 | 2 of 2 |
 | `/test/code` | passed | 1 of 1 | 2 of 2 |

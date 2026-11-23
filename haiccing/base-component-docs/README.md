@@ -82,7 +82,10 @@ packages are built: `base-docs-package/howto/package`).
 
 ## Deploying
 
-By the boot mrepo, or the workbench (`workbench/docs`), with a command:
+Its name is fixed in the base family: `docs`, its unique URI
+`local/docs`, one an install; the help viewer finds it by it wherever
+it is deployed (`haicc . haicc/mrepos local/docs`). By the boot mrepo,
+or the workbench (`workbench/docs`), with a command:
 it is not deployed with the boot, you deploy it. A service like every
 mrepo: its boot hooks activate `help`, `info`, `runtime` and `service`;
 its `commission`, run as its runtime starts, initialises it (its info

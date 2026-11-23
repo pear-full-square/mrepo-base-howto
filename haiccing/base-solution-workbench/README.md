@@ -45,11 +45,14 @@ mrepo deployed at `workbench/docs` and Splectral
 at `workbench/splectral` (their unique URIs `local/docs`,
 `local/splectral`, placed in the install's registry, `<work>/mrepos/`,
 and linked in the workbench: forward visibility), each in service by
-its own commission; then the
-workbench initialised and started. The deploy answers once all of it is
+its own commission; then the help viewer installed in its Splectral
+(`workbench/splectral/help`), in service: the workbench's help view, the
+docs mrepo found by its unique URI, `local/docs`; then the workbench
+initialised and started. The deploy answers once all of it is
 done (`commission: "done"`, `service: "started"`); a line that fails
 fails it, nothing left. `haicc . boot/teardown workbench` runs its
-`decommission` first: its components torn down, then the workbench.
+`decommission` first: the help viewer, its components torn down, then
+the workbench.
 
 ## The howtos namespace
 

@@ -21,8 +21,10 @@ haicc boot/deploy
 haicc . boot/deploy workbench haiccing/base-solution-workbench
 # what the workbench deployed: its links, docs and splectral
 haicc workbench crud/read "*"
-# Splectral in service: its server's address
+# Splectral in service: its server's address; its help view at /help/, the docs mrepo's pages
 haicc workbench/splectral splectral/status
+# where the docs mrepo is, from the registry
+haicc . haicc/mrepos local/docs
 # the documentation
 haicc workbench/docs info/get
 # the howtos namespace, in the workbench

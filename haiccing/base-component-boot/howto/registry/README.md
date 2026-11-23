@@ -12,18 +12,24 @@ forward visibility only: its shortcuts and its links layer.
 ## Steps
 
 ```sh
-# every mrepo of the install: a folder with .git, by its unique URI
-find "$WORK/mrepos" -name .git -prune | sed "s|^$WORK/mrepos/||; s|/.git$||"
-# what the boot mrepo deployed: its links, at main
+# every mrepo of the install, from the registry: its unique URI, where
+# it is from the root, its package, running or not
+haicc . haicc/mrepos
+# one by its unique URI; a namespace's; by what its record says
+haicc . haicc/mrepos local/docs
+haicc . haicc/mrepos "local/*"
+haicc . haicc/mrepos "*/*[package='haiccing/base-component-docs']"
+# what the boot mrepo deployed itself: its links, at main
 haicc . crud/read "*"
-# one of them, as its link's record says (where, from which package, its runtime)
-haicc . haicc/goto host
 ```
 
 ## Notes
 
+- **Consulted, never written**: `haicc/mrepos` reads it; a position it
+  gives is used like any other (`haicc workbench/docs info/get`).
 - **No mrepo inside another's folder**: a unique URI is never a prefix
-  of another's, so each `.git` under `mrepos/` is one mrepo, its path
-  its unique URI.
+  of another's, so each `.git` under `mrepos/` is one mrepo; its unique
+  URI its identity's (the boot mrepo's folder `mrepos/boot`, its unique
+  URI `local/boot`), every other's its path.
 - **A teardown** removes its folder and its link; a teardown of what is
   not deployed is a warning (idempotent).
