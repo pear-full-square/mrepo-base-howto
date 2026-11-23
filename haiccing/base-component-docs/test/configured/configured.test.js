@@ -27,6 +27,8 @@ const LIST = [
   'haiccing/base-package-protocol',
   'haiccing/base-package-info',
   'haiccing/base-package-help',
+  'haiccing/base-package-crud',
+  'haiccing/base-package-haici',
   'haiccing/base-package-service',
   'haiccing/base-docs-haicc',
   'haiccing/base-docs-hdlc',
@@ -41,10 +43,12 @@ const LIST = [
 // initialise sets up (its info built), what its shutdown removes (the
 // build). No door: nothing sits behind it.
 const HOOKS = {
-  'boot/1': ['protocol/activate', '.', 'help'],
-  'boot/2': ['protocol/activate', '.', 'info'],
-  'boot/3': ['protocol/activate', '.', 'runtime'],
-  'boot/4': ['protocol/activate', '.', 'service'],
+  'boot/1': ['protocol/activate', '.', 'crud'],
+  'boot/2': ['protocol/activate', '.', 'haici'],
+  'boot/3': ['protocol/activate', '.', 'help'],
+  'boot/4': ['protocol/activate', '.', 'info'],
+  'boot/5': ['protocol/activate', '.', 'runtime'],
+  'boot/6': ['protocol/activate', '.', 'service'],
   'commission/1': ['service/initialise'],
   'commission/2': ['service/start'],
   'initialise/1': ['info/extract'],
@@ -52,7 +56,7 @@ const HOOKS = {
 }
 
 test('its list of packages, in deploy order, itself last', (t) => {
-  t.alike(json('mrepo', 'packages', 'layer.json').packages, LIST, 'the runtime, the protocol protocol, info, help, service, the documentation, the component')
+  t.alike(json('mrepo', 'packages', 'layer.json').packages, LIST, 'the runtime, the protocol protocol, info, help, crud, haici, service, the documentation, the component')
 })
 
 test('its hooks, file by file, line by line, and the state it starts in', (t) => {
@@ -80,12 +84,14 @@ test('the packages it lists: each in the sources, the protocols they provide', (
   t.ok(sources, 'SOURCES: the sources folder, the listed packages\' bundles in it')
   t.alike(missing, [], 'every package of the list has its bundle there')
   t.alike(Object.fromEntries(Object.entries(provided).map(([p, c]) => [p, c.from]).sort()), {
+    crud: 'haiccing/base-package-crud',
+    haici: 'haiccing/base-package-haici',
     help: 'haiccing/base-package-help',
     info: 'haiccing/base-package-info',
     protocol: 'haiccing/base-package-protocol',
     runtime: 'haiccing/base-package-runtime',
     service: 'haiccing/base-package-service'
-  }, 'five protocols, one a package; the documentation and the component provide none')
+  }, 'seven protocols, one a package; the documentation and the component provide none')
 })
 
 test('every hook names a protocol and an action a listed package provides', (t) => {
@@ -140,7 +146,7 @@ test('what its hooks do: the boot opens help, info, runtime and service; its com
   const w = world()
   // the boot: the runtime places these as its own, in name order
   for (const name of of('boot')) await w.exec.run(brought[name])
-  t.alike(w.active(), ['help', 'info', 'runtime', 'service'], 'after the boot: help, info, the runtime\'s and the service\'s')
+  t.alike(w.active(), ['crud', 'haici', 'help', 'info', 'runtime', 'service'], 'after the boot: crud and haici (feedback where the documentation is read, read back there), help, info, the runtime\'s and the service\'s')
   t.absent(w.active().includes('protocol'), 'the protocol protocol: not a hook\'s, the runtime opens it itself')
   t.absent(w.commands.includes('info/extract'), 'nothing set up at the runtime\'s start: its setup is its initialise')
   // its commission: what the runtime runs once, as it starts after the deploy
@@ -148,7 +154,7 @@ test('what its hooks do: the boot opens help, info, runtime and service; its com
   for (const name of of('commission')) commissioned.push(await w.exec.run(brought[name]))
   t.alike(commissioned, [{ service: 'initialised', state: 'initialised' }, { service: 'started', state: 'started' }], 'its commission: initialised, then started')
   t.ok(w.commands.includes('info/extract'), 'initialise: its info extracted, by its hook')
-  t.alike(w.active(), ['help', 'info', 'runtime', 'service'], 'started: nothing behind a door, the same open')
+  t.alike(w.active(), ['crud', 'haici', 'help', 'info', 'runtime', 'service'], 'started: nothing behind a door, the same open')
   t.alike([await w.exec.run(['service/stop']), await w.exec.run(['service/shutdown'])], [{ service: 'stopped', state: 'initialised' }, { service: 'shut down', state: 'booted' }], 'stopped, shut down')
   t.ok(w.commands.includes('info/clear'), 'shutdown: its build removed, by its hook')
   // every hook file ran: its command among those executed

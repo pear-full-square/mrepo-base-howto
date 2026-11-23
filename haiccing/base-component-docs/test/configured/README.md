@@ -15,11 +15,11 @@ value, then against the packages listed, read from the sources.
   its service state, `booted`. A hook file not named in the test fails
   it.
 - **The packages it lists**: each has its bundle in the sources; the
-  five protocols they provide, one a package.
+  seven protocols they provide, one a package.
 - **Every hook names what exists**: a protocol and an action a listed
   package provides; the protocol it opens is provided too.
 - **What its hooks do**: run with the listed packages' own actions, on a
-  minimal execution in memory: after the boot `help`, `info`, `runtime`
+  minimal execution in memory: after the boot `crud`, `haici`, `help`, `info`, `runtime`
   and `service` are open, nothing set up; its commission initialises it
   (its info built) and starts it; stopped and shut down, its build
   removed. Every hook file must have run.

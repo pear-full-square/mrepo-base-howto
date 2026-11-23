@@ -23,6 +23,8 @@ here.
 - [base-package-protocol](../base-package-protocol/)
 - [base-package-info](../base-package-info/)
 - [base-package-help](../base-package-help/)
+- [base-package-crud](../base-package-crud/)
+- [base-package-haici](../base-package-haici/)
 - [base-package-service](../base-package-service/)
 - [base-docs-haicc](../base-docs-haicc/)
 - [base-docs-hdlc](../base-docs-hdlc/)
@@ -52,6 +54,18 @@ a choice of the packages that have it:
 haicc docs info/get haiccing
 haicc docs info/get haiccing/base-package-boot/deploy
 haicc docs info/get deploy
+```
+
+## Feedback
+
+Feedback on the documentation is given where it is read: `haici` is
+active, so a command's feedback is recorded in the docs mrepo's own
+request log, the command with its own URI, not run; `crud` reads it
+back there:
+
+```
+haicc docs info/get haiccing/base-docs-hdlc/validation --flags feedback "unclear: which state holds a request?"
+haicc docs crud/read "done/*[value/value/protocol='haici']" --flags layer=request
 ```
 
 ## Log
@@ -87,7 +101,8 @@ Its name is fixed in the base family: `docs`, its unique URI
 it is deployed (`haicc . haicc/mrepos local/docs`). By the boot mrepo,
 or the workbench (`workbench/docs`), with a command:
 it is not deployed with the boot, you deploy it. A service like every
-mrepo: its boot hooks activate `help`, `info`, `runtime` and `service`;
+mrepo: its boot hooks activate `crud`, `haici`, `help`, `info`,
+`runtime` and `service`;
 its `commission`, run as its runtime starts, initialises it (its info
 built, by its `initialise` hook) and starts it before the deploy
 answers; its `shutdown` hook removes the build.

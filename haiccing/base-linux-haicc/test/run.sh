@@ -472,6 +472,12 @@ has "$out" '"context":"haiccing/base-package-boot","packages":["haiccing/base-pa
 has "$out" '{"keyword":"haiccing/base-package-haicc/config"' "the host's protocol among them: in the store, documented"
 has "$(haicc --output docs info/get howto 2>&1)" '"context":"haiccing/base-component-docs"' "a short keyword its own package has: its own, the docs mrepo answering about itself"
 has "$(haicc --output host info/get howto 2>&1)" '"keyword":"haiccing/base-component-haicc/howto","context":"haiccing/base-component-haicc"' "the same short keyword asked of the host: its own package's, context help"
+# feedback on the documentation, where it is read: recorded in the docs
+# mrepo's own request log, read back there
+out=$(haicc docs info/get haiccing/base-docs-hdlc/validation --flags feedback unclear: which state holds a request? 2>&1); is $? 0 "haicc docs info/get <keywords> --flags feedback <text>: recorded at the docs mrepo"
+id=$(printf '%s\n' "$out" | sed -n 's/^Feedback on info\/get haiccing\/base-docs-hdlc\/validation recorded: request \([0-9a-f-]*\)\.$/\1/p')
+[ -n "$id" ] && ok "answered with its request's id" || no "answered with its request's id" "$out"
+out=$(haicc --output docs crud/read "done/$id.json" --flags layer=request 2>&1); has "$out" '"protocol":"haici","action":"feedback","uri":["main","haiccing/base-docs-hdlc/validation"]' "read back there: haici/feedback at the keywords' URI"
 # its build: removed at shutdown, built again at initialise
 haicc --output docs service/stop >/dev/null 2>&1; out=$(haicc --output docs service/shutdown 2>&1); has "$out" '"state":"booted"' "haicc docs service/shutdown: shut down, its shutdown hook run"
 out=$(haicc --output docs info/get 2>&1 >/dev/null); has "$out" "no info extracted in this mrepo yet" "its build removed (info/clear)"
