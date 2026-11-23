@@ -11,7 +11,7 @@ export const protocols = {
     description: 'The mrepo\'s pages, read by keywords from the top down.',
     default: 'get',
     actions: {
-      get: { uris: ['**'], description: 'A page and the keywords below it, by its keywords from the top, written where the URI is (info/get boot/deploy; none: the top page); a keyword with several meanings, each a choice.' },
+      get: { uris: ['**'], description: 'A page and the keywords below it, by its keywords from the top, written where the URI is (info/get haiccing/base-package-boot/deploy, a package by its name fully qualified; none: the top page); a keyword with several meanings, each a choice.' },
       extract: { uris: ['.'], description: 'The info layer extracted from the linked packages: each page once, the index from keyword to page, the problems.' }
     }
   }

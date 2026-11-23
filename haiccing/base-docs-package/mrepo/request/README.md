@@ -144,9 +144,9 @@ there, and that mrepo's response becomes the request's result.
   interpreted and checked where it lands.
 
 ```json
-{ "command": ["haicc", "host", "info/get", "boot"],
+{ "command": ["haicc", "host", "info/get", "haiccing"],
   "protocol": "haicc", "action": "goto", "uri": ["main", "host"],
-  "args": ["info/get", "boot"],
+  "args": ["info/get", "haiccing"],
   "remote": { "at": "host", "folder": "../local/host", "key": "…" },
   "output": { } }
 ```

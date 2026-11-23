@@ -26,7 +26,7 @@ inspect. One line a check, the count last; exit 0 passed, 1 failed.
    `linux-arm64`'s, a platform not pinned is said.
    From here the command is the app: its usage whole; no such command; a
    URI with no command after it; `haicc boot` alone; `--output` without a
-   URI; no boot mrepo yet; the backup off and on; a folder linked twice
+   URI; no boot mrepo yet (a teardown then a repeat, a warning); the backup off and on; a folder linked twice
    listed once; a download of our packages, not published yet.
 6. **The boot**: `haicc boot/deploy`: the boot mrepo at the root, its
    runtime started, nothing deployed.
@@ -62,9 +62,10 @@ inspect. One line a check, the count last; exit 0 passed, 1 failed.
 11. **The boot again**: there already, kept.
 12. **The machine level torn down**: `haicc boot/teardown` with a host
     deployed: both runtimes stopped, the mrepos and the package store
-    removed, Bare, the sources list and the scripts kept (the bin's, and
-    the install's, `<work>/scripts/`); a second time,
-    nothing there; `haicc boot/deploy` brings it back.
+    removed, the packages' scripts too; Bare, the sources list and the
+    scripts kept (the bin's, and the user's in `<work>/scripts/`); a
+    second time, a repeat, a warning, exit 0; `haicc boot/deploy` brings
+    it back.
 
 ## A swarm
 

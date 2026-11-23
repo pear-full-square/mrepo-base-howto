@@ -48,6 +48,8 @@ export async function main (argv, { env = {}, bare = os.execPath(), io = CONSOLE
     if (c.kind === 'machine') {
       const r = await MACHINE[c.protocol][c.action]({ home, work, root, bare, org: CONFIG.org, boot: CONFIG.boot, stdio: io.stdio })
       if (typeof r === 'number') return r
+      // a repeat: its warning on stderr, the answer as ever
+      if (r?.warning) io.err(`haicc: warning: ${r.warning}`)
       io.out(JSON.stringify(r))
       return 0
     }

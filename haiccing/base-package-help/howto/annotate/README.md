@@ -16,5 +16,5 @@ haicc . boot/deploy docs haiccing/base-component-docs --flags help
 # the same, asked directly: the command's <protocol>/<action> and arguments after the URI
 haicc host help/annotate swarms crud/read
 # its page, to read more
-haicc host info/get crud/read
+haicc host info/get haiccing/base-package-crud/read
 ```

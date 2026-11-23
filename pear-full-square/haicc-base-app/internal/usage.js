@@ -36,6 +36,8 @@ haicc boot/deploy                               the machine level: the boot
                                                 root, its runtime started
 haicc boot/teardown                             every runtime stopped, what
                                                 boot/deploy put in place removed
+                                                (your scripts kept); again: a
+                                                warning, nothing done
 haicc scripts                                   the install's scripts by
                                                 name: <work>/scripts/: each
                                                 package's, placed by a deploy
@@ -74,6 +76,8 @@ A request's log is in its record: info unasked, more with --flags
 log=verbose; the requests done, at the request layer:
 haicc host crud/read "done/*" --flags layer=request.
 
-An mrepo answers about itself: haicc host info/get, haicc host info/get boot;
-the platform's documentation, once its mrepo is deployed (haicc . boot/deploy
-docs haiccing/base-component-docs): haicc docs info/get, haicc docs info/get hdlc`
+An mrepo answers about itself: haicc host info/get, haicc host info/get haiccing;
+a package by its name fully qualified: haicc host info/get
+haiccing/base-package-boot/deploy. The platform's documentation, once its mrepo
+is deployed (haicc . boot/deploy docs haiccing/base-component-docs): haicc docs
+info/get, haicc docs info/get haiccing/base-docs-hdlc`

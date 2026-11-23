@@ -1,6 +1,6 @@
 # Test report: splectral/base-component-help-viewer
 
-The package passed its `full` set: all 28 units, 383 of 383 tests and 2751 of 2751 asserts.
+The package passed its `full` set: all 28 units, 383 of 383 tests and 2760 of 2760 asserts.
 
 | | |
 |---|---|
@@ -9,10 +9,10 @@ The package passed its `full` set: all 28 units, 383 of 383 tests and 2751 of 27
 | Result | passed |
 | Units | 28 of 28 passed |
 | Tests | 383 of 383 passed |
-| Asserts | 2751 of 2751 passed |
-| Run | 2026-11-22 15:36 UTC |
+| Asserts | 2760 of 2760 passed |
+| Run | 2026-11-22 23:59 UTC |
 | Bare | v1.36.0 |
-| Content | `4d84547df294a88e9f2bf5706b51383b42dafa0255d7595e0a0b33b60a7738c4` |
+| Content | `7fd20de85ee16199b6878d87d6d44bdd402411f3d83c9c6ab910dfee92a02928` |
 
 ## Units
 
@@ -24,11 +24,11 @@ The package passed its `full` set: all 28 units, 383 of 383 tests and 2751 of 27
 | `/test/code` | passed | 1 of 1 | 2 of 2 |
 | `/test/mrepo` | passed | 1 of 1 | 1 of 1 |
 | `/test/package` | passed | 1 of 1 | 1 of 1 |
-| `/test/modules/pear-full-square/haicc-base-app` | passed | 18 of 18 | 193 of 193 |
+| `/test/modules/pear-full-square/haicc-base-app` | passed | 18 of 18 | 195 of 195 |
 | `/test/modules/pear-full-square/mrepo-base-boot` | passed | 8 of 8 | 125 of 125 |
 | `/test/modules/pear-full-square/mrepo-base-crud` | passed | 9 of 9 | 80 of 80 |
 | `/test/modules/pear-full-square/mrepo-base-execute` | passed | 10 of 10 | 98 of 98 |
-| `/test/modules/pear-full-square/mrepo-base-info` | passed | 9 of 9 | 62 of 62 |
+| `/test/modules/pear-full-square/mrepo-base-info` | passed | 9 of 9 | 69 of 69 |
 | `/test/modules/pear-full-square/mrepo-base-protocol` | passed | 3 of 3 | 10 of 10 |
 | `/test/modules/pear-full-square/mrepo-base-request` | passed | 21 of 21 | 238 of 238 |
 | `/test/modules/pear-full-square/mrepo-base-runtime` | passed | 10 of 10 | 172 of 172 |

@@ -35,7 +35,8 @@ here.
 
 Beyond its list, `"documents": "sources"`: every package the sources
 offer, placed as documentation only (its bundle; nothing laid in, nothing
-run), each at its keyword below the top: `haicc docs info/get boot`.
+run), each below its organisation by its name: `haicc docs info/get
+haiccing/base-package-boot`.
 What is installed is what is documented; later a solution's list may
 name them.
 
@@ -75,7 +76,8 @@ answers.
 ```
 haicc . boot/deploy docs haiccing/base-component-docs
 haicc docs info/get
-haicc docs info/get hdlc
+haicc docs info/get haiccing
+haicc docs info/get haiccing/base-docs-hdlc
 ```
 
 ## Its files

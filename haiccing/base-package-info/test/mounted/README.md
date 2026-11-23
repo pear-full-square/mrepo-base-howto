@@ -17,8 +17,9 @@ action run on a minimal execution.
 - **`extract`**: from bundles written for the test, a component that
   includes a protocol package: the layer, its index, its problems; run
   again, nothing written; a URI other than the mrepo itself, refused.
-- **`get`**: nothing extracted yet, said; then the top, a package, an
-  action reached by a jump; a keyword that is not there, said.
+- **`get`**: nothing extracted yet, said; then the top, its
+  organisation, its packages by their names fully qualified, an action
+  reached by a jump; a keyword that is not there, said.
 - **Nothing forgotten**: the last test fails when the config names an
   action that was not run here, or one that wrote nothing into the
   request's log as it ran.

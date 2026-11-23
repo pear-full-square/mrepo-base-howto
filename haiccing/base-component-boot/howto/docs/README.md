@@ -13,7 +13,7 @@ deploys it at `docs`, beside the host.
 haicc . boot/deploy docs haiccing/base-component-docs
 # its front page, and a page by its keywords
 haicc docs info/get
-haicc docs info/get boot/deploy
+haicc docs info/get haiccing/base-package-boot/deploy
 # torn down when it is no longer wanted
 haicc . boot/teardown docs
 ```

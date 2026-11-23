@@ -74,11 +74,11 @@ test('not a command: exit 2, said on stderr, nothing printed', async (t) => {
   }
 })
 
-test('nothing booted: said, exit 3, nothing written', async (t) => {
+test('nothing booted: said, exit 3 (the teardown a repeat, a warning, exit 0), nothing written', async (t) => {
   let r = asked('request', await haicc(['host', 'service/start']))
   t.alike([r.code, r.out, r.err], [3, '', `haicc: no boot mrepo at ${work} (haicc boot/deploy)\n`], 'a command for the mrepos')
   r = asked('boot/teardown', await haicc(['boot/teardown']))
-  t.alike([r.code, r.out, r.err], [3, '', `haicc: no boot mrepo at ${work} (nothing to tear down)\n`], 'haicc boot/teardown')
+  t.alike([r.code, JSON.parse(r.out).again, r.err], [0, true, `haicc: warning: no boot mrepo at ${work}: nothing to tear down\n`], 'haicc boot/teardown: idempotent, a repeat, its warning on stderr')
   r = asked('boot/deploy', await haicc(['boot/deploy']))
   t.alike([r.code, r.out, r.err], [3, '', `haicc: no ${CONFIG.org}/${CONFIG.boot}.bundle in the sources (haicc sources link <folder>)\n`], 'haicc boot/deploy, no source holding the boot component')
   r = await haicc(['.', 'info/get'], { env: { HAICC_WORK: join(home, 'elsewhere') } })
@@ -185,15 +185,19 @@ test('its response: the record unpacked, as stored, or the output alone; the exi
   t.ok(/^haicc: no response in 0\.5 s \(the request stays: [0-9a-f-]{36}\)\n$/.test(r.err), 'said, with the request\'s key')
 })
 
-test('boot/teardown: what boot/deploy put in place removed by name, the rest kept', async (t) => {
+test('boot/teardown: what boot/deploy put in place removed by name, the packages\' scripts too, the rest kept; twice: a repeat', async (t) => {
   for (const d of ['mrepos/boot/.git', 'mrepos/local/host/.git', 'packages/haiccing', 'kept']) mkdirSync(join(work, d), { recursive: true })
   writeFileSync(join(work, 'mrepo.json'), '{}')
+  mkdirSync(join(work, 'scripts', 'haiccing', 'base-component-haicc'), { recursive: true })
+  writeFileSync(join(work, 'scripts', 'haiccing', 'base-component-haicc', 'cluster.haicc'), 'crud/read .\n')
+  writeFileSync(join(work, 'scripts', 'mine.haicc'), 'crud/read .\n')
   let r = asked('boot/teardown', await haicc(['boot/teardown']))
   t.alike([r.code, r.out, r.err], [0, JSON.stringify({ tornDown: '.', runtimes: 0, containers: 0, work }) + '\n', ''], 'said: the root torn down, no runtime was running')
-  t.alike(readdirSync(work), ['kept'], 'the mrepos, the package store and the setting removed; nothing else')
+  t.alike(readdirSync(work).sort(), ['kept', 'scripts'], 'the mrepos, the package store and the setting removed; nothing else')
+  t.alike(readdirSync(join(work, 'scripts')), ['mine.haicc'], 'the packages\' scripts removed, the user\'s kept')
   t.ok(existsSync(join(home, 'sources.list')), 'the sources list kept')
   r = await haicc(['boot/teardown'])
-  t.is(r.code, 3, 'twice: nothing there, exit 3')
+  t.alike([r.code, JSON.parse(r.out).again], [0, true], 'twice: a repeat, exit 0')
 })
 
 test('every kind of command line was run here', (t) => {

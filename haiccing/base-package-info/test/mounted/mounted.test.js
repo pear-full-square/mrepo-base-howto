@@ -95,10 +95,12 @@ test('extract, then get: the layer from the packages, read by keywords', async (
     t.alike([(await act('extract', exec, { uri: ['.'] })).changed, writes.length], [false, n], 'again: nothing changed, nothing written')
     await t.exception(act('extract', exec, { uri: ['main', 'x'] }), /info extract: the whole mrepo only/)
     const top = await act('get', exec, {})
-    t.alike([top.choices[0].title, top.choices[0].below.map(b => b.keyword)], ['base-component-two', ['one', 'modules', 'third-party', 'schemas']], 'the top: the mrepo\'s own package, its included package by its name without the prefix, the pages made here')
-    const go = await act('get', exec, { uri: ['main', 'one/go'] })
+    t.alike([top.choices[0].title, top.choices[0].below.map(b => b.keyword)], ['base-component-two', ['haiccing', 'modules', 'third-party', 'schemas']], 'the top: the mrepo\'s own package, its organisation, the pages made here')
+    const org = await act('get', exec, { uri: ['main', 'haiccing'] })
+    t.alike(org.choices[0].below.map(b => b.keyword), ['haiccing/base-component-two', 'haiccing/base-package-one'], 'its organisation: its packages, each by its name fully qualified, the mrepo\'s own first')
+    const go = await act('get', exec, { uri: ['main', 'haiccing/base-package-one/go'] })
     t.alike([go.choices[0].title, go.choices[0].oneliner], ['go', 'Goes.'], 'an action, reached by a jump into its module')
-    await t.exception(act('get', exec, { uri: ['main', 'one/stop'] }), /no one\/stop here: nearest one, below it go/, 'not there: the nearest, and what is below it')
+    await t.exception(act('get', exec, { uri: ['main', 'haiccing/base-package-one/stop'] }), /no haiccing\/base-package-one\/stop here: nearest haiccing\/base-package-one, below it go/, 'not there: the nearest, and what is below it')
   } finally { rmSync(dir, { recursive: true, force: true }) }
 })
 

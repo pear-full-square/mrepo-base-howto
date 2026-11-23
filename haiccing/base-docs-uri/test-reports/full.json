@@ -1,8 +1,8 @@
 {
   "package": "haiccing/base-docs-uri",
-  "content": "7ecbe43ba2ffa411be3cc584d6dd5218845b06e934648d9c940520bfe75f51bc",
+  "content": "8c111ef1842bc1f9d5d3025b968c1888fcae1d7f02c28337e407535180a9f2d8",
   "bare": "v1.36.0",
-  "date": "2026-11-22T05:39:31.285Z",
+  "date": "2026-11-22T23:36:07.260Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -79,8 +79,8 @@
         "total": 9
       },
       "asserts": {
-        "passed": 62,
-        "total": 62
+        "passed": 69,
+        "total": 69
       },
       "failures": []
     },
