@@ -1,4 +1,6 @@
 # boot: run by the runtime as it starts, a line a command: the activations only
+protocol/activate . crud
+protocol/activate . haici
 protocol/activate . help
 protocol/activate . info
 protocol/activate . runtime

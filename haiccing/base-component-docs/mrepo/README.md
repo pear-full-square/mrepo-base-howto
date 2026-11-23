@@ -3,7 +3,9 @@
 The component's part of the structure: the list of the packages the docs mrepo is made of, and its runtime config.
 
 - **Its packages** (`packages/layer.json`): the runtime, the protocol
-  protocol, the info protocol, the help protocol, the service protocol,
+  protocol, the info protocol, the help protocol, the crud and the haici
+  protocols (feedback where the documentation is read, read back there),
+  the service protocol,
   the documentation packages, and this
   component last; and `"documents": "store"`: every package in the
   install's store documented, read from the store, nothing placed.
@@ -14,7 +16,7 @@ The component's part of the structure: the list of the packages the docs mrepo i
 
 - **`runtime/service.json`**: the service state, `booted`: the docs mrepo
   is service managed, as every mrepo.
-- **At `boot`**: `help`, `info`, `runtime` and `service` activated: the
+- **At `boot`**: `crud`, `haici`, `help`, `info`, `runtime` and `service` activated: the
   activations only.
 - **`commission`**, run by its runtime as it starts (again at a
   restart, idempotent), the deploy waiting for it: `service/initialise`,
