@@ -66,7 +66,8 @@ history, and each package and module has its own repository).
 - `steps/`: what is current of this environment, nothing else (the
   history is git's: the human, 2026-11-18, "we don't want history lying
   around, that is what git is for"). After a context reset:
-  `steps/2-rebuild/handover-next.md`. The local runs: the prompt and the
+  `steps/2-rebuild/handover-next.md` (and `handback.md`, what a
+  substream handed back). The local runs: the prompt and the
   last note, `steps/2-rebuild/local-note.md`; the local agent's
   instructions, `steps/2-rebuild/handover-local.md`.
 - **The roadmap and the scheduled work** are not here: `splectrum/roadmap-2`
