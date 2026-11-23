@@ -133,8 +133,7 @@ it tested). **No release.**
 `tasks/service-every-mrepo/`), a milestone: `main`'s head, built and
 tested here in full, then every product repository brought to it.
 
-**The commit**: `main`'s head when you pull, the commit of this note
-(it changes `steps/` only: what it builds is `5a6df6d4`'s). The
+**The commit**: `main`'s head when you pull. The
 scripts push from `main`, so `main` must still be the commit you
 tested when you push: if it has moved, stop before step 6 and say so.
 

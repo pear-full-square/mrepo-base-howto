@@ -29,6 +29,12 @@ haicc host crud/read "done/*[value/value/protocol='haici']" --flags layer=reques
   that exists as command".
 - **KISS, from the request log**: "don't do too much up front"; it keeps
   nothing but its own request's record, and answers with its id.
+- **Reported locally, picked up from any mrepo** (the human,
+  2026-11-23): "feedback only needs reporting locally, request log
+  processing will raise it with the feedback loop irrespective of the
+  mrepo where the feedback was made". Any process may leave feedback
+  anywhere as part of its execution; nothing is sent on to a central
+  place.
 - **Short, natural language, a fixed place each**: the answer's lines
   (`answer`), what the `haicc` command prints; the id and the command to
   read it back in places of their own; the record as it is with `haicc
