@@ -1,6 +1,6 @@
 # Test report: splectral/base-component-help-viewer
 
-The package passed its `full` set: all 28 units, 384 of 384 tests and 2775 of 2775 asserts.
+The package passed its `full` set: all 28 units, 384 of 384 tests and 2786 of 2786 asserts.
 
 | | |
 |---|---|
@@ -9,17 +9,17 @@ The package passed its `full` set: all 28 units, 384 of 384 tests and 2775 of 27
 | Result | passed |
 | Units | 28 of 28 passed |
 | Tests | 384 of 384 passed |
-| Asserts | 2775 of 2775 passed |
-| Run | 2026-11-23 04:42 UTC |
+| Asserts | 2786 of 2786 passed |
+| Run | 2026-11-23 09:33 UTC |
 | Bare | v1.36.0 |
-| Content | `5cba1510acb3308a31dcebc410924874d86914d962bc7ef1d4eb68b9b293b14b` |
+| Content | `585ad0a868a5e26c0b06ac13c4e5ef505619bf8ba91a76099533c5f8a42ffa0e` |
 
 ## Units
 
 | Unit | Result | Tests | Asserts |
 |---|---|---|---|
 | `/test/configured` | passed | 3 of 3 | 9 of 9 |
-| `/test/program` | passed | 1 of 1 | 10 of 10 |
+| `/test/program` | passed | 1 of 1 | 11 of 11 |
 | `/test/info` | passed | 1 of 1 | 2 of 2 |
 | `/test/code` | passed | 1 of 1 | 2 of 2 |
 | `/test/mrepo` | passed | 1 of 1 | 1 of 1 |
@@ -44,7 +44,7 @@ The package passed its `full` set: all 28 units, 384 of 384 tests and 2775 of 27
 | `/test/modules/pear-full-square/p2p-replicate` | passed | 1 of 1 | 10 of 10 |
 | `/test/modules/pear-full-square/p2p-store` | passed | 5 of 5 | 20 of 20 |
 | `/test/modules/pear-full-square/pkgm-base-check` | passed | 23 of 23 | 70 of 70 |
-| `/test/modules/pear-full-square/splectral-base-help-viewer` | passed | 10 of 10 | 102 of 102 |
-| `/test/modules/pear-full-square/splectral-server` | passed | 10 of 10 | 122 of 122 |
+| `/test/modules/pear-full-square/splectral-base-help-viewer` | passed | 10 of 10 | 106 of 106 |
+| `/test/modules/pear-full-square/splectral-server` | passed | 10 of 10 | 128 of 128 |
 
 Written by the package's pre-release from `full.json`, beside it. The content is the hash of the bundle that was tested, its test reports left out.

@@ -55,7 +55,8 @@ inspect. One line a check, the count last; exit 0 passed, 1 failed.
    **Scripts**: the host's package's placed by its deploy in
    `<work>/scripts/`, listed by `haicc scripts` with the user's, run by
    name (`haicc/file`). **The registry**: `mrepos/`, the host there by
-   its unique URI; its link's record in the boot mrepo. A teardown again:
+   its unique URI; its link's record in the boot mrepo; consulted with
+   `haicc/mrepos`, each mrepo where it is from the mrepo asked. A teardown again:
    a repeat allowed.
    **Info**: the pages by keywords, split on package: the top, its
    organisations, a package's pages in its context, its name in front; a
@@ -130,7 +131,10 @@ the workbench on a fresh install, one command (`haicc . boot/deploy
 workbench haiccing/base-solution-workbench`): its commission done, its
 components below it (`workbench/docs`, `workbench/splectral`) in the
 install's registry, `mrepos/`, linked in the workbench only, in service, Splectral's site and the docs answering, the
-workbench's `howtos` namespace; a second on the same install refused,
+workbench's `howtos` namespace; the registry consulted (`haicc/mrepos`),
+the docs mrepo where it is; the workbench's help view, its help viewer
+installed by its commission, reading the docs mrepo by its unique URI;
+a second on the same install refused,
 its commission failed at its first component, nothing of it left; the
 workbench torn down, its decommission taking its components with it;
 nothing left. Each step timed, the pages too. It needs the

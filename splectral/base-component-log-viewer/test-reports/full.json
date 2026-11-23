@@ -1,8 +1,8 @@
 {
   "package": "splectral/base-component-log-viewer",
-  "content": "d953d7f2db574ca45baaff8923ad9d093433712d6ffe5985daf6e29e301d94fc",
+  "content": "118e278c831fec525ba7ffaedff1ed12e399f93e86001b753e3972c5428dee8d",
   "bare": "v1.36.0",
-  "date": "2026-11-23T04:46:19.409Z",
+  "date": "2026-11-23T08:41:31.954Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -352,8 +352,8 @@
         "total": 10
       },
       "asserts": {
-        "passed": 122,
-        "total": 122
+        "passed": 128,
+        "total": 128
       },
       "failures": []
     }

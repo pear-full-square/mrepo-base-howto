@@ -41,6 +41,8 @@ const LIST = [
 ]
 // What its commission deploys: its components, below it.
 const COMPONENTS = { docs: 'haiccing/base-component-docs', splectral: 'haiccing/base-package-splectral' }
+// The help viewer its commission installs in its Splectral: the mrepo under it, the component.
+const VIEWER = ['haiccing/base-package-service', 'splectral/base-component-help-viewer']
 // Each hook named here with its command: its commission (its
 // components deployed below it, then its own service initialised and
 // started), its decommission (its components torn down), what it offers
@@ -50,10 +52,15 @@ const COMPONENTS = { docs: 'haiccing/base-component-docs', splectral: 'haiccing/
 const HOOKS = {
   'commission/1': ['boot/deploy', 'docs', COMPONENTS.docs],
   'commission/2': ['boot/deploy', 'splectral', COMPONENTS.splectral],
-  'commission/3': ['service/initialise'],
-  'commission/4': ['service/start'],
-  'decommission/1': ['boot/teardown', 'splectral'],
-  'decommission/2': ['boot/teardown', 'docs'],
+  'commission/3': ['haicc', 'splectral', 'boot/deploy', 'help', 'haiccing/base-package-service'],
+  'commission/4': ['haicc', 'splectral', 'splectral/install', 'help', 'splectral/base-component-help-viewer'],
+  'commission/5': ['haicc', 'splectral/help', 'service/initialise'],
+  'commission/6': ['haicc', 'splectral/help', 'service/start'],
+  'commission/7': ['service/initialise'],
+  'commission/8': ['service/start'],
+  'decommission/1': ['haicc', 'splectral', 'boot/teardown', 'help'],
+  'decommission/2': ['boot/teardown', 'splectral'],
+  'decommission/3': ['boot/teardown', 'docs'],
   'boot/1': ['protocol/activate', '.', 'haicc'],
   'boot/2': ['protocol/activate', '.', 'haici'],
   'boot/3': ['protocol/activate', '.', 'help'],
@@ -89,7 +96,7 @@ const provided = {}
 const actions = {}
 const missing = []
 if (sources) {
-  for (const name of Object.values(COMPONENTS)) if (!existsSync(join(sources, `${name}.bundle`))) missing.push(name)
+  for (const name of [...Object.values(COMPONENTS), ...VIEWER]) if (!existsSync(join(sources, `${name}.bundle`))) missing.push(name)
   for (const name of LIST) {
     const file = join(sources, `${name}.bundle`)
     if (!existsSync(file)) { missing.push(name); continue }
@@ -119,7 +126,9 @@ test('the packages it lists: each in the sources, the protocols they provide', (
 
 test('every hook names a protocol and an action a listed package provides', (t) => {
   for (const [name, [first, , arg]] of Object.entries(brought)) {
-    const [p, a] = first.split('/')
+    // haicc <position> <command>: goto, the haicc protocol's default; the
+    // command sent on is the component's to offer (the workbench test runs it)
+    const [p, a] = first === 'haicc' ? ['haicc', provided.haicc?.default] : first.split('/')
     t.ok(provided[p]?.actions?.[a], `${name}: ${first} is there (${provided[p]?.from})`)
     if (p === 'protocol') t.ok(provided[arg], `${name}: the protocol it opens or closes, ${arg}, is provided`)
   }
@@ -149,6 +158,9 @@ function world () {
       const [first, uri = '.', ...args] = command
       const [p, a] = first.split('/')
       commands.push(command.join(' '))
+      // a command sent on to a component (haicc <position> ...): stood in
+      // for, as the component answers it (the workbench test runs it)
+      if (first === 'haicc') return { sent: command.slice(1) }
       if (!actions[p]?.[a]) throw new Error(`no action: ${first}`)
       // a component deployed or torn down: stood in for (the workbench test does it)
       if (p === 'boot') return a === 'deploy' ? { deployed: uri, package: args[0], commission: 'done' } : { tornDown: uri }
@@ -169,7 +181,7 @@ function world () {
 }
 const of = transition => Object.keys(brought).filter(n => n.startsWith(`${transition}/`)).sort()
 
-test('what its hooks do: the boot opens what a haicc mrepo offers; the commission deploys its components, initialises it (its info, its howtos namespace) and starts it (its door open); stop, shutdown; the decommission tears its components down', async (t) => {
+test('what its hooks do: the boot opens what a haicc mrepo offers; the commission deploys its components and its help viewer, initialises it (its info, its howtos namespace) and starts it (its door open); stop, shutdown; the decommission tears its components down', async (t) => {
   const w = world()
   // the boot: the runtime places these as its own, in name order
   for (const name of of('boot')) await w.exec.run(brought[name])
@@ -180,7 +192,8 @@ test('what its hooks do: the boot opens what a haicc mrepo offers; the commissio
   for (const name of of('commission')) commissioned.push(await w.exec.run(brought[name]))
   t.absent(await w.exec.find('/main/registry/.node.json'), 'no registry of its own: the install\'s is mrepos/')
   t.alike(commissioned.slice(0, 2), [{ deployed: 'docs', package: COMPONENTS.docs, commission: 'done' }, { deployed: 'splectral', package: COMPONENTS.splectral, commission: 'done' }], 'its components deployed below it, before its own initialise, each commissioned by its own')
-  t.alike(commissioned.slice(2), [{ service: 'initialised', state: 'initialised' }, { service: 'started', state: 'started' }], 'then itself: initialised, then started')
+  t.alike(commissioned.slice(2, 6).map(c => c.sent), [['splectral', 'boot/deploy', 'help', 'haiccing/base-package-service'], ['splectral', 'splectral/install', 'help', 'splectral/base-component-help-viewer'], ['splectral/help', 'service/initialise'], ['splectral/help', 'service/start']], 'then the help viewer in its Splectral, its help view: deployed, installed, in service')
+  t.alike(commissioned.slice(6), [{ service: 'initialised', state: 'initialised' }, { service: 'started', state: 'started' }], 'then itself: initialised, then started')
   t.ok(w.commands.includes('info/extract'), 'initialise: its info extracted, by its hook')
   t.alike(JSON.parse((await w.exec.read('/main/howtos/.node.json')).toString()), { kind: 'howtos' }, 'initialise: the node howtos, a namespace\'s root')
   t.alike(w.active(), ['boot', 'container', 'crud', 'haicc', 'haici', 'help', 'info', 'runtime', 'service', 'swarm'], 'started: the door open, boot, container, crud and swarm with the others')
@@ -190,7 +203,7 @@ test('what its hooks do: the boot opens what a haicc mrepo offers; the commissio
   // its decommission: asked by its teardown
   const decommissioned = []
   for (const name of of('decommission')) decommissioned.push(await w.exec.run(brought[name]))
-  t.alike(decommissioned, [{ tornDown: 'splectral' }, { tornDown: 'docs' }], 'its decommission: its components torn down, the last deployed first')
+  t.alike(decommissioned, [{ sent: ['splectral', 'boot/teardown', 'help'] }, { tornDown: 'splectral' }, { tornDown: 'docs' }], 'its decommission: the help viewer first, from its Splectral; then its components, the last deployed first')
   // every hook file ran: its command among those executed
   const ran = Object.entries(brought).filter(([, c]) => w.commands.includes(c.join(' '))).map(([n]) => n).sort()
   t.alike(ran, Object.keys(brought).sort(), 'every hook the solution brings was run here: one added without its place in this walk fails this')

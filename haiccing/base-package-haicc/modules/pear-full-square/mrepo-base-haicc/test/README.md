@@ -10,3 +10,7 @@ The tests of mrepo-base-haicc, a section per file, each test by its name.
 - goto: on from one shortcut at a time; what is left of the URI goes with the command
 - haicc/script: the lines, each a simple command, run where the URI points; the request waits for them
 - a node of the swarm by its unique URI: no position here, handed to dispatch where the mrepo has it active
+
+## `mrepos.test.js`
+
+- haicc/mrepos: the registry's mrepos, each its unique URI, its position from the mrepo asked through the links, its package, running or not; selected by an xpath

@@ -11,18 +11,19 @@ then against the packages, read from the sources.
 - **Its list**: the haicc component's packages (it fulfils the host's
   role), the solution last.
 - **Its hooks, file by file, line by line**: its `commission` (its
-  components deployed, its service initialised and
-  started), its `decommission` (its components torn down), its `boot`
+  components deployed, the help viewer installed in its Splectral and in
+  service, its service initialised and started), its `decommission` (the
+  help viewer, then its components torn down), its `boot`
   (the activations only), its `initialise` (its info, its `howtos`
   node), its `start` and `stop` (the door); its service state, `booted`;
   no `scripts/`. A hook file not named in the test fails it.
-- **The packages**: each listed, and each its commission deploys, has
-  its bundle in the sources; the eleven protocols the list provides.
+- **The packages**: each listed, and each its commission deploys or
+  installs (the help viewer's too), has its bundle in the sources; the eleven protocols the list provides.
 - **Every hook names what exists**: a protocol and an action a listed
   package provides.
 - **What its hooks do**: run with the listed packages' own actions, on a
-  minimal execution in memory, its components' deploys and teardowns
-  stood in for: the boot, the commission (the components before its
+  minimal execution in memory, its components' deploys and teardowns,
+  and the commands it sends on to its Splectral, stood in for: the boot, the commission (the components before its
   own `initialise`, no registry of its own), stop, shutdown, the
   decommission. Every hook file must have run.
 - **Nothing left closed by forgetting**: every protocol is opened by a

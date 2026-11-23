@@ -193,20 +193,29 @@ demo nothing runs is prose with code in it, and goes stale as prose does.
 
 ## Validation
 
-Before every commit:
+Before every commit, scoped to the change (the human, 2026-11-23: "a
+change made and tested, and a release built from it, remains valid;
+package scoped tests only, with a full test every so often"):
 
 - **A package that changed: its pre-release**: rebuilt, its `full` set
   run from its bundle when its content changed, the report written into
   `test-reports/` and committed with it. A module that changed: the
-  pre-release of every package that carries it.
-- **Everything**: every package rebuilt, refused unless every package's
-  report is current.
+  pre-release of the packages whose behaviour it changes, not of every
+  package that carries it. A package runs self-contained, its own copy:
+  a release built from a tested change stays valid.
+- **What the change touches end to end**: the boot's test, or the one
+  end-to-end script that covers it (`run.sh`, `splectral.sh`, ...); not
+  all of them.
+- **The full test, every so often** (overnight): every package's
+  pre-release, the strict release check (every package's report
+  current), the boot's test several times, every end-to-end script.
+  Before a milestone, too.
 - **The checks**: the READMEs, the code, every package against the
   package structure: no problems.
 - **The runtime or the repository code changed**: the boot's test
   several times; a race shows one run in a few. Nothing left running.
 - **Anything the command touches changed**: the `haicc` command end to
-  end. Containers made by the tests need a Docker daemon; none is left
+  end, the script that covers it. Containers made by the tests need a Docker daemon; none is left
   after.
 - **A package tests what it provides**, in a test of its own; where
   nothing is specific to it, a dummy that says so. A test that runs
@@ -216,14 +225,15 @@ Before every commit:
 - **Partial while changes are made**: not every build every time. A
   batch of changes, then one rebuild and what the changes touch: the
   changed packages' pre-releases, the checks; documentation alone, the
-  checks and the docs view. Everything before a milestone.
+  checks and the docs view. Everything in the full test.
 - **The implementation validation**: every pattern a package implements
   (its kind, a layer, hooks, a service, a continuation script) has a
   how-to naming it; one without fails the code check.
 - **A report certifies the content it was run on**: after a commit of
   generated files (the modules' copies, a dispatcher), the changed
-  packages' pre-releases again before the work is final; the strict
-  release check says every report current.
+  packages' pre-releases again before the work is final. A report left
+  stale by a module's copy alone waits for the full test; the strict
+  release check, every report current, is the full test's.
 - **A test waits for a process to end** (`kill -0`), not only for it to
   stop answering; nothing left running after a run.
 - **A test run's last lines are read**: an apostrophe in a test's title

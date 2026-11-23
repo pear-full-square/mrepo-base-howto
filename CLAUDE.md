@@ -80,9 +80,13 @@ history, and each package and module has its own repository).
 The rules are `base-docs-hdlc`'s "Validation"; here, how each is run.
 
 - A package's pre-release: `tools/bare tools/package-test.js <org>/<package>` (`haiccing/`, `splectral/`).
-- Everything: `tools/bare tools/release.js --strict`: every report
-  `current` (a report certifies the content it was run on:
-  `base-docs-hdlc`, "Validation").
+- **Scoped to the change** (`base-docs-hdlc`, "Validation"): the changed
+  packages' pre-releases, the checks, and the boot's test or the one
+  end-to-end script the change touches. A release built from a tested
+  change stays valid.
+- **The full test, every so often (overnight)**: every package's
+  pre-release, `tools/bare tools/release.js --strict` (every report
+  `current`), the boot's test several times, every end-to-end script.
 - The checks: `tools/bare tools/info-extract.js` (and `--files`),
   `tools/bare tools/code-check.js`.
 - The boot's test, several times:

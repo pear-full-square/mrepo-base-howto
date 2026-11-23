@@ -21,7 +21,12 @@ The workbench's part of the structure: the list of the packages the workbench mr
   components deployed, linked in it, `docs`
   (`haiccing/base-component-docs`) and `splectral`
   (`haiccing/base-package-splectral`), each commissioned by its own; then
-  its service initialised and started.
+  the help viewer in its Splectral, `help` (`haiccing/base-package-service`
+  deployed by Splectral, `splectral/base-component-help-viewer` installed
+  on it, initialised and started): its help view, reading the docs mrepo
+  by its unique URI; then its service initialised and started.
+- **`decommission`**, asked by its teardown: the help viewer torn down
+  from its Splectral, then `splectral`, then `docs`.
 - **At `initialise`**: its setup: its info extracted; the node `howtos`
   made in its `main`, its document `{"kind":"howtos"}`: a namespace, the
   root of the how-tos' unique URIs. An mrepo deployed below it, at

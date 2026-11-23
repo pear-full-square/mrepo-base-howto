@@ -25,7 +25,9 @@ docs mrepo: `haicc docs info/get <keywords>`.
   (`mrepos/`, the install's registry; `scripts/`). It deploys the others
   and takes commands at `.`: `haicc . <protocol>/<action>`.
   The one mrepo with no service: nothing upstream manages it.
-- **The docs mrepo**, `local/docs`: deployed in the boot mrepo (or by
+- **The docs mrepo**, `local/docs`, a fixed name in the base family: one
+  an install, always `docs`, so what reads it (the help viewer) finds it
+  by its unique URI wherever it is deployed. Deployed in the boot mrepo (or by
   the workbench, at `workbench/docs`), the install's documentation:
   every package in its store, built at its `initialise`, split on
   package, read with `info` in a package's context.
