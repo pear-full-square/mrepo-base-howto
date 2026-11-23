@@ -1,4 +1,4 @@
-# For the local agent: what a run is, and releases
+# For the local agent: who does what, a run, products, releases, Codeberg
 
 For the local agent (a Linux x86-64 machine with git, curl and tar; no
 Node.js needed). The task itself is the prompt in `local-note.md` ("The
@@ -7,6 +7,36 @@ executable: the boot is its bundle, run with Bare; the `haicc` command
 is an app run with Bare (`haiccing/base-app-haicc`), the sh scripts
 (`haiccing/base-linux-haicc`, installed by `haicc-install.sh`) its
 first step only.
+
+## Who does what
+
+Decided by the human (2026-11-24). The cloud session does the
+implementation in this repository: the code, the documentation, the
+packages' pre-releases. The local agent takes what it built from there
+to the world; its notes come from the cloud session's prompts, which
+say what was done and what needs testing.
+
+The local agent's responsibilities:
+
+1. **Build**: the sources from the commit the prompt names
+   (`tools/install.sh`, `tools/release.js`), and the checks.
+2. **Test**: the full test the prompt asks for, every check counted
+   and timed, nothing left running; a failure looked into, its cause
+   said.
+3. **The product repositories**: pushed from the commit tested, once
+   the tests passed whole ("Products", below).
+4. **The manual test** (to come): the human's own install set up for
+   them to try, and what they need to try it.
+5. **The release** (to come): the GitHub releases built from the
+   tested bundles ("Releases", below).
+6. **The Codeberg sync**: every organisation's repositories mirrored to
+   Codeberg after a push ("Codeberg", below).
+7. **The note**: each run's result in `local-note.md`, a section at the
+   top, committed alone to `main` and pushed.
+
+The local agent does not change the code or the documentation of the
+packages: what it finds, it reports in its note and proposes; the
+cloud session implements.
 
 ## What a run is
 
@@ -66,6 +96,14 @@ package, one at a time; a repository that does not exist is listed in
 the note, never created (the human creates them). Recorded in the note:
 each product's line, and its content checked against its folder.
 
+- `tools/packages.sh` clones each package's repository beside this one
+  unless told otherwise: run it with `PACKAGES=$(mktemp -d)`, removed
+  after, so no clones are left in the folder above.
+- `tools/products.sh` says "up to date" when the commit's split is in
+  the product's history already, even if its content was changed since
+  (as after the reset of 2026-11-22): the content check after the push
+  is what tells.
+
 ## Releases: created on the local machine
 
 Decided by the human (2026-11-13). The cloud session cannot create a
@@ -95,3 +133,28 @@ GitHub release; it can only push commits. So:
   fetches what you publish (`base-linux-haicc`'s README, "haicc sources
   download <org>"), so say exactly what you published and how you
   named it.
+
+## Codeberg: every organisation mirrored
+
+Every repository on GitHub is mirrored to the same-named owner on
+Codeberg, by the human's script `~/codeberg-sync.sh` on the local
+machine (not in this repository):
+
+```sh
+~/codeberg-sync.sh update      # the repositories not archived
+~/codeberg-sync.sh full        # archived ones too
+```
+
+- **The owners**: `jules-tenbos` (on Codeberg `julestenbos`),
+  `splectrum`, `splectral`, `bare-for-pear`, `pear-full-square`,
+  `haiccing`; one or more can be named after the mode.
+- **What it does**, per repository: a clone kept at `~/<owner>/<repo>`,
+  its origin pushing to GitHub and Codeberg; fetched; created on
+  Codeberg when missing (its description and visibility); every branch
+  and tag pushed, branches gone from GitHub removed there.
+- **When**: after the products are pushed, and after a release.
+- **Codeberg drops a connection now and then**: the script tries its
+  calls three times; a run that stops at "Codeberg token rejected" with
+  a JSON error before it was a dropped connection, not the token: run
+  it again.
+- **Recorded in the note**: its last line ("done", or what failed).
