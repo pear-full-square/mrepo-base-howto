@@ -55,6 +55,17 @@ haicc . crud/read swarms
   the cloud session's pre-release; `tools/bare tools/release.js
   --strict` says whether each is the one of the bundle just built.
 
+## Products: pushed from the local machine
+
+Decided by the human (2026-11-23: "local will push the product
+repositories"). At a milestone, when the prompt asks for it: after the
+run's tests passed whole, from the commit tested (`main` still that
+commit), `sh tools/products.sh <module>` for each module and `sh
+tools/packages.sh -m "<what changed>" <org>/<package>` for each
+package, one at a time; a repository that does not exist is listed in
+the note, never created (the human creates them). Recorded in the note:
+each product's line, and its content checked against its folder.
+
 ## Releases: created on the local machine
 
 Decided by the human (2026-11-13). The cloud session cannot create a

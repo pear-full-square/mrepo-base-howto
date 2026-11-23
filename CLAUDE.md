@@ -135,11 +135,13 @@ repository's and its tools'.
 
 ## Execution
 
-- **Product repositories:** a session attaches them and pushes: each
+- **Product repositories:** pushed by the local agent after its run,
+  from the commit it built and tested (the human, 2026-11-23): each
   module's (`sh tools/products.sh <module>...`, from `main`) and each
   package's (`sh tools/packages.sh -m "<what changed>" <org>/<package>...`).
-  Pushed when the human asks, or at a milestone agreed with them; not
-  after every change. New repositories are created by the human.
+  At a milestone agreed with the human, asked for in the local note
+  (`steps/2-rebuild/local-note.md`); not after every change, not from
+  the cloud session. New repositories are created by the human.
 - **Planning:** in `splectrum/roadmap-2` (the roadmap and the scheduled
   work), the direction in `base-docs-vision`; roadmap-1 transferred
   (2026-11-20), nothing reported back to it.

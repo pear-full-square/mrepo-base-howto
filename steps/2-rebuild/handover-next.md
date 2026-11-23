@@ -33,8 +33,10 @@ container. Without a daemon those tests fail, they do not skip.
   used for the work).
 - **`splectrum/roadmap-2`** is attached (`add_repo`, with push) and
   cloned beside this one; its commits as hdlc's "Branches".
-- **The product repositories** are pushed from here, so a cloud session
-  attaches them first (`add_repo`, with push): the modules, each
+- **The product repositories** are pushed by the local agent after its
+  run, from the commit it tested (the human, 2026-11-23: "local will
+  push the product repositories"), asked for in the local note; the
+  cloud session does not push them. The modules, each
   `pear-full-square/<module>` for a folder of `pear-full-square/`
   (`sh tools/products.sh <module>...`); the packages, each
   `haiccing/<package>` for a folder of `haiccing/`
