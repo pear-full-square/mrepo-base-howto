@@ -95,9 +95,11 @@ inside a filter, the other functions. The parent
   by the storage's structure type). Another way of storing, or of
   reaching what is stored, is another such reference; readers do not
   change.
-- **Built so far**: the two in `mycelium-xpath`; an mrepo's result of a
-  URI (`mrepo-base-xpath`, `result`). Every action still reads it to
-  its end (`query`).
+- **One way to query**: an mrepo's `query` hands back the result, and
+  nothing else does: there is no second form answering everything at
+  once. Who wants all of it reads the result to its end; the choice is
+  the reader's, not built into how it asks (`mycelium-xpath`;
+  `mrepo-base-xpath`, `query`).
 
 ## The node set
 

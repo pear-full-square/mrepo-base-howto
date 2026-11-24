@@ -110,7 +110,7 @@ test('read: a query: a * anywhere, filters on the nodes\' documents, a value ins
   t.alike(await read(exec, { uri: out("swarms/*[name='sam']") }), [{ uri: ['main', 'swarms/swarm-1'], value: { name: 'sam', size: 3, owner: { name: 'ann' } }, children: ['nodes'] }], 'each a node, as a plain read gives it')
   t.alike(await read(exec, { uri: out('swarms/swarm-1/owner/name') }), [{ uri: ['main', 'swarms/swarm-1/owner/name'], value: 'ann' }], 'inside a document: the value there')
   t.alike(await uris("swarms/*[name='nobody']"), [], 'nothing selected: empty')
-  t.alike(exec.entries.filter(e => e.level === 'verbose').map(e => e.event).slice(0, 4), ['segment', 'filter', 'batch', 'query'], 'measured: its rounds, the batch its node set was read with, steps of the action')
+  t.alike(exec.entries.filter(e => e.level === 'verbose').map(e => e.event).slice(0, 4), ['query', 'segment', 'filter', 'batch'], 'measured: the query, its rounds, the batch its result was read with, steps of the action')
   t.alike(await uris('swarms/*[2]'), ['swarms/swarm-2'], 'a position, from 1')
   await t.exception(read(exec, { uri: out('swarms/*[count(*)>1]') }), /not a function of this phase: count/)
   await t.exception(read(exec, { uri: out("swarms/*[ownerName='ann']") }), /bad filter/, 'a name in a filter by the URI\'s rules')

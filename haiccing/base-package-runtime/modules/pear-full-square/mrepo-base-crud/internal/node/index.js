@@ -98,7 +98,9 @@ async function documentOf (exec, node, at) {
 // shortcut: refused, said with the way across. -> [{ names, node, value? }]
 // (mode: how the URI is read, mrepo-base-xpath's: physical when none is said)
 export async function select (exec, p, { mode = 'physical' } = {}) {
-  const { found, stopped } = await query(exec, p.segments, { mode })
+  const result = await query(exec, p.segments, { mode })
+  const found = await result.all()
+  const stopped = result.stopped()
   if (stopped.length) {
     const [{ at, rest }] = stopped
     throw new Error(`${at} is a shortcut: a URI does not run through it (haicc ${at} haicc ${rest} ...)`)

@@ -1,6 +1,6 @@
 # Test report: haiccing/base-package-runtime
 
-The package passed its `full` set: all 24 units, 361 of 361 tests and 2469 of 2469 asserts.
+The package passed its `full` set: all 24 units, 361 of 361 tests and 2471 of 2471 asserts.
 
 | | |
 |---|---|
@@ -9,10 +9,10 @@ The package passed its `full` set: all 24 units, 361 of 361 tests and 2469 of 24
 | Result | passed |
 | Units | 24 of 24 passed |
 | Tests | 361 of 361 passed |
-| Asserts | 2469 of 2469 passed |
-| Run | 2026-11-24 12:00 UTC |
+| Asserts | 2471 of 2471 passed |
+| Run | 2026-11-24 14:12 UTC |
 | Bare | v1.36.0 |
-| Content | `32e045bfe47afb204a0be5c93fc9d3ee11d46aa583e28736eb8ac4c6ff74d310` |
+| Content | `07be452794779f6d3f8b9a719de00642c09a8095fc0b58ce3e829971264793da` |
 
 ## Units
 
@@ -27,7 +27,7 @@ The package passed its `full` set: all 24 units, 361 of 361 tests and 2469 of 24
 | `/test/modules/pear-full-square/mrepo-base-execute` | passed | 10 of 10 | 98 of 98 |
 | `/test/modules/pear-full-square/mrepo-base-info` | passed | 10 of 10 | 86 of 86 |
 | `/test/modules/pear-full-square/mrepo-base-protocol` | passed | 3 of 3 | 10 of 10 |
-| `/test/modules/pear-full-square/mrepo-base-request` | passed | 21 of 21 | 260 of 260 |
+| `/test/modules/pear-full-square/mrepo-base-request` | passed | 21 of 21 | 262 of 262 |
 | `/test/modules/pear-full-square/mrepo-base-runtime` | passed | 10 of 10 | 177 of 177 |
 | `/test/modules/pear-full-square/mrepo-base-service` | passed | 3 of 3 | 19 of 19 |
 | `/test/modules/pear-full-square/mrepo-base-xpath` | passed | 9 of 9 | 97 of 97 |
