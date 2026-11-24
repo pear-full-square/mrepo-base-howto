@@ -272,7 +272,7 @@ out=$(haicc --output . boot/teardown host --flags help 2>&1); has "$out" '"door"
 is "$(running | wc -l | tr -d ' ')" 3 "nothing of it executed: the host and its node still running"
 out=$(haicc --output host haicc node-1 crud/read . --flags help 2>&1); has "$out" '"door":"refused here: no protocol: crud' "through a chain: answered by the node, where it would run (no crud there)"
 out=$(haicc host crud/read swarms --flags nope 2>&1 >/dev/null); is $? 1 "a flag that is none: not run, exit 1"
-is "$out" "haicc: not run: no flag: nope (container, feedback, help, layer, log, logical, physical)" "said why"
+is "$out" "haicc: not run: no flag: nope (container, feedback, help, layer, log, physical)" "said why"
 out=$(haicc host --flags help -- crud/read swarms 2>&1 >/dev/null); is "$out" "haicc: not run: help: on the last command only (it rewrites the command it is on)" "help on a command that passes its words on: not the last, not run"
 out=$(haicc host crud/read swarms --flags help 2>&1); has "$out" "To run it: crud/read swarms" "by default its answer in natural language, a line each"
 hasnt "$out" '"topic":' "not the record (--raw for it)"
@@ -382,7 +382,7 @@ has "$out" '"run":false' "completed, not failed: not run"
 has "$out" '"event":"request.flag"' "each reason a warning in its log"
 hasnt "$out" '"event":"crud.read.' "nothing of the command executed"
 out=$(haicc --raw host --flags nope log=verbose -- crud/read . 2>&1); is "$?" "1" "a flag there is none of, before the --: that step not run, exit 1"
-has "$out" '"why":["no flag: nope (container, feedback, help, layer, log, logical, physical)"]' "said why"
+has "$out" '"why":["no flag: nope (container, feedback, help, layer, log, physical)"]' "said why"
 hasnt "$out" '"event":"crud.read.' "the command after it not sent on"
 out=$(haicc host --flags log=debug crud/read . 2>&1 >/dev/null); is "$?" "1" "a list not closed where a command follows: exit 1"
 has "$out" "no command after the flags of haicc (-- closes a flag list, the command follows it)" "said: only -- or the end of the command closes a list"
@@ -449,22 +449,22 @@ np=$(haicc --output . crud/read 'done/*/*/*/offset' --flags layer=request physic
 is "$np" "$((nl + 1))" "every record of it: as many as are stored (and the read itself, done since)"
 out=$(haicc --output . crud/read "done/*[$a2]" --flags layer=request 2>&1)
 has "$out" "\"uri\":[\"request\",\"done/*[$a2]\"],\"value\":{\"topic\":\"/request/done\",\"offset\":${a2#@offset=}," "an address an answer gave: read back, its record"
-out=$(haicc --output . crud/read "done/*[value/value/protocol='boot']/value/value/action" --flags layer=request logical 2>&1)
+out=$(haicc --output . crud/read "done/*[value/value/protocol='boot']/value/value/action" --flags layer=request 2>&1)
 has "$out" '"value":"deploy"' "by its data, a field of each: the boot protocol's requests"
-out=$(haicc --output . crud/read "done/*[${a2%=*}<${a2#@offset=}]/offset" --flags layer=request logical 2>&1)
+out=$(haicc --output . crud/read "done/*[${a2%=*}<${a2#@offset=}]/offset" --flags layer=request 2>&1)
 has "$out" '@offset=' "logical: from an offset back: a bound on @offset"
 hasnt "$out" "$a2" "below it: not the offset itself"
-out=$(haicc . crud/read 'done/*[last()]' --flags layer=request logical 2>&1)
+out=$(haicc . crud/read 'done/*[last()]' --flags layer=request 2>&1)
 has "$out" "a position is no part of a topic's query" "a position in a topic's query: refused, said: a query says where, never how many"
 # the physical log: what the physical side did for a request, in the xpath
 # layer, a record under the request's offset: each physical query its
 # logical ones stood for; committed at a checkpoint, apart from requests
-out=$(haicc --output . crud/read "log/*[$a2]" --flags layer=xpath logical 2>&1)
+out=$(haicc --output . crud/read "log/*[$a2]" --flags layer=xpath 2>&1)
 has "$out" "\"request\":${a2#@offset=}," "the xpath layer's log: a request's record, under its offset"
 has "$out" '"physical":"' "its physical queries, each with the logical one it stood for"
 has "$out" '"logical":"' "and what was asked"
-n1=$(haicc --output . crud/read 'log/*/offset' --flags layer=xpath logical 2>&1 | grep -o '@offset=[0-9]*' | wc -l | tr -d ' ')
-n2=$(haicc --output . crud/read 'log/*/offset' --flags layer=xpath logical 2>&1 | grep -o '@offset=[0-9]*' | wc -l | tr -d ' ')
+n1=$(haicc --output . crud/read 'log/*/offset' --flags layer=xpath 2>&1 | grep -o '@offset=[0-9]*' | wc -l | tr -d ' ')
+n2=$(haicc --output . crud/read 'log/*/offset' --flags layer=xpath 2>&1 | grep -o '@offset=[0-9]*' | wc -l | tr -d ' ')
 is "$n2" "$n1" "a read of the xpath layers is not logged there: the log does not feed itself"
 out=$(haicc --flags log=debug -- host crud/read . 2>&1 >/dev/null); is "$?" "2" "flags in front of the URI: refused, exit 2"
 has "$out" "flags follow a URI: they are that step's" "said"
