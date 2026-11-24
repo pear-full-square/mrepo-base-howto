@@ -52,7 +52,7 @@ for (const storage of ['p2p', 'git']) {
       t.alike([log[0].ok, log[0].puts, log[0].commits], [true, 0, 0])
       const told = (await sendForm(work, { command: ['crud/read', 'notes/hello', '--flags', 'log=verbose'] })).value
       t.alike(told.flags, { log: 'verbose' }, 'flags written with a command: in the form, as written')
-      t.alike(told.log.map(e => [e.level, e.event]), [['verbose', 'crud.read.segment'], ['verbose', 'crud.read.query'], ['info', 'request.metrics']], 'log=verbose: the action\'s steps too')
+      t.alike(told.log.map(e => [e.level, e.event]), [['verbose', 'crud.read.segment'], ['verbose', 'crud.read.batch'], ['verbose', 'crud.read.query'], ['info', 'request.metrics']], 'log=verbose: the action\'s steps too: its query\'s rounds, the batch its node set was read with')
       const odd = (await sendForm(work, { command: ['crud/read', 'notes/hello', '--flags', 'log=verbose', 'nope'] })).value
       t.alike([odd.output, 'error' in odd], [{ run: false, command: 'crud/read notes/hello --flags log=verbose nope', why: ['no flag: nope (container, feedback, help, layer, log, logical, physical)'] }, false], 'a flag that is none: nothing of it run; completed, not failed, said why')
       t.alike(odd.log.map(e => [e.level, e.event, e.reason]), [['warn', 'request.flag', 'no flag: nope (container, feedback, help, layer, log, logical, physical)']], 'the reason a warning in its log')

@@ -109,10 +109,22 @@ storage: the folders, the files' names.
 
 ```
 done/*                                  every record, the latest first
+done/*[last()]                          the latest
+done/*[position()>last()-100]           the latest 100
 done/*[@offset=1795400000002]           one record: its address
+done/*[@offset>1795400000002]           what arrived after a pointer
+done/*[@offset<1795400000002][position()>last()-50]   the 50 before: a page back
 done/*[value/value/protocol='crud']     by its data
 done/*[@offset=1795400000002]/value/value/output    a field of one
 ```
+
+- **The offset is an index**: its digits say the folder a record is in.
+  One record by its offset is a scan of that one folder; a bound says
+  where the reading starts or stops, and nothing outside is touched.
+- **A position is how many are read**: positions count in the order
+  records arrived, `[last()]` the latest; reading comes from the latest
+  back and stops at the count. Handed down when written right on the
+  records, after any bounds on `@offset`.
 
 - **A record's address** is `<topic>/*[@offset=<offset>]`: what an
   answer says, and what reads it back.
@@ -122,11 +134,10 @@ done/*[@offset=1795400000002]/value/value/output    a field of one
   `done/*[last()]/*[last()]/*[position()>last()-50]`). Physical is the
   reading without a flag while the logical one is being built. A layer
   that is a plain tree reads the same either way.
-- **Not built yet**: a position among a topic's records
-  (`done/*[last()]`, `done/*[position()<=50]`: refused, said); an
-  offset found by its digits without reading the batches before it (an
-  index); the node set handed to who asked before it is read to its
-  end.
+- **Not built yet**: a position after a filter on the data
+  (`done/*[value/value/protocol='crud'][last()]`) or counted from the
+  topic's start (`done/*[position()<=50]`): refused, said; the node set
+  handed to who asked before it is read to its end.
 
 ## Attributes
 

@@ -449,6 +449,11 @@ out=$(haicc --output . crud/read "done/*[$a2]" --flags layer=request logical 2>&
 has "$out" "\"uri\":[\"request\",\"done/*[$a2]\"],\"value\":{\"topic\":\"/request/done\",\"offset\":${a2#@offset=}," "an address an answer gave: read back, its record"
 out=$(haicc --output . crud/read "done/*[value/value/protocol='boot']/value/value/action" --flags layer=request logical 2>&1)
 has "$out" '"value":"deploy"' "by its data, a field of each: the boot protocol's requests"
+out=$(haicc --output . crud/read 'done/*[position()>last()-3]/offset' --flags layer=request logical 2>&1)
+is "$(printf '%s' "$out" | grep -o '@offset=[0-9]*' | wc -l | tr -d ' ')" 3 "logical: the latest three, by position: read from the latest back and no further"
+out=$(haicc --output . crud/read "done/*[${a2%=*}<${a2#@offset=}][last()]/offset" --flags layer=request logical 2>&1)
+is "$(printf '%s' "$out" | grep -o '@offset=[0-9]*' | wc -l | tr -d ' ')" 1 "the one before an offset: a bound then a position"
+hasnt "$out" "$a2" "below it: not the offset itself"
 out=$(haicc --flags log=debug -- host crud/read . 2>&1 >/dev/null); is "$?" "2" "flags in front of the URI: refused, exit 2"
 has "$out" "flags follow a URI: they are that step's" "said"
 
