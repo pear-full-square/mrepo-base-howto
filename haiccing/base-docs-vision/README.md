@@ -187,6 +187,51 @@ built):
 - The code does not follow the rule yet: under `p2p` storage it routes
   `runtime`, `packages` and `protocols` to the Corestore as well.
 
+## Request realms
+
+- **A request realm** (the human, 2026-11-24: "we can separate the
+  'request realms', have encapsulation"): a set of an mrepo's layers
+  through which requests of one kind arrive, are processed and are
+  answered, with its own consumer: an inbox and an outbox at least,
+  topics both. The mrepo's own (`inbox`, `request/...`, `outbox`) is
+  the first: the realm of managing the mrepo (deploy, service, crud),
+  consumed by its runtime.
+- **A platform's traffic in the platform's realm** (the human: "I think
+  the separate layer has merits in terms of 'process separation'. We
+  have two more 'platforms' on the way myctrans and myctral for
+  mycelium repo stuff. I am starting to think that we'd do better
+  putting it in a layer."): Splectral's exchange with a component (a
+  page asked, the data it needs, the page answered), then `myctral`'s
+  and `myctrans`'s: `<realm>/inbox`, `<realm>/outbox`, laid in by the
+  platform's package as any layer is. Managing the mrepo stays the
+  `request` realm's, as protocol actions.
+- **Process separation**: a realm is consumed by its own process. The
+  runtime executes one request at a time; a platform's traffic neither
+  waits behind the mrepo's management nor holds it up.
+- **Encapsulation**: a realm's history is its own: read, kept,
+  housekept and permitted apart from the others'.
+- **One pattern, written once**: every realm on the same mechanics: a
+  record under its offset, dropped with the one drop method, read past
+  a pointer, nothing removed, read with XPath as any topic. A platform
+  does not write a request loop of its own.
+- **One writer of the repository**: a realm's process drops records
+  into its folders; the runtime commits them, as it commits the inbox's.
+- **Non-local, seamlessly** (the human: "these 'request realms' will
+  probably get an rpc server in future so it becomes a pattern that can
+  be seamlessly non-local"): a realm's inbox and outbox are its whole
+  interface: a record in, its offset the confirmation; its response
+  out, under that offset. A sender uses two calls for it, to drop and
+  to wait for the answer, and nothing else of a realm. An RPC server in
+  front of a realm takes the same record from elsewhere and answers
+  from its outbox: the sender's calls the same, local or not.
+- **Where it stands**: built, the `request` realm on streaming layers,
+  every sender through the two calls (`mrepo-base-request`: `drop`,
+  `answered`). Next, with the log viewer redone: Splectral's exchange
+  with a component, today two folders beside its mrepo (a record by a
+  GUID, removed once taken), made its realm; the runtime committing any
+  realm's folders. Not built: `myctral`'s and `myctrans`'s realms; the
+  RPC server.
+
 ## Solutions
 
 The naming (the human, 2026-11-12; settled, not built):

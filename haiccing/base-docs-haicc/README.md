@@ -212,6 +212,15 @@ organisation of its own, beside haicc's own, `haiccing`.
   dropped into the node's inbox folder.
 - **log**: a node's completed requests, a record each, in a topic the
   node alone writes; a swarm's are read together at its master.
+- **realm** (a request realm): a set of an mrepo's layers through which
+  requests of one kind arrive and are answered, with its own consumer:
+  an inbox and an outbox, topics. The mrepo's own (`inbox`,
+  `request/...`, `outbox`), consumed by its runtime, is the first; a
+  platform's traffic gets the platform's (`base-docs-vision`, "Request
+  realms"; only the first is built).
+- **topic**: records in the order they arrived, each with its offset
+  (the milliseconds when it arrived, its identity there); an mrepo's
+  `inbox`, `outbox` and `request/done` are topics.
 - **haici**: human ai continuous improvement, findings from the request
   log, fed back to the HDLC; its protocol records feedback on a command
   (`--flags feedback <text>`), the request log its store.

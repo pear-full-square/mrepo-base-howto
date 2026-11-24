@@ -2,8 +2,8 @@
 
 What a query is in the base family: XPath over an mrepo, stopping at a shortcut, the hops across mrepos through haicc.
 
-A URI that selects is a query: standard XPath's forward part, built in
-phases. Within one mrepo a query walks its tree, nodes and the documents
+A URI that selects is a query: standard XPath's forward part (XPath
+2.0), built in phases. Within one mrepo a query walks its tree, nodes and the documents
 beside them, and stops where a shortcut leads to another mrepo. Going on
 from there is a hop, `haicc`'s: the rest of the query is sent to the
 mrepo the shortcut leads to. How a URI is written: the URI
@@ -26,12 +26,13 @@ Phase 1, built:
 | filter | a leaf is there; a leaf by a path | `*[name]`, `*[value/uri='main/host']` |
 | filter | `and`, `or`, `not()`, brackets; several in a row | `*[size>2 and name='sam'][state]` |
 | filter | a position, alone in its filter, from 1; the last | `*[2]`, `tags[last()]` |
-| function | `name()`, `starts-with()`, `contains()` | `*[starts-with(name,'s')]` |
+| filter | a position compared: `position()`, `last()`, `+` and `-` between numbers | `*[position()<=50]`, `*[position()>last()-50]` |
+| function | `name()`, `starts-with()`, `contains()` | `*[starts-with(name,'s')]`, `*[name()<'1795482773435']` |
 | value | a quoted text, a number; `@leaf` is `leaf` | `'sam'`, `3` |
 
-Refused, and said as such: descendants (`//`), the union (`|`),
-`position()` and a position joined with something else, the axes written
-out (`::`), a filter inside a filter, the other functions. The parent
+Refused, and said as such: descendants (`//`), the union (`|`), a bare
+number joined with something else, the axes written out (`::`), a filter
+inside a filter, the other functions. The parent
 (`..`) is not built: a query looks forward only.
 
 ## Its meaning
@@ -44,17 +45,25 @@ out (`::`), a filter inside a filter, the other functions. The parent
   that repeats: its key names every item, in order, a position picks
   one.
 - **A document's key in its URI form**: `publicKey` as `public-key`.
-- **Comparing**: a number as a number, an order (`<`, `>`) as a number;
-  anything else as text. A filter that compares several values holds
-  when one of them does.
-- **A position** is the n-th of the nodes the step selected under the
-  same parent, in the order they came.
+- **Comparing**, as XPath 2.0: with a number on a side, as numbers; two
+  texts as text, an order (`<`, `>`) too: names of one length that are
+  digits order as their numbers do. A filter that compares several
+  values holds when one of them does.
+- **A position** is the place of a node among those the step selected
+  under the same parent, in the order they came: alone in its filter
+  (`[2]`, `[last()]`), or compared (`[position()>last()-50]`: the last
+  50). A filter of positions and names alone reads no document: a range
+  of a folder costs its listing.
 
 ## Standard only
 
-- **XPath 1.0's forward part**, in phases; nothing that looks back or up.
-  A form outside the standard is not built: `starts-with()` and
-  `contains()` say what a wildcard in a value would.
+- **XPath 2.0's forward part**, in phases; nothing that looks back or
+  up. 2.0, not 1.0 (the human, 2026-11-24: "why not sticking with xpath
+  2?"): it is typed, as data with a schema is; it works on ordered
+  sequences, as a topic's records are; it orders text as text. What was
+  built to 1.0 is 2.0 too. A form outside the standard is not built:
+  `starts-with()` and `contains()` say what a wildcard in a value
+  would.
 - **A leaf in a filter** is a child holding a value: a document's key
   with a value under it. `@name` is accepted and means the same as
   `name`.

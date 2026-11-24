@@ -131,6 +131,13 @@ repository's and its tools'.
   scratchpad, waited for; no commit while it builds over the tree. One
   run at a time on `sources/`: a `haicc` test started while bundles are
   rebuilt hangs.
+- **The full test runs beside the work, not over it** (the human,
+  2026-11-24: "I don't mind that you run continuous background testing,
+  but organise it in a non-blocking way"): a committed state is tested
+  whole in a tree of its own (a git worktree with its own `sources/`
+  and `node_modules/`), in the background; the working tree stays free
+  and a commit waits only for the checks scoped to its change. What the
+  background test finds is fixed forward.
 - **Before a long run**: `tools/bare tools/release.js`, then each changed
   package's own test from its folder: a slip is found in seconds.
 - **A removal by a variable is refused** by a safety check: write it as
