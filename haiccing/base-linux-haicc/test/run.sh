@@ -449,11 +449,11 @@ out=$(haicc --output . crud/read "done/*[$a2]" --flags layer=request logical 2>&
 has "$out" "\"uri\":[\"request\",\"done/*[$a2]\"],\"value\":{\"topic\":\"/request/done\",\"offset\":${a2#@offset=}," "an address an answer gave: read back, its record"
 out=$(haicc --output . crud/read "done/*[value/value/protocol='boot']/value/value/action" --flags layer=request logical 2>&1)
 has "$out" '"value":"deploy"' "by its data, a field of each: the boot protocol's requests"
-out=$(haicc --output . crud/read 'done/*[position()>last()-3]/offset' --flags layer=request logical 2>&1)
-is "$(printf '%s' "$out" | grep -o '@offset=[0-9]*' | wc -l | tr -d ' ')" 3 "logical: the latest three, by position: read from the latest back and no further"
-out=$(haicc --output . crud/read "done/*[${a2%=*}<${a2#@offset=}][last()]/offset" --flags layer=request logical 2>&1)
-is "$(printf '%s' "$out" | grep -o '@offset=[0-9]*' | wc -l | tr -d ' ')" 1 "the one before an offset: a bound then a position"
+out=$(haicc --output . crud/read "done/*[${a2%=*}<${a2#@offset=}]/offset" --flags layer=request logical 2>&1)
+has "$out" '@offset=' "logical: from an offset back: a bound on @offset"
 hasnt "$out" "$a2" "below it: not the offset itself"
+out=$(haicc . crud/read 'done/*[last()]' --flags layer=request logical 2>&1)
+has "$out" "a position is no part of a topic's query" "a position in a topic's query: refused, said: a query says where, never how many"
 # the physical log: what the physical side did for a request, in the xpath
 # layer, a record under the request's offset: each physical query its
 # logical ones stood for; committed at a checkpoint, apart from requests

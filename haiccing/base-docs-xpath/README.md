@@ -137,12 +137,10 @@ storage: the folders, the files' names.
   written as attributes, its data by path:
 
 ```
-done/*                                  every record, the latest first
-done/*[last()]                          the latest
-done/*[position()>last()-100]           the latest 100
+done/*                                  its records, from the latest back
 done/*[@offset=1795400000002]           one record: its address
 done/*[@offset>1795400000002]           what arrived after a pointer
-done/*[@offset<1795400000002][position()>last()-50]   the 50 before: a page back
+done/*[@offset<1795400000002]           from there back
 done/*[value/value/protocol='crud']     by its data
 done/*[@offset=1795400000002]/value/value/output    a field of one
 ```
@@ -150,10 +148,11 @@ done/*[@offset=1795400000002]/value/value/output    a field of one
 - **The offset is an index**: its digits say the folder a record is in.
   One record by its offset is a scan of that one folder; a bound says
   where the reading starts or stops, and nothing outside is touched.
-- **A position is how many are read**: positions count in the order
-  records arrived, `[last()]` the latest; reading comes from the latest
-  back and stops at the count. Handed down when written right on the
-  records, after any bounds on `@offset`.
+- **A query says where, never how many** (the human, 2026-11-24: "I
+  wouldn't do the count in the xpath"): no position in a topic's query
+  (`done/*[last()]`, `done/*[position()<=50]`: refused, said). Who reads
+  the result takes as many as it wants; reading comes from the latest
+  back, a slice at a time, under the hood.
 
 - **A record's address** is `<topic>/*[@offset=<offset>]`: what an
   answer says, and what reads it back.
@@ -165,10 +164,9 @@ done/*[@offset=1795400000002]/value/value/output    a field of one
   `{ "reading": "logical" }`, its defining package's. With no setting,
   physical: the reading everywhere today, turned an mrepo at a time. A
   layer that is a plain tree reads the same either way.
-- **Not built yet**: a position after a filter on the data
-  (`done/*[value/value/protocol='crud'][last()]`) or counted from the
-  topic's start (`done/*[position()<=50]`): refused, said; the node set
-  handed to who asked before it is read to its end.
+- **Not built yet**: reading forward (from the earliest, or on from a
+  pointer); the result handed to who asks from outside a request before
+  it is read to its end.
 
 ## Attributes
 
