@@ -70,6 +70,24 @@ inside a filter, the other functions. The parent
 - **A name in a filter is a URI's**: lowercase, by the URI's rules; a
   document's key in its URI form, `[owner/public-key='k1']`.
 
+## The result
+
+- **A query hands back a result that is iterated**: the next node is
+  asked for, and fetched as the reading goes: the standard's iterator
+  form of an XPath result (`XPathResult`).
+- **It is where logical and physical meet**: whoever reads it sees the
+  logical side only, a sequence of nodes at their logical addresses.
+  Underneath it holds the node set, generates the physical queries that
+  fetch its slices, and runs them when the reading reaches the end of
+  the slice in hand. No reader sees a slice.
+- **How many a reader takes is the reader's own**: a page that shows a
+  hundred takes a hundred and stops; that has nothing to do with the
+  data layer's slices, and only the slices it took are fetched.
+- **Built so far**: the result inside an mrepo (`mrepo-base-xpath`,
+  `result`). Every action still reads it to its end (`query`). To come:
+  the same result for who asks from outside a request (a terminal, a
+  page), its next slice a request underneath.
+
 ## The node set
 
 - **A query answers a node set**: a data structure, logical: what was
