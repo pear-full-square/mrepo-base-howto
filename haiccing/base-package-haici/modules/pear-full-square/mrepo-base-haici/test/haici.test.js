@@ -17,8 +17,8 @@ test('feedback: recorded on an execution written for it: the command as understo
     feedback: 'recorded',
     on: 'crud/read swarms',
     id: '1795312345678',
-    read: 'crud/read done/17953/179531/1795312345678.json --flags layer=request',
-    answer: ['Feedback on crud/read swarms recorded: request 1795312345678.', 'To read it back: crud/read done/17953/179531/1795312345678.json --flags layer=request']
+    read: 'crud/read "done/*[@offset=1795312345678]" --flags layer=request',
+    answer: ['Feedback on crud/read swarms recorded: request 1795312345678.', 'To read it back: crud/read "done/*[@offset=1795312345678]" --flags layer=request']
   }, 'a fixed place each, and the answer in natural language')
   t.is((await feedback(exec, { uri: ['main', 'swarms'], args: ['x', 'crud'] })).on, 'crud/read swarms', 'the protocol alone: its default action')
   t.is((await feedback(exec, { uri: ['main', 'x'], args: ['x', 'crud/create', 'a b'], flags: { log: 'debug' } })).on, 'crud/create x "a b" --flags log=debug', 'its arguments as typed, its other flags kept')

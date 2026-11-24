@@ -14,7 +14,7 @@ haicc host crud/read swarms --flags feedback the list is empty, a swarm was expe
 # the same, asked directly: the text, then the command's <protocol>/<action> and arguments after the URI
 haicc host haici/feedback swarms "the list is empty" crud/read
 # read back: the record by the id answered, in the request layer
-haicc host crud/read done/<id>.json --flags layer=request
+haicc host crud/read "done/*[@offset=<id>]" --flags layer=request
 # all the feedback recorded there
 haicc host crud/read "done/*[value/value/protocol='haici']" --flags layer=request
 ```

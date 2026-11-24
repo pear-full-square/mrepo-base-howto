@@ -17,7 +17,7 @@ request's record is the store. Offered by `haiccing/base-package-haici`.
 ```
 haicc host crud/read swarms --flags feedback the list is empty, a swarm was expected
 haicc host haici/feedback swarms "the list is empty" crud/read
-haicc host crud/read done/<id>.json --flags layer=request
+haicc host crud/read "done/*[@offset=<id>]" --flags layer=request
 haicc host crud/read "done/*[value/value/protocol='haici']" --flags layer=request
 ```
 

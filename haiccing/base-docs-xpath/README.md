@@ -174,14 +174,19 @@ done/*[@offset=1795400000002]/value/value/output    a field of one
 
 - **A record's address** is `<topic>/*[@offset=<offset>]`: what an
   answer says, and what reads it back.
-- **A flag says for a command, a setting for an mrepo**:
-  `--flags logical` reads a topic so; `--flags physical` reads the layer
-  as it is stored (`done/17954/179540/1795400000002.json`,
-  `done/*[last()]/*[last()]/*[position()>last()-50]`). With neither, the
-  mrepo's setting says: its runtime config `/runtime/xpath.json`,
-  `{ "reading": "logical" }`, its defining package's. With no setting,
-  physical: the reading everywhere today, turned an mrepo at a time. A
-  layer that is a plain tree reads the same either way.
+- **Logical is the reading when nothing is said** (the human,
+  2026-11-24: "turn the default to logical"): a topic is read as its
+  records, and a path of its storage is refused there, said.
+  `--flags physical` reads the layer as it is stored
+  (`done/17954/179540/1795400000002.json`,
+  `done/*[last()]/*[last()]/*[position()>last()-50]`): for looking at
+  the storage itself. An mrepo can be set to it: its runtime config
+  `/runtime/xpath.json`, `{ "reading": "physical" }`, its defining
+  package's; `--flags logical` then says for a command. A layer that is
+  a plain tree reads the same either way.
+- **What a command writes to is addressed as stored**: the reading is
+  `crud/read`'s; the commands that change a layer take its paths as
+  they are.
 - **The runtime's own reads go through it**: first the inbox after its
   pointer, ascending (`mrepo-base-request`, `arriving`); its other
   topics to follow.

@@ -5,7 +5,7 @@ import { place, select } from '../../internal/node/index.js'
 
 // log: in select (../../internal/node/index.js): each node; the query's steps in mrepo-base-xpath
 // (how the URI is read: its flags say, logical, a topic as its records, or
-// physical, as its layer is stored; none: the mrepo's setting)
+// physical, as its layer is stored; none: the mrepo's setting; no setting: logical)
 export async function read (exec, { uri, flags = {} }) {
   return (await select(exec, place(uri), { mode: modeOf(flags, await readingOf(exec)) })).map(s => s.node)
 }
