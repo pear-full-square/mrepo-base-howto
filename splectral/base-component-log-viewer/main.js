@@ -37,6 +37,7 @@ const UNITS = {
   "/test/modules/pear-full-square/mycelium-value-avro": () => Promise.all([import("./modules/pear-full-square/mycelium-value-avro/test/avro.test.js")]),
   "/test/modules/pear-full-square/mycelium-value-json": () => Promise.all([import("./modules/pear-full-square/mycelium-value-json/test/json.test.js")]),
   "/test/modules/pear-full-square/mycelium-xpath": () => Promise.all([import("./modules/pear-full-square/mycelium-xpath/test/query.test.js"), import("./modules/pear-full-square/mycelium-xpath/test/xpath.test.js")]),
+  "/test/modules/pear-full-square/mycelium-xpath-physical": () => Promise.all([import("./modules/pear-full-square/mycelium-xpath-physical/test/physical.test.js")]),
   "/test/modules/pear-full-square/p2p-mrepo": () => Promise.all([import("./modules/pear-full-square/p2p-mrepo/test/contract.test.js"), import("./modules/pear-full-square/p2p-mrepo/test/local.test.js"), import("./modules/pear-full-square/p2p-mrepo/test/mrepo.test.js")]),
   "/test/modules/pear-full-square/p2p-replicate": () => Promise.all([import("./modules/pear-full-square/p2p-replicate/test/replicate.test.js")]),
   "/test/modules/pear-full-square/p2p-store": () => Promise.all([import("./modules/pear-full-square/p2p-store/test/store.test.js")]),

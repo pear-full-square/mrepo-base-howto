@@ -424,6 +424,16 @@ has "$out" '"uri":["request","done/' "the flag at the step: held for the command
 is "$(haicc --output . crud/read 'done/*' 2>&1)" '[]' "without the flag: main, where there is no done"
 out=$(haicc --output host crud/read 'done/*/*/*' --flags layer=request 2>&1)
 has "$out" '"uri":["request","done/' "through a shortcut: the host's records, the routing still in main"
+# a batch, read as the layer is stored: the latest folder, the latest of it,
+# by positions; then the ones before an offset, by name: no record opened
+# to choose them (each record's offset asked: a record's own output may
+# hold other records)
+out=$(haicc --output . crud/read 'done/*[last()]/*[last()]/*[position()>last()-2]/offset' --flags layer=request 2>&1)
+is "$(printf '%s' "$out" | grep -o 'done/[0-9]*/[0-9]*/[0-9]*\.json/offset' | wc -l | tr -d ' ')" 2 "a batch: the latest two records of the latest folder, by position"
+last=$(printf '%s' "$out" | grep -o 'done/[0-9]*/[0-9]*/[0-9]*\.json' | tail -1); name=${last##*/}; folder=${last%/*}
+out=$(haicc --output . crud/read "$folder/*[name()<'$name'][position()>last()-1]/offset" --flags layer=request 2>&1)
+is "$(printf '%s' "$out" | grep -o "$folder/[0-9]*\.json/offset" | wc -l | tr -d ' ')" 1 "the batch before an offset: by its name, in its folder"
+hasnt "$out" "$name" "the offset itself not in it"
 out=$(haicc --flags log=debug -- host crud/read . 2>&1 >/dev/null); is "$?" "2" "flags in front of the URI: refused, exit 2"
 has "$out" "flags follow a URI: they are that step's" "said"
 

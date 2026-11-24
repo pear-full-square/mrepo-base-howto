@@ -70,6 +70,26 @@ inside a filter, the other functions. The parent
 - **A name in a filter is a URI's**: lowercase, by the URI's rules; a
   document's key in its URI form, `[owner/public-key='k1']`.
 
+## The node set
+
+- **A query answers a node set**: a data structure, logical: what was
+  asked, where it has read to, and what its storage is. It travels as
+  it is.
+- **No data until it is read**: its data is loaded a batch at a time.
+- **Each batch by a physical query**: the query's text for the tree as
+  it is stored, generated from the node set by its storage's structure
+  type (`mycelium-xpath-physical`), executed by the same engine. The
+  node set is where logical becomes physical, and each physical query
+  is in the request's log (`batch`: the logical query, from where, the
+  physical query, how many came).
+- **A structure type a way of storing**: `tree`, a plain tree read as
+  it is: its physical query is the logical one, its answer one batch.
+  Built. To come: a streaming layer's records by their offsets
+  (`offset-files`), batches of 50, read from the latest back; then the
+  logical reading of a topic, its storage hidden.
+- **Every action reads it to its end** today: what a command answers is
+  unchanged.
+
 ## Attributes
 
 An attribute is a leaf: a field holding one value, written `@name`. It
