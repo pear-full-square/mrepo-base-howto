@@ -1,7 +1,11 @@
 # /request
 
 The requests, as they move. Non-atomic. A request is one document,
-`<key>.json`, in one of the layers at a time; each move a commit.
+named by its offset (13 digits: the milliseconds when it arrived), in
+one of the layers at a time, the same name in each; each move a commit.
+`done` only grows: its documents are kept in folders by the offset's
+digits, `done/17953/179531/<offset>.json` (its `.layer.json`:
+`stream`).
 
 | layer | |
 |---|---|

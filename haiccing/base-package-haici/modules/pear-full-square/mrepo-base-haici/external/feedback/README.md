@@ -32,8 +32,9 @@ each, what the `haicc` command prints (the record with `--raw`).
 
 - **The request log is the store** (the team, 2026-11-20): it writes
   nothing; its request's record holds the text and the command (its
-  arguments) and its answer, in `request/done/<id>.json` once done, read
-  with `layer=request`.
+  arguments) and its answer, in `request/done` once done, under its
+  offset in that layer's folders
+  (`done/17953/179531/<id>.json`), read with `layer=request`.
 - **Nothing of the command executed**, nor checked: feedback can be
   given on anything that exists as a command, one the door would refuse
   too.

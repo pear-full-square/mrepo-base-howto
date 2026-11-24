@@ -34,7 +34,7 @@ bare base-component-boot.bundle --work=<folder> --sources=folder:<sources>
 ## Steps
 
 The invocation is a request from the start, `boot deploy boot`, with the
-command as typed and a GUID. Each step's outcome is logged in it.
+command as typed and its offset. Each step's outcome is logged in it.
 
 1. **The boot mrepo built** the first time into `<work>/mrepos/boot/`, as
    any mrepo is: this component's list fetched into the work folder's

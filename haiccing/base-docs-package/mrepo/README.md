@@ -187,7 +187,11 @@ configuration, audit, metrics, events, state.
 ## A request
 
 A record, as an onion: a form (the request) in an envelope (where it is
-going). Its key, a GUID, names its document in every layer.
+going). Its offset, the milliseconds since the epoch when it arrived
+at the mrepo (given as it is dropped into the inbox, never two the
+same; the mrepo's own requests from the same clock), is its one
+identity there: on the form's record and its envelope, and the name of
+its document in every layer, 13 digits.
 
 ```json
 {
@@ -238,7 +242,13 @@ Outside, a URI is one segment, as it is written. What an action is
 about, when that is not where it is executed, is an argument: `runtime/run . packages/<org>/<package>/test/validate`.
 
 Its way: `inbox` → `request/pending/default` → `request/execute` →
-`request/done`, and back through the `outbox`. Order is the commit chain.
+`request/done`, and back through the `outbox`. The inbox is taken in
+first come, first served, by a pointer to the last one taken; the
+queue in the order requests were queued. The `inbox`, the `outbox` and
+`request/done` only grow: streaming layers, a record under its offset
+in folders by its digits (`<layer>/17953/179531/<offset>.json`), their
+natural order the order requests arrived. A query reads them as they
+are stored: `done/*/*/*[value/value/protocol='boot']`.
 Requests are checked at the inbox, and again as they execute.
 
 ## Deploying an mrepo

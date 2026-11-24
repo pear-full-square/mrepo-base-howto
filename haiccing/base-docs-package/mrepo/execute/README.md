@@ -1,6 +1,6 @@
-# /execute/<key>/<target>
+# /execute/<offset>/<target>
 
-Execution branches: a request's own, by its key, holding its work until it is squashed into its target.
+Execution branches: a request's own, by its offset, holding its work until it is squashed into its target.
 
 A request is processed on branches of its own, never in a shared place.
 Each is made from its target's head, squashed into that target only,
