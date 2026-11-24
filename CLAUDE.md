@@ -155,7 +155,11 @@ repository's and its tools'.
   package's (`sh tools/packages.sh -m "<what changed>" <org>/<package>...`).
   At a milestone agreed with the human, asked for in the local note
   (`steps/2-rebuild/local-note.md`); not after every change, not from
-  the cloud session. New repositories are created by the human.
+  the cloud session. New repositories are created by the human: a
+  request for one always comes with its name and its description, each
+  written so it can be copied as it is (the human, 2026-11-24: "requests
+  for new repositories always need descriptions that can be copied"):
+  the description its `package.json`'s.
 - **Planning:** in `splectrum/roadmap-2` (the roadmap and the scheduled
   work), the direction in `base-docs-vision`; roadmap-1 transferred
   (2026-11-20), nothing reported back to it.
