@@ -1,8 +1,8 @@
 {
   "package": "haiccing/base-package-runtime",
-  "content": "7760595aa951b36d620858280a7a429959d11619bdb0d4a4734977d389e14227",
+  "content": "49ccbeffd0e1b9399a9c986860c78e88d41089fc9451b1eab9766209505ef680",
   "bare": "v1.36.0",
-  "date": "2026-11-24T10:13:13.210Z",
+  "date": "2026-11-24T04:53:02.795Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -75,12 +75,12 @@
       "unit": "/test/modules/pear-full-square/mrepo-base-crud",
       "ok": true,
       "tests": {
-        "passed": 10,
-        "total": 10
+        "passed": 9,
+        "total": 9
       },
       "asserts": {
-        "passed": 98,
-        "total": 98
+        "passed": 80,
+        "total": 80
       },
       "failures": []
     },
@@ -131,8 +131,8 @@
         "total": 21
       },
       "asserts": {
-        "passed": 260,
-        "total": 260
+        "passed": 254,
+        "total": 254
       },
       "failures": []
     },
@@ -144,8 +144,8 @@
         "total": 10
       },
       "asserts": {
-        "passed": 177,
-        "total": 177
+        "passed": 174,
+        "total": 174
       },
       "failures": []
     },
@@ -166,12 +166,12 @@
       "unit": "/test/modules/pear-full-square/mrepo-base-xpath",
       "ok": true,
       "tests": {
-        "passed": 9,
-        "total": 9
+        "passed": 6,
+        "total": 6
       },
       "asserts": {
-        "passed": 100,
-        "total": 100
+        "passed": 55,
+        "total": 55
       },
       "failures": []
     },
@@ -244,25 +244,12 @@
       "unit": "/test/modules/pear-full-square/mycelium-xpath",
       "ok": true,
       "tests": {
-        "passed": 22,
-        "total": 22
+        "passed": 21,
+        "total": 21
       },
       "asserts": {
-        "passed": 152,
-        "total": 152
-      },
-      "failures": []
-    },
-    {
-      "unit": "/test/modules/pear-full-square/mycelium-xpath-physical",
-      "ok": true,
-      "tests": {
-        "passed": 11,
-        "total": 11
-      },
-      "asserts": {
-        "passed": 77,
-        "total": 77
+        "passed": 141,
+        "total": 141
       },
       "failures": []
     },
@@ -309,12 +296,12 @@
       "unit": "/test/modules/pear-full-square/pkgm-base-check",
       "ok": true,
       "tests": {
-        "passed": 25,
-        "total": 25
+        "passed": 24,
+        "total": 24
       },
       "asserts": {
-        "passed": 79,
-        "total": 79
+        "passed": 72,
+        "total": 72
       },
       "failures": []
     }

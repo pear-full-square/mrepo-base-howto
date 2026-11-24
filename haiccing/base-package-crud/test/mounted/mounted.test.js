@@ -74,8 +74,7 @@ test('its config, value by value', (t) => {
   }
   t.alike([cfg.actions.create.target, cfg.actions.create.args], [true, ['value?']], 'create: a target needed, its value optional')
   t.alike([cfg.actions.delete.target, cfg.actions.delete.args], [true, ['recurse?']], 'delete: a target needed, recurse optional')
-  t.alike(Object.keys(cfg.actions.read).sort(), ['args', 'description', 'uris'], 'read: no target: the root too')
-  t.alike(cfg.actions.read.args, ['nodeset?'], 'read: a node set, optional: its next slice')
+  t.alike(Object.keys(cfg.actions.read).sort(), ['description', 'uris'], 'read: nothing else: the root too')
 })
 
 test('create, read, delete: a node made with its path, read, removed; each idempotent', async (t) => {

@@ -1,7 +1,7 @@
 // node: a node as it is stored, and the nodes a URI selects (README.md
 // beside it). Paths are written relative, from the mrepo's root.
 import { segmented, joined, stepsOf, selects, ROOT } from 'mycelium-uri'
-import { query, result, shortcutsAt, NODE } from 'mrepo-base-xpath'
+import { query, shortcutsAt, NODE } from 'mrepo-base-xpath'
 import { registry, schemasOf, isSingle, unfold, plain } from 'mycelium-value-avro'
 
 // A node is a folder holding its document under this name (NODE, the
@@ -96,12 +96,13 @@ async function documentOf (exec, node, at) {
 // document (a record in a layer). A folder without a document is not
 // among them. A URI does not run through a
 // shortcut: refused, said with the way across. -> [{ names, node, value? }]
-// What the query found, each as this protocol answers it: a node as
-// nodeAt gives it; a value inside a document, { uri, value }; a file,
-// { uri, value }, its value the file's document (a record in a layer). A
-// folder without a document is not among them.
-// log: each node, at debug
-async function answersOf (exec, p, found) {
+// (mode: how the URI is read, mrepo-base-xpath's: physical when none is said)
+export async function select (exec, p, { mode = 'physical' } = {}) {
+  const { found, stopped } = await query(exec, p.segments, { mode })
+  if (stopped.length) {
+    const [{ at, rest }] = stopped
+    throw new Error(`${at} is a shortcut: a URI does not run through it (haicc ${at} haicc ${rest} ...)`)
+  }
   const out = []
   for (const f of found) {
     const names = f.at === ROOT ? [] : f.at.split('/')
@@ -113,33 +114,6 @@ async function answersOf (exec, p, found) {
     if (node) out.push({ names, node })
   }
   return out
-}
-const through = stopped => {
-  const [{ at, rest }] = stopped
-  return new Error(`${at} is a shortcut: a URI does not run through it (haicc ${at} haicc ${rest} ...)`)
-}
-
-// select(exec, p): what the URI selects, all of it, an array (nothing
-// there: empty, not an error). A URI does not run through a shortcut:
-// refused, said with the way across. -> [{ names, node, value? }]
-// (mode: how the URI is read, mrepo-base-xpath's: physical when none is said)
-// log: its query, in mrepo-base-xpath; each node, in answersOf
-export async function select (exec, p, { mode = 'physical' } = {}) {
-  const { found, stopped } = await query(exec, p.segments, { mode })
-  if (stopped.length) throw through(stopped)
-  return answersOf(exec, p, found)
-}
-
-// slice(exec, p): one slice of what the URI selects, with its node set as
-// data: what one answer carries of a result that may have more.
-// (nodeset: a node set's data from who holds it: its next slice)
-// -> { nodeset, nodes: [{ names, node, value? }] }
-// log: its batches, in mrepo-base-xpath; each node, in answersOf
-export async function slice (exec, p, { mode = 'physical', nodeset = null } = {}) {
-  const r = await result(exec, p.segments, { mode, nodeset })
-  const found = await r.slice()
-  if (r.stopped().length) throw through(r.stopped())
-  return { nodeset: r.nodeset(), nodes: await answersOf(exec, p, found) }
 }
 
 export { dir as folderOf, inside }

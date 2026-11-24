@@ -72,31 +72,32 @@ inside a filter, the other functions. The parent
 
 ## The result
 
-- **A query hands back a result that is iterated**: the next node is
-  asked for, and fetched as the reading goes: the standard's iterator
-  form of an XPath result (`XPathResult`).
-- **It is where logical and physical meet**: whoever reads it sees the
-  logical side only, a sequence of nodes at their logical addresses.
-  Underneath it holds the node set, generates the physical queries that
-  fetch its slices, and runs them when the reading reaches the end of
-  the slice in hand. No reader sees a slice.
+- **A logical query hands back an `XPathResult`**: it says what was
+  asked and how that is translated to its storage (its metadata: the
+  logical query, the storage's structure, the moment it is fixed at,
+  how far it is read, the physical query it is at).
+- **It is read through an `XPathIterator`**: the next node is asked
+  for, each at its logical address: the standard's iterator form.
+- **More is fetched behind the scenes**: when the reading crosses the
+  end of what the result holds, the result gets its next slice itself,
+  through a reference it holds privately (the human, 2026-11-24: "the
+  XPathResult contains a reference to programmatically request more").
+  No reader sees a slice, and none asks for one.
+- **XPath's logic is internal**: getting more is a call inside the
+  program that holds the result, never a request record (the human,
+  2026-11-24: "XPath logic is internal, not through data request
+  records").
 - **How many a reader takes is the reader's own**: a page that shows a
   hundred takes a hundred and stops; that has nothing to do with the
   data layer's slices, and only the slices it took are fetched.
-- **The same result for who asks from outside a request**: an answer
-  carries the node set's metadata and one slice of its nodes; who asked
-  iterates it as any result, and at the end of the slice in hand the
-  next is a request underneath: the same read, given the metadata. The
-  node set has one id, the request that made it, and every slice is
-  answered under it. Nothing is kept where the data is between two
-  slices: the metadata says where the reading is (the human,
-  2026-11-24: "the nodeset structure describes what it (should) hold
-  in metadata and the request is fulfilled by filling it up").
-- **Built so far**: the result inside an mrepo (`mrepo-base-xpath`,
-  `result`); a logical read of a topic answering its node set a slice
-  at a time (`crud/read`), and the result held by who asked
-  (`mycelium-xpath`, `answered`). Every other action still reads it to
-  its end (`query`). To come: a terminal and a page asking through it.
+- **Simple, and extended in one place**: how more is fetched is given
+  when the result is made (today a physical query on the stored tree,
+  by the storage's structure type). Another way of storing, or of
+  reaching what is stored, is another such reference; readers do not
+  change.
+- **Built so far**: the two in `mycelium-xpath`; an mrepo's result of a
+  URI (`mrepo-base-xpath`, `result`). Every action still reads it to
+  its end (`query`).
 
 ## The node set
 

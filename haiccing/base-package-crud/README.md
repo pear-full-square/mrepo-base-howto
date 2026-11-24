@@ -33,7 +33,7 @@ nothing.
 | action | offered at | target | arguments |
 |---|---|---|---|
 | `create` | anywhere in `main` | needed | the node's document, JSON, optional: `{}` |
-| `read` | anywhere in `main` | `.` reads the layer itself | a node set, as an earlier answer carried it, optional: its next slice |
+| `read` | anywhere in `main` | `.` reads the layer itself | none |
 | `delete` | anywhere in `main` | needed | `recurse`, optional |
 
 There is no `update`: asked for, it is answered with the actions there
