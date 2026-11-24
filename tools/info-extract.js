@@ -6,7 +6,7 @@
 //   tools/bare tools/info-extract.js --files
 // The mrepos: by default each component's (base-component-boot,
 // base-component-haicc, base-component-docs), its list from its
-// mrepo/packages/layer.json, its bundles from sources/ here. The out folder
+// mrepo/packages/.layer.json, its bundles from sources/ here. The out folder
 // (default sources/info/<component>/): the pages, index.json and
 // problems.json. --files: the rules on this repository's own READMEs (every
 // organisation's packages, the modules they carry), by file. Exit 1 when there
@@ -24,7 +24,7 @@ const args = process.argv.slice(2)
 const flag = (n, d) => args.find(a => a.startsWith(`--${n}=`))?.slice(n.length + 3) ?? d
 // (a schema a package carries: its own, its modules')
 const SCHEMA = /^\/(modules\/[^/]+\/[^/]+\/)?schemas\/[^/]+\.json$/
-const WANTED = k => k.endsWith('/README.md') || k === '/package.json' || k === '/mrepo/packages/layer.json' || k === '/modules/third-party.json' || SCHEMA.test(k)
+const WANTED = k => k.endsWith('/README.md') || k === '/package.json' || k === '/mrepo/packages/.layer.json' || k === '/modules/third-party.json' || SCHEMA.test(k)
 
 if (args.includes('--files')) {
   // every package here, and every module a package carries
@@ -54,7 +54,7 @@ const read = (pkg, documented = false) => {
 const offered = () => readdirSync(sources).filter(o => existsSync(join(sources, o, 'manifest.json'))).flatMap(o => Object.keys(JSON.parse(readFileSync(join(sources, o, 'manifest.json'))).packages ?? {})).sort()
 let all = 0
 for (const c of components) {
-  const def = JSON.parse(readFileSync(join(dev, c, 'mrepo', 'packages', 'layer.json')))
+  const def = JSON.parse(readFileSync(join(dev, c, 'mrepo', 'packages', '.layer.json')))
   const list = def.packages
   // documents: store: every other package, documented only (here, the
   // sources stand for an install's store: all of them)

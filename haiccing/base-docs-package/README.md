@@ -114,7 +114,7 @@ with `info/get` by its keywords. Its shape:
    folder's name. A README with no folder below has no menu.
 7. **Included packages, `## Included packages`**, after the menu, in the
    README of a package that defines an mrepo only: the packages of its
-   list (`mrepo/packages/layer.json`) but itself, in deploy order, each a
+   list (`mrepo/packages/.layer.json`) but itself, in deploy order, each a
    link to its sibling, its name the label and `../<package>/` the
    target, as they stand beside each other
    here and in an mrepo's `packages/<org>/`.

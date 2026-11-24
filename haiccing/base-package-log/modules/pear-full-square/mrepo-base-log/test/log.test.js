@@ -1,4 +1,5 @@
 import test from 'brittle'
+import { outboxOf } from 'mrepo-base-request'
 import { mkdtempSync, mkdirSync, writeFileSync } from 'bare-fs'
 import { join } from 'bare-path'
 import { tmpdir } from 'bare-os'
@@ -8,8 +9,10 @@ const dir = () => { const d = mkdtempSync(join(tmpdir(), 'log-')); mkdirSync(joi
 // An execution as an action sees it: the mrepo's folder, its log.
 const execution = dir => ({ runtime: { dir }, entries: [], log (level, event, data = {}) { this.entries.push({ level, event, ...data }) } })
 // A completed request, as an mrepo's outbox holds it.
-const completed = (key, command, done, { sent = done, error = null } = {}) => ({ topic: '/outbox', key, timestamp: done, headers: {}, value: { topic: '/haicc/terminal', key, timestamp: sent, headers: {}, value: { command: command.split(' '), protocol: command.split('/')[0], action: 'x', ...(error ? { error } : { output: {} }) } } })
-const drop = (d, record) => writeFileSync(join(d, 'outbox', `${record.key}.json`), JSON.stringify(record) + '\n')
+// (its offset: its one identity, its file's name in the outbox, a streaming folder)
+const O = Object.fromEntries(['k1', 'k2', 'm1', 'a1', 'a2', 'a3', 'b1', 's1', 't1'].map((k, i) => [k, 1795312345601 + i]))
+const completed = (key, command, done, { sent = done, error = null } = {}) => ({ topic: '/outbox', offset: O[key], timestamp: done, headers: {}, value: { topic: '/haicc/terminal', offset: O[key], timestamp: sent, headers: {}, value: { command: command.split(' '), protocol: command.split('/')[0], action: 'x', ...(error ? { error } : { output: {} }) } } })
+const drop = (d, record) => outboxOf(d).put(record.offset, record)
 // The swarm as a node's rns would say it: a master and two nodes, each where it lives.
 const swarmOf = (uri, folders) => ({
   status: async () => ({ joined: true, uri, role: uri === 'swarm-1/master' ? 'master' : 'node', master: 'swarm-1/master' }),
@@ -17,7 +20,7 @@ const swarmOf = (uri, folders) => ({
 })
 
 test('a completed request made a log record: its request, when, how long, who asked, the command, how it ended', (t) => {
-  t.alike(recordOf(completed('k1', 'crud/read .', '2026-11-21T00:00:01.500Z', { sent: '2026-11-21T00:00:01.000Z' })), { key: 'k1', timestamp: '2026-11-21T00:00:01.500Z', value: { request: 'k1', sent: '2026-11-21T00:00:01.000Z', ms: 500, from: '/haicc/terminal', command: 'crud/read .', ok: true, error: null } })
+  t.alike(recordOf(completed('k1', 'crud/read .', '2026-11-21T00:00:01.500Z', { sent: '2026-11-21T00:00:01.000Z' })), { key: String(O.k1), timestamp: '2026-11-21T00:00:01.500Z', value: { request: String(O.k1), sent: '2026-11-21T00:00:01.000Z', ms: 500, from: '/haicc/terminal', command: 'crud/read .', ok: true, error: null } })
   t.alike(recordOf(completed('k2', 'boot/deploy x', '2026-11-21T00:00:02.000Z', { error: 'missing argument: package' })).value.error, 'missing argument: package', 'one that failed: its error')
   t.is(recordOf({ key: 'layer', value: { mode: 'non-atomic' } }), null, 'what is no completed record: none')
   t.is(recordOf({ key: 'k', value: { value: { command: ['x'] } } }), null, 'not completed yet: none')
@@ -41,7 +44,7 @@ test('each node\'s log a topic of its own, written from its outbox; synced lazil
   t.alike(all.nodes, [{ uri: 'swarm-1/master', length: 1 }, { uri: 'swarm-1/node-1', length: 2 }, { uri: 'swarm-1/node-2', length: 1 }], 'log/read at the master: every node\'s log')
   t.alike(all.records.map(r => [r.node, r.command, r.ok]), [['swarm-1/master', 'rns/master . swarm-1', true], ['swarm-1/node-1', 'service/start', true], ['swarm-1/node-2', 'crud/create x', false], ['swarm-1/node-1', 'crud/read .', true]], 'in one view, by time')
   t.alike((await read(execution(m), { args: ['swarm-1/node-2'] })).records.map(r => [r.node, r.offset, r.error]), [['swarm-1/node-2', 0, 'x exists']], 'filtered by node')
-  t.alike((await read(execution(m), { args: ['2'] })).records.map(r => r.request), ['b1', 'a2'], 'a limit: the last of them')
+  t.alike((await read(execution(m), { args: ['2'] })).records.map(r => r.request), [String(O.b1), String(O.a2)], 'a limit: the last of them')
   await t.exception(read(execution(m), { args: ['swarm-1/node-9'] }), /no log held here for it: swarm-1\/node-9 \(swarm-1\/master, swarm-1\/node-1, swarm-1\/node-2\)/)
   await t.exception(read(execution(m), { args: ['swarm-1/node-1', 'many'] }), /not a limit: many/)
   t.alike((await read(execution(a), { args: [] })).nodes, [{ uri: 'swarm-1/node-1', length: 2 }], 'log/read at a node: its own log only')

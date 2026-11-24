@@ -17,6 +17,12 @@ only this repository's.
   build; my input and opinion count. Settled is what the team agreed,
   not what one of us said (`base-docs-hdlc`, "Autonomy",
   "Collaboration", "Work").
+- **Simple and consistent first; a rule is worth changing** (the human,
+  2026-11-24: "I expect you to discuss simple consistent ways of doing
+  things, rules are worth changing if that brings benefits"): where the
+  simplest consistent way conflicts with a stated rule, I bring that way
+  to the discussion, with what changing the rule costs and gains; I do
+  not work around the rule to keep it.
 - **The aim:** full AI autonomy, from a need to running software that
   satisfies it. Structure and design are decided as a team, not
   alone; discuss first, write what has settled.
@@ -125,6 +131,13 @@ repository's and its tools'.
   scratchpad, waited for; no commit while it builds over the tree. One
   run at a time on `sources/`: a `haicc` test started while bundles are
   rebuilt hangs.
+- **The full test runs beside the work, not over it** (the human,
+  2026-11-24: "I don't mind that you run continuous background testing,
+  but organise it in a non-blocking way"): a committed state is tested
+  whole in a tree of its own (a git worktree with its own `sources/`
+  and `node_modules/`), in the background; the working tree stays free
+  and a commit waits only for the checks scoped to its change. What the
+  background test finds is fixed forward.
 - **Before a long run**: `tools/bare tools/release.js`, then each changed
   package's own test from its folder: a slip is found in seconds.
 - **A removal by a variable is refused** by a safety check: write it as
@@ -142,7 +155,11 @@ repository's and its tools'.
   package's (`sh tools/packages.sh -m "<what changed>" <org>/<package>...`).
   At a milestone agreed with the human, asked for in the local note
   (`steps/2-rebuild/local-note.md`); not after every change, not from
-  the cloud session. New repositories are created by the human.
+  the cloud session. New repositories are created by the human: a
+  request for one always comes with its name and its description, each
+  written so it can be copied as it is (the human, 2026-11-24: "requests
+  for new repositories always need descriptions that can be copied"):
+  the description its `package.json`'s.
 - **Who does what** (the human, 2026-11-24): the cloud session
   implements, in this repository; the local agent builds, tests, pushes
   the products, sets up the manual test, releases and syncs to

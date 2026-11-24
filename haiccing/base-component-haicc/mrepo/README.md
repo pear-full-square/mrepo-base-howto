@@ -2,7 +2,7 @@
 
 The component's part of the structure: the list of the packages the haicc mrepo is made of, and its runtime config.
 
-- **Its packages** (`packages/layer.json`): the runtime, the info
+- **Its packages** (`packages/.layer.json`): the runtime, the info
   protocol, the protocol protocol, the boot protocol, the service
   protocol, the haicc protocol, the crud protocol, the container
   protocol, the swarm protocol, and this component last.

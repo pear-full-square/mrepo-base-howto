@@ -56,7 +56,7 @@ const HOOKS = {
 }
 
 test('its list of packages, in deploy order, itself last', (t) => {
-  t.alike(json('mrepo', 'packages', 'layer.json').packages, LIST, 'the runtime, the protocol protocol, info, help, crud, haici, service, the documentation, the component')
+  t.alike(json('mrepo', 'packages', '.layer.json').packages, LIST, 'the runtime, the protocol protocol, info, help, crud, haici, service, the documentation, the component')
 })
 
 test('its hooks, file by file, line by line, and the state it starts in', (t) => {

@@ -25,7 +25,7 @@ component's own list laid on top. Splectral is the first.
 ```sh
 # the platform's list: the boot protocol in it (and haicc, commands sent
 # on to its components), activated by its boot hook
-$EDITOR haiccing/<platform>/mrepo/packages/layer.json
+$EDITOR haiccing/<platform>/mrepo/packages/.layer.json
 # its install action: the component's list placed in the mrepo's folder,
 # <folder>/<side>/packages/, its second inbox and outbox made, then
 #   haicc <position> runtime/lay . <side>/packages/<component>

@@ -78,7 +78,7 @@ test('its config, value by value', (t) => {
 })
 
 test('create, read, delete: a node made with its path, read, removed; each idempotent', async (t) => {
-  const { exec, writes, files } = execution({ '/main/layer.json': B({}) })
+  const { exec, writes, files } = execution({ '/main/.layer.json': B({}) })
   const made = await act('create', exec, { uri: at('swarms/swarm-1'), args: ['{"size":3}'] })
   t.alike(made.map(n => [n.uri, n.value, n.outcome]), [[['main', 'swarms'], {}, 'created'], [['main', 'swarms/swarm-1'], { size: 3 }, 'created']], 'create: the whole path, each node answered: its URI as held inside, its document, what happened')
   t.alike(writes, [['put', '/main/swarms/.node.json', {}], ['put', '/main/swarms/swarm-1/.node.json', { size: 3 }]], 'what it writes: a document a node, in the node\'s folder, hidden')
@@ -92,12 +92,12 @@ test('create, read, delete: a node made with its path, read, removed; each idemp
   t.alike(await act('read', exec, { uri: at('swarms/swarm-1/size') }), [{ uri: ['main', 'swarms/swarm-1/size'], value: 3 }], 'read inside a document: the value there')
   await t.exception(act('delete', exec, { uri: at('swarms') }), /swarms has children: not deleted \(crud\/delete swarms recurse\)/, 'delete a node with children: refused without recurse')
   t.alike((await act('delete', exec, { uri: at('swarms'), args: ['recurse'] })).map(n => [n.uri, n.outcome]), [[['main', 'swarms'], 'deleted']], 'with recurse: deleted')
-  t.alike(Object.keys(files), ['/main/layer.json'], 'the node and what was below it gone')
+  t.alike(Object.keys(files), ['/main/.layer.json'], 'the node and what was below it gone')
   t.alike(await act('delete', exec, { uri: at('swarms') }), [], 'again: nothing selected, the request succeeds')
 })
 
 test('what each refuses, writing nothing', async (t) => {
-  const { exec, writes } = execution({ '/main/layer.json': B({}), '/main/host/.node.json': B({}), '/main/host/.shortcuts.json': B([{ mrepo: 'local/host' }]) })
+  const { exec, writes } = execution({ '/main/.layer.json': B({}), '/main/host/.node.json': B({}), '/main/host/.shortcuts.json': B([{ mrepo: 'local/host' }]) })
   await t.exception(act('create', exec, { uri: at('.') }), /missing argument: target/)
   await t.exception(act('create', exec, { uri: at('a/b.json') }), /not a name for a node: b\.json/, 'a name with an extension')
   await t.exception(act('create', exec, { uri: at('a'), args: ['nonsense'] }), /not a document: nonsense \(JSON\)/)

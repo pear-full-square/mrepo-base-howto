@@ -19,7 +19,7 @@ $EDITOR haiccing/<new>/package.json haiccing/<new>/test/none/README.md
 # its pages: the README the top, a folder a page where it grows, each reached by a menu
 $EDITOR haiccing/<new>/README.md
 # included in the docs mrepo: its list and its README's included packages
-$EDITOR haiccing/base-component-docs/mrepo/packages/layer.json haiccing/base-component-docs/README.md
+$EDITOR haiccing/base-component-docs/mrepo/packages/.layer.json haiccing/base-component-docs/README.md
 # the check: its pre-release, its info test reaching every page
 tools/bare tools/package-test.js haiccing/<new>
 ```

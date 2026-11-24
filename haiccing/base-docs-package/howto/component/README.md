@@ -14,8 +14,8 @@ packages`, siblings, in deploy order.
 ```sh
 # cloned from a component (the package how-to)
 cp -a haiccing/base-component-docs haiccing/<new>
-# its list, mrepo/packages/layer.json: the packages in deploy order, itself last
-$EDITOR haiccing/<new>/mrepo/packages/layer.json
+# its list, mrepo/packages/.layer.json: the packages in deploy order, itself last
+$EDITOR haiccing/<new>/mrepo/packages/.layer.json
 # its README: the menu, and ## Included packages, the same list but itself, as ../<package>/
 $EDITOR haiccing/<new>/README.md
 # its hooks, what its mrepo offers and when (the hooks how-to)

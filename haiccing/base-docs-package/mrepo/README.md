@@ -20,25 +20,31 @@ folder documents a layer.
 - [outbox](outbox/)
 - [request](request/)
 - [execute](execute/)
+- [xpath](xpath/)
 
 ## A package's part
 
 ```
 mrepo/
-  main/                     layer.json  the mrepo's content
-  runtime/                  layer.json  the runtime's data: service state, hooks
-  packages/                 layer.json  the packages to source, in its layer.json
-  <layer>/                  layer.json  any other layer the package brings
+  main/                     .layer.json  the mrepo's content
+  runtime/                  .layer.json  the runtime's data: service state, hooks
+  packages/                 .layer.json  the packages to source, in its .layer.json
+  <layer>/                  .layer.json  any other layer the package brings
 ```
 
-- **A leaf** is a folder holding a `layer.json`; the folders above it
-  only group. A leaf's files are committed with it, `layer.json` too, so
+- **A leaf** is a folder holding a `.layer.json`; the folders above it
+  only group. A leaf's files are committed with it, `.layer.json` too, so
   no folder is empty.
-- **`layer.json`**: `{ "mode": "atomic", "description": "..." }`, its mode
-  below.
+- **`.layer.json`**: `{ "mode": "atomic", "description": "..." }`, its mode
+  below. Hidden, as everything a container keeps beside its data: a name
+  starting with a dot is no URI's, so a query never selects it and
+  nothing from outside can name it. The hidden names there are:
+  `.layer.json`, a node's `.node.json` and `.shortcuts.json`, a streaming
+  folder's `.lock`, a consumer's `.pointer.json`; any other
+  fails a package's structure check.
 - **No README inside a layer** of a package that brings structure: it
   would be committed into it. A layer explains itself in its
-  `layer.json`, and here.
+  `.layer.json`, and here.
 
 ## The rules
 
@@ -50,17 +56,18 @@ mrepo/
 - The repository is the truth; a folder on disk is a view of a commit.
 - Writes are commits only, never files edited in place.
 - No log of its own: a request is its own record, its `log` in it,
-  `request/done` the history.
+  `request/done` the history. What the physical side did for it is
+  apart, in the `xpath` layers.
 
 ## Modes and storage
 
-Each layer has a mode, in its `layer.json`:
+Each layer has a mode, in its `.layer.json`:
 
 | mode | written | layers |
 |---|---|---|
 | atomic | one commit at a time, by the runtime | `main`, `runtime`, `protocols`, `info` |
 | replicated | as atomic, also copied out as files | `packages` |
-| non-atomic | its own writers, in parallel | `inbox`, `outbox`, `request/*`, `execute/*` |
+| non-atomic | its own writers, in parallel | `inbox`, `outbox`, `request/*`, `execute/*`, `xpath/*` |
 
 Where the layers are stored:
 
@@ -182,7 +189,11 @@ configuration, audit, metrics, events, state.
 ## A request
 
 A record, as an onion: a form (the request) in an envelope (where it is
-going). Its key, a GUID, names its document in every layer.
+going). Its offset, the milliseconds since the epoch when it arrived
+at the mrepo (given as it is dropped into the inbox, never two the
+same; the mrepo's own requests from the same clock), is its one
+identity there: on the form's record and its envelope, and the name of
+its document in every layer, 13 digits.
 
 ```json
 {
@@ -233,13 +244,24 @@ Outside, a URI is one segment, as it is written. What an action is
 about, when that is not where it is executed, is an argument: `runtime/run . packages/<org>/<package>/test/validate`.
 
 Its way: `inbox` → `request/pending/default` → `request/execute` →
-`request/done`, and back through the `outbox`. Order is the commit chain.
+`request/done`, and back through the `outbox`. The inbox is taken in
+first come, first served, by a pointer to the last one taken; the
+queue in the order requests were queued. The `inbox`, the `outbox` and
+`request/done` only grow: streaming layers, a record under its offset
+in folders by its digits (`<layer>/17953/179531/<offset>.json`), their
+natural order the order requests arrived. Each declares it in its
+`.layer.json` (`"structure": { "type": "offset-files", "levels": [5, 6] }`):
+explicit, always. A layer that declares no structure is a folder,
+whatever its name (the human, 2026-11-24: "explicit declaration: yes.
+Otherwise it is just a folder"); the structure check fails a box or
+`request/done` that does not declare. A query reads them as they
+are stored: `done/*/*/*[value/value/protocol='boot']`.
 Requests are checked at the inbox, and again as they execute.
 
 ## Deploying an mrepo
 
 `boot deploy <name> <package>`, executed by the parent, names a target
-package; the target's `mrepo/packages/layer.json` lists the packages the mrepo is made
+package; the target's `mrepo/packages/.layer.json` lists the packages the mrepo is made
 of, in order.
 
 1. **Laid in**: each listed package's `mrepo/` part, read from its bundle,

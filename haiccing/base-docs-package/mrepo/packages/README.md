@@ -3,7 +3,7 @@
 The code the mrepo runs, as bundles, linked from the work folder's store.
 
 The layer is replicated: committed, and copied out as files for Bare to
-run, at `<dir>/packages/`. Its `layer.json` lists the packages, in order;
+run, at `<dir>/packages/`. Its `.layer.json` lists the packages, in order;
 its manifest records each one's hash and entry points.
 
 ```
@@ -25,7 +25,7 @@ its manifest records each one's hash and entry points.
 - **Each linked individually**, the bundle and each addon: the mrepo runs
   only the packages registered for it, at the versions it pins.
 - **What a child is made of**: the target package's
-  `mrepo/packages/layer.json`, in order. Each package's `mrepo/` part is
+  `mrepo/packages/.layer.json`, in order. Each package's `mrepo/` part is
   laid in, a later file replacing an earlier one.
 - **The last package of a list defines the mrepo**: a list ends with its
   own package. Runtime config, what a package drops into the runtime

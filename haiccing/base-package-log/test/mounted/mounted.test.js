@@ -12,6 +12,7 @@ import { fileURLToPath } from '../../modules/node_modules/bare-url/index.js'
 import os from '../../modules/node_modules/bare-os/index.js'
 import * as mounted from '../../protocol.js'
 import { serve, recordOf } from '../../modules/pear-full-square/mrepo-base-log/index.js'
+import { outboxOf } from '../../modules/pear-full-square/mrepo-base-request/index.js'
 
 // Its core type, as the package registers it: types/<name>.avsc.
 const typeOf = name => JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'types', `${name}.avsc`), 'utf8'))
@@ -21,7 +22,8 @@ const folder = () => { const d = mkdtempSync(join(os.tmpdir(), 'log-')); mkdirSy
 // An execution as an action sees it: the mrepo's folder, its log.
 const execution = dir => ({ runtime: { dir }, entries: [], log (level, event, data = {}) { this.entries.push({ level, event, ...data }) } })
 // A completed request, as an mrepo's outbox holds it.
-const drop = (d, key, command, done) => writeFileSync(join(d, 'outbox', `${key}.json`), JSON.stringify({ topic: '/outbox', key, timestamp: done, headers: {}, value: { topic: '/haicc/terminal', key, timestamp: done, headers: {}, value: { command: command.split(' '), output: {} } } }) + '\n')
+// (under its offset, in the outbox, a streaming folder)
+const drop = (d, offset, command, done) => outboxOf(d).put(offset, { topic: '/outbox', offset, timestamp: done, headers: {}, value: { topic: '/haicc/terminal', offset, timestamp: done, headers: {}, value: { command: command.split(' '), output: {} } } })
 const ran = new Set()
 // an action that wrote into the execution's log as it ran: every one must
 const logged = new Set()
@@ -57,8 +59,8 @@ test('its actions: a node\'s log synced to the master, read there across nodes a
   const [m, n] = [folder(), folder()]
   const folders = { 'swarm-1/master': m, 'swarm-1/node-1': n }
   const swarmOf = uri => ({ status: async () => ({ joined: true, uri, role: uri === 'swarm-1/master' ? 'master' : 'node', master: 'swarm-1/master' }), resolve: async u => { if (!folders[u]) throw new Error(`not registered: ${u}`); return { uri: u, folder: folders[u] } } })
-  drop(m, 'm1', 'rns/status', '2026-11-21T00:00:01.000Z')
-  drop(n, 'n1', 'crud/read .', '2026-11-21T00:00:02.000Z')
+  drop(m, 1795312345601, 'rns/status', '2026-11-21T00:00:01.000Z')
+  drop(n, 1795312345602, 'crud/read .', '2026-11-21T00:00:02.000Z')
   const M = await serve({ dir: m, every: 1e9, sync: 0, swarm: swarmOf('swarm-1/master') })
   const N = await serve({ dir: n, every: 1e9, sync: 0, swarm: swarmOf('swarm-1/node-1') })
   const s = await act('status', execution(n), { args: ['sync'] })
@@ -66,7 +68,7 @@ test('its actions: a node\'s log synced to the master, read there across nodes a
   t.alike((await act('status', execution(m), { args: [] })).collected, [{ uri: 'swarm-1/node-1', key: N.key, length: 1 }], 'status at the master: the node\'s topic collected')
   const all = await act('read', execution(m), { args: [] })
   t.alike([all.nodes.map(x => x.uri), all.records.map(r => [r.node, r.command, r.ok])], [['swarm-1/master', 'swarm-1/node-1'], [['swarm-1/master', 'rns/status', true], ['swarm-1/node-1', 'crud/read .', true]]], 'read at the master: every node\'s log in one view, by time')
-  t.alike((await act('read', execution(m), { args: ['swarm-1/node-1', '5'] })).records.map(r => r.request), ['n1'], 'filtered by node')
+  t.alike((await act('read', execution(m), { args: ['swarm-1/node-1', '5'] })).records.map(r => r.request), ['1795312345602'], 'filtered by node')
   t.alike((await act('read', execution(n), { args: [] })).nodes.map(x => x.uri), ['swarm-1/node-1'], 'read at a node: its own')
   await N.close()
   await M.close()

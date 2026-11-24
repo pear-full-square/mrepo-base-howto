@@ -1,6 +1,6 @@
 # Test report: haiccing/base-package-rns
 
-The package passed its `full` set: all 14 units, 84 of 84 tests and 545 of 545 asserts.
+The package passed its `full` set: all 14 units, 91 of 91 tests and 603 of 603 asserts.
 
 | | |
 |---|---|
@@ -8,11 +8,11 @@ The package passed its `full` set: all 14 units, 84 of 84 tests and 545 of 545 a
 | Set | `full` |
 | Result | passed |
 | Units | 14 of 14 passed |
-| Tests | 84 of 84 passed |
-| Asserts | 545 of 545 passed |
-| Run | 2026-11-23 04:29 UTC |
+| Tests | 91 of 91 passed |
+| Asserts | 603 of 603 passed |
+| Run | 2026-11-24 04:49 UTC |
 | Bare | v1.36.0 |
-| Content | `5c4ae5bd31a7042d752f9181c566e5b189a1cf4799cc69b72676ac9464c7e705` |
+| Content | `aca60e66683dcd8900cf55def467e20c00fd02fe02478d9e142ad330c5a8835d` |
 
 ## Units
 
@@ -25,12 +25,12 @@ The package passed its `full` set: all 14 units, 84 of 84 tests and 545 of 545 a
 | `/test/package` | passed | 1 of 1 | 1 of 1 |
 | `/test/modules/pear-full-square/mrepo-base-info` | passed | 10 of 10 | 86 of 86 |
 | `/test/modules/pear-full-square/mrepo-base-rns` | passed | 3 of 3 | 40 of 40 |
-| `/test/modules/pear-full-square/mycelium-container-document` | passed | 1 of 1 | 8 of 8 |
-| `/test/modules/pear-full-square/mycelium-uri` | passed | 21 of 21 | 195 of 195 |
+| `/test/modules/pear-full-square/mycelium-container-document` | passed | 6 of 6 | 42 of 42 |
+| `/test/modules/pear-full-square/mycelium-uri` | passed | 22 of 22 | 217 of 217 |
 | `/test/modules/pear-full-square/mycelium-value-avro` | passed | 8 of 8 | 57 of 57 |
 | `/test/modules/pear-full-square/mycelium-value-json` | passed | 1 of 1 | 3 of 3 |
 | `/test/modules/pear-full-square/p2p-local` | passed | 4 of 4 | 16 of 16 |
 | `/test/modules/pear-full-square/p2p-topic` | passed | 4 of 4 | 16 of 16 |
-| `/test/modules/pear-full-square/pkgm-base-check` | passed | 23 of 23 | 70 of 70 |
+| `/test/modules/pear-full-square/pkgm-base-check` | passed | 24 of 24 | 72 of 72 |
 
 Written by the package's pre-release from `full.json`, beside it. The content is the hash of the bundle that was tested, its test reports left out.

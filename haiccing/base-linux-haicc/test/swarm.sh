@@ -79,7 +79,7 @@ has "$out" '{"deployed":"swarms/swarm-1/node-1","mrepo":"swarm-1/node-1","packag
 label=node-2; step --output host swarm/deploy swarms/swarm-1/node-2; has "$out" '"mrepo":"swarm-1/node-2"' "node-2 too"
 is "$(running | wc -l | tr -d ' ')" 11 "eleven processes: each node its runtime, its rns and its log"
 out=$(haicc --output $S/node-1 crud/read .); has "$out" '"uri":["main","."]' "a node in service, answering through the host"
-out=$(haicc --output "$S/master" crud/read "done/*[value/value/action='register']" --flags layer=request)
+out=$(haicc --output "$S/master" crud/read "done/*/*/*[value/value/action='register']" --flags layer=request)
 has "$out" '\"by\":\"local/host\"' "the master's request log: each node registered by the host, its creator"
 
 # 3. who is registered and active: asked of a node, the master, the host

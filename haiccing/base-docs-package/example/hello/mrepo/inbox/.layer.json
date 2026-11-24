@@ -1,0 +1,5 @@
+{
+  "mode": "non-atomic",
+  "description": "Requests arriving.",
+  "structure": { "type": "offset-files", "levels": [5, 6], "batch": 50 }
+}

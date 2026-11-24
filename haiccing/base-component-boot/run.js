@@ -42,7 +42,7 @@ import { tmpdir } from './modules/node_modules/bare-os/index.js'
 import { join, resolve, basename } from './modules/node_modules/bare-path/index.js'
 import { gitdirOf, open, viewOf, start } from './modules/pear-full-square/mrepo-base-runtime/index.js'
 import { build, lay, parseSource, place, storeOf, placeScripts } from './modules/pear-full-square/mrepo-base-boot/index.js'
-import { record, wrap, guid, complete, logger, follow, EXECUTE, MREPOS, SCRIPTS } from './modules/pear-full-square/mrepo-base-request/index.js'
+import { record, wrap, tick, nameOf, complete, logger, follow, EXECUTE, MREPOS, SCRIPTS } from './modules/pear-full-square/mrepo-base-request/index.js'
 import { executed } from './modules/pear-full-square/mrepo-base-execute/index.js'
 import { writer, openRepo } from './modules/pear-full-square/mycelium-git/index.js'
 
@@ -65,7 +65,7 @@ const work = resolve(value('work')[0] ?? '.')
 const sources = (value('sources').length ? value('sources') : ['github:haiccing']).map(parseSource)
 // The request: the invocation, as typed (the entry's name, its arguments).
 const entry = basename(script ? process.argv[1] : process.argv[0])
-const core = record(null, { protocol: 'boot', action: 'deploy', uri: [NAME], command: [entry, ...args].join(' ') }, guid())
+const core = record(null, { protocol: 'boot', action: 'deploy', uri: [NAME], command: [entry, ...args].join(' ') }, tick())
 // Its log: each step's outcome, an entry in the request's own record, as
 // much as asked for (--level=<info|verbose|debug>, info by default; an
 // error and a warning always).
@@ -83,7 +83,7 @@ try {
     try {
       lay({ store: storeOf(work), sources, target: TARGET, into: tmp })
       // its identity, in its runtime layer
-      if (existsSync(join(tmp, 'runtime', 'layer.json'))) writeFileSync(join(tmp, 'runtime', 'mrepo.json'), JSON.stringify({ uri: URI }, null, 2) + '\n')
+      if (existsSync(join(tmp, 'runtime', '.layer.json'))) writeFileSync(join(tmp, 'runtime', 'mrepo.json'), JSON.stringify({ uri: URI }, null, 2) + '\n')
       const { layers } = await build({ from: tmp, work, name: NAME, time: BUILT })
       log('info', 'built', { mrepo: viewOf(work, NAME), layers: Object.keys(layers) })
     } finally { rmSync(tmp, { recursive: true, force: true }) }
@@ -92,7 +92,7 @@ try {
   // 2. Its packages put in place: the list its packages layer holds.
   const repo = await open(work)
   let list
-  try { list = JSON.parse((await openRepo(repo.backend).read('/packages/layer.json')).toString()).packages } finally { await repo.close() }
+  try { list = JSON.parse((await openRepo(repo.backend).read('/packages/.layer.json')).toString()).packages } finally { await repo.close() }
   const placed = await place({ dir: viewOf(work, NAME), store: storeOf(work), sources, list })
   // (at info the packages by name, what an agent reads; each with its
   // hashes and addons at verbose)
@@ -111,7 +111,7 @@ try {
 const runtime = join(viewOf(work, NAME), 'packages', 'haiccing', 'base-package-runtime.bundle')
 const completed = done({ ok: true, value: { runtime: `${BARE} ${runtime} ${viewOf(work, NAME)}` } })
 const repo = await open(work)
-try { await executed({ backend: repo.backend, writer: writer(repo.backend) }, core.key, wrap(`/${EXECUTE}`, completed)) } finally { await repo.close() }
+try { await executed({ backend: repo.backend, writer: writer(repo.backend) }, nameOf(core.offset), wrap(`/${EXECUTE}`, completed)) } finally { await repo.close() }
 console.log(JSON.stringify(completed))
 
 // 4. Its runtime started: it takes its request in, then commands.

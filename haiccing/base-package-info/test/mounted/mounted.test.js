@@ -68,7 +68,7 @@ test('its config, value by value; the layer it brings', (t) => {
     t.absent('states' in a || 'target' in a, `${name}: no states, no target`)
   }
   t.alike(['args' in cfg.actions.get, 'args' in cfg.actions.extract, 'args' in cfg.actions.clear], [false, false, false], 'no argument asked for: get\'s keywords are its URI, none the top')
-  const layer = JSON.parse(readFileSync(join(pkg, 'mrepo', 'info', 'layer.json'), 'utf8'))
+  const layer = JSON.parse(readFileSync(join(pkg, 'mrepo', 'info', '.layer.json'), 'utf8'))
   t.alike([layer.mode, Boolean(layer.description)], ['atomic', true], 'its structure: the info layer, atomic')
 })
 
@@ -83,13 +83,13 @@ test('extract, then get, then clear: the layer from the packages, read by keywor
     })
     bundle(dir, 'haiccing/base-component-two', {
       '/README.md': page('base-component-two', 'The two component.') + '\n## Included packages\n\n- [base-package-one](../base-package-one/)\n',
-      '/mrepo/packages/layer.json': { packages: ['haiccing/base-package-one', 'haiccing/base-component-two'] }
+      '/mrepo/packages/.layer.json': { packages: ['haiccing/base-package-one', 'haiccing/base-component-two'] }
     })
     const { exec, files, writes } = execution({ '/packages/manifest.json': B({ packages: { 'haiccing/base-package-one': {}, 'haiccing/base-component-two': {} } }) }, dir)
     await t.exception(act('get', exec, {}), /no info extracted in this mrepo yet \(info\/extract\)/, 'get before any extraction: said')
     const r = await act('extract', exec, { uri: ['.'] })
     t.alike([r.changed, r.problems], [true, 0], 'extract: written, no problem')
-    t.ok(files['/info/index.json'] && files['/info/problems.json'] && files['/info/layer.json'], 'the layer: its index, its problems, its config when it had none')
+    t.ok(files['/info/index.json'] && files['/info/problems.json'] && files['/info/.layer.json'], 'the layer: its index, its problems, its config when it had none')
     t.ok(J(files['/info/index.json'])['modules/mrepo-base-one/external/go'], 'the module once, under modules')
     const n = writes.length
     t.alike([(await act('extract', exec, { uri: ['.'] })).changed, writes.length], [false, n], 'again: nothing changed, nothing written')

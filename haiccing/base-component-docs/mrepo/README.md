@@ -2,7 +2,7 @@
 
 The component's part of the structure: the list of the packages the docs mrepo is made of, and its runtime config.
 
-- **Its packages** (`packages/layer.json`): the runtime, the protocol
+- **Its packages** (`packages/.layer.json`): the runtime, the protocol
   protocol, the info protocol, the help protocol, the crud and the haici
   protocols (feedback where the documentation is read, read back there),
   the service protocol,

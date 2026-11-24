@@ -91,7 +91,7 @@ test('its config in effect: a request checked on each state, allowed only where 
 
 test('its structure: the state it starts in, and its list of packages', (t) => {
   t.alike(json('mrepo', 'runtime', 'service.json'), { state: 'booted' }, 'an mrepo that links it starts booted')
-  const list = json('mrepo', 'packages', 'layer.json').packages
+  const list = json('mrepo', 'packages', '.layer.json').packages
   t.alike(list, ['haiccing/base-package-runtime', 'haiccing/base-package-info', 'haiccing/base-package-help', 'haiccing/base-package-protocol', 'haiccing/base-package-service'], 'deployed alone: the runtime, info, help, the protocol protocol, itself last')
 })
 

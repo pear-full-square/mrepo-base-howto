@@ -80,7 +80,7 @@ const HOOKS = {
 }
 
 test('its list of packages, in deploy order, itself last', (t) => {
-  t.alike(json('mrepo', 'packages', 'layer.json').packages, LIST, 'the haicc component\'s packages (the host\'s role), the solution last')
+  t.alike(json('mrepo', 'packages', '.layer.json').packages, LIST, 'the haicc component\'s packages (the host\'s role), the solution last')
 })
 
 test('its hooks, file by file, line by line, and the state it starts in', (t) => {

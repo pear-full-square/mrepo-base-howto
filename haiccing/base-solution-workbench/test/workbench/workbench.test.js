@@ -20,7 +20,7 @@ import { join, dirname, resolve } from '../../modules/node_modules/bare-path/ind
 import os, { tmpdir } from '../../modules/node_modules/bare-os/index.js'
 import { fileURLToPath } from '../../modules/node_modules/bare-url/index.js'
 import { openRepo, p2pgitBackend } from '../../modules/pear-full-square/mycelium-git/index.js'
-import { record, wrap, guid } from '../../modules/pear-full-square/mrepo-base-request/index.js'
+import { record, drop, nameOf, layer } from '../../modules/pear-full-square/mrepo-base-request/index.js'
 import { ask, gitdirOf, viewOf } from '../../modules/pear-full-square/mrepo-base-runtime/index.js'
 
 const pkg = join(dirname(fileURLToPath(import.meta.url)), '..', '..')
@@ -43,10 +43,9 @@ test('the workbench on a fresh install: deployed by its segment, commissioned (i
     // a command as typed, its parts, into the boot mrepo's inbox folder; its
     // completed form read from request/done
     const typed = async (parts, tries = 3000) => {
-      const c = record('/test', parts, guid())
-      writeFileSync(join(boot, 'inbox', `${c.key}.json`), JSON.stringify(wrap('/local/boot/inbox', c)))
+      const c = nameOf(drop(boot, 'local/boot', record('/test', parts)))
       let v = null
-      for (let i = 0; i < tries && !v; i++) { v = await repo.read(`/request/done/${c.key}.json`).then(b => JSON.parse(b.toString()).value.value, () => null); if (!v) await wait(100) }
+      for (let i = 0; i < tries && !v; i++) { v = await layer({ repo: repo }, 'request/done').read(c).then(r => r.value.value, () => null); if (!v) await wait(100) }
       return v
     }
     // the workbench: one command at the root, its name the segment

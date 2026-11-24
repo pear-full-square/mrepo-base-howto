@@ -113,78 +113,86 @@ offline: every download kept in a local source (`~/haicc-mirror/`), so
    `handover-local.md` ("Who does what", "Codeberg") and a line of
    `CLAUDE.md`, pushed (`f49a6d6`).
 
-## The next run (2026-11-23, from the cloud session): read this first
+## The next run (2026-11-24, from the cloud session): read this first
 
 The prompt for this run, here so it is read with the notes. Write your
 own section above this one, as always; this one stays until the next
 prompt replaces it.
 
 What it needs on the local machine: as before (Linux x86-64; git, curl,
-tar; Docker, its daemon running), and **push access to the product
-repositories** (`github.com/pear-full-square/<module>`,
-`github.com/<org>/<package>`). **Build, test, then push the products**
-(the human, 2026-11-23: "local will push the product repositories";
-your proposal of 2026-11-22, the local agent pushes them from the commit
-it tested). **No release.**
+tar; Docker, its daemon running). **Build and test only** (the human,
+2026-11-24: "leave a note for local to build and test"): **no products
+pushed, no release, no Codeberg sync** in this run; the products follow
+at a milestone, asked for in a later prompt.
 
-**Why this run**: the service-every-mrepo work is finished (roadmap-2,
-`tasks/service-every-mrepo/`), a milestone: `main`'s head, built and
-tested here in full, then every product repository brought to it.
+**Why this run**: the record-offset work, the logical reading of a
+topic over its storage, is merged to `main`: tested whole in the cloud
+session at `c317ed6c` (its content; `main`'s head is the merge that
+brings it in, with your notes). A second machine's full test of it,
+before the default reading is turned to logical on top of it.
 
-**The commit**: `main`'s head when you pull. The
-scripts push from `main`, so `main` must still be the commit you
-tested when you push: if it has moved, stop before step 6 and say so.
+**The commit**: `main`'s head when you pull, written down. If `main`
+moves while you test, stay on the commit you started with and say so.
 
-What is new since your last run (`8661d03`), in short:
+What is new since your last run (`8a4a9ae`), in short:
 
-- **Every mrepo a service** (the boot mrepo the one exception): the
-  runtime fires `commission` after its `boot` hook; `boot/deploy`
-  links first, installs at `<work>/mrepos/<uri>`, commissions;
-  deploy and teardown idempotent (a repeat is a warning, `again:true`).
-- **The registry**: `<work>/mrepos/`, the install's; `haicc/mrepos
-  [xpath]` lists the mrepos (`uri`, `position`, `package`, `running`);
-  the packages' scripts placed in `<work>/scripts`.
-- **The docs mrepo** split on package (a keyword in its package's
-  context, `haiccing/base-package-boot/deploy`), built from the store at
-  `initialise`, removed at shutdown (`info/clear`); `crud` and `haici`
-  in it: feedback recorded and read back where the documentation is
-  read.
-- **The workbench** (`haiccing/base-solution-workbench`): its
-  commission deploys the docs mrepo and Splectral, installs the help
-  viewer; the help viewer reads `local/docs` wherever it is.
-- Also on `main` since: `mycelium-value-avro`, the swarm (`rns`,
-  `log`, `dispatch`, `base-component-node`, the log viewer), relative
-  path URIs.
+- **A request's identity is its offset**: milliseconds since the epoch,
+  thirteen digits, the name of its record's file; the inbox, the outbox
+  and `request/done` are streaming layers, a record a file in folders by
+  its offset's digits (`done/17954/179540/1795400000002.json`); the
+  inbox read after a pointer. `layer.json` is `.layer.json`, hidden by
+  its name.
+- **A streaming layer declares its structure** (the human, 2026-11-24:
+  "explicit declaration: yes. Otherwise it is just a folder"): in its
+  `.layer.json`, `"structure": { "type": "offset-files", "levels": [5, 6],
+  "batch": 50 }`; a box the runtime makes is made with it; the package
+  check fails an `inbox`, `outbox` or `request/done` that declares none.
+- **XPath, logical over physical** (`haiccing/base-docs-xpath`):
+  XPath 2.0's forward part; a query answers an `XPathResult`, read
+  through an `XPathIterator`, more fetched behind the scenes a slice at
+  a time by a physical query the storage's structure type generates
+  (`pear-full-square/mycelium-xpath-physical`, new: `tree`,
+  `offset-files`); one way to query an mrepo, `query` handing back the
+  result. A topic read logically: `done/*`, `done/*[@offset=N]`,
+  `done/*[@offset>N]`; a position in a topic's query is refused.
+- **Logical or physical**: `--flags logical`, `--flags physical`; with
+  neither the mrepo's setting, `/runtime/xpath.json`; with no setting
+  physical, as everywhere today. The runtime's own inbox read is
+  logical, ascending.
+- **The `xpath` layer and its log** (`xpath/log`): what the physical
+  side did for each request, under the request's offset.
+- An install from before this run does not read these layers: torn
+  down with the old `haicc` first, as always.
 
 > 1. **The clone.** `git checkout main`, `git pull`. Write down `git log
 >    -1`. Tear down your own install first if one runs (`haicc
->    boot/teardown`): its sources are this clone's `sources/`. An
->    install from before this run is not migrated: torn down with the
->    old `haicc`.
+>    boot/teardown`), with the `haicc` it was made with.
 > 2. **The dependencies, the sources.** `sh tools/install.sh`, then
 >    `tools/bare tools/release.js`: twenty-nine bundles
->    (`sources/haiccing/`, `sources/splectral/`), each with its
+>    (`sources/haiccing/` 27, `sources/splectral/` 2), each with its
 >    manifest, every entry's commit the one you wrote down;
 >    `sources/holepunchto/` both Bare tarballs. `git status` no change
 >    after it; if it changes, say so and stop.
-> 3. **The checks.** `tools/bare tools/release.js --strict` (exit 0,
->    every report `current`); `tools/bare tools/code-check.js` and
->    `tools/bare tools/info-extract.js --files` (0 problems each). Do not
->    run `tools/package-test.js`: the reports are the cloud session's.
->    A report not `current`: say which and stop.
+> 3. **The checks.** `tools/bare tools/code-check.js` ("34 modules, 30
+>    packages: 0 problems") and `tools/bare tools/info-extract.js
+>    --files` ("616 READMEs, 0 problems"). `tools/bare tools/release.js
+>    --strict`: run it and **list the reports it says are not
+>    `current`, then go on**: the committed reports were not all
+>    refreshed for this merge (the cloud session's to do, at the
+>    milestone); do not run `tools/package-test.js`.
 > 4. **The full test** (`base-docs-hdlc`, "Validation"): every check
 >    passing; each one's count and time; nothing left after each
 >    (`pgrep -fa "bin/bare"`, `docker ps -a --filter label=haicc.folder`).
->    Keep the laptop awake: both last runs lost one to a sleep.
+>    Keep the laptop awake.
 >
 >    | test | runs | the cloud session's count |
 >    |---|---|---|
 >    | boot `/test/validate` | 3 | `"ok":true` |
->    | `sh haiccing/base-linux-haicc/test/run.sh` | 2 | 370 |
+>    | `sh haiccing/base-linux-haicc/test/run.sh` | 2 | 386 |
 >    | `test/splectral.sh` | 2 | 85 |
 >    | `test/swarm.sh` | 3 (a race shows one run in a few) | 92 |
 >    | `test/container.sh` | 1 | 17 |
->    | `test/pair.sh` | 1 | 39 |
+>    | `test/pair.sh` | 1 | not run here (39 at your last run) |
 >
 >    A run that hangs: look for `runtime-stall.json` under its temporary
 >    folder and copy what it says into your note. A run lost to a sleep:
@@ -192,23 +200,16 @@ What is new since your last run (`8661d03`), in short:
 > 5. **Every bundle's own tests**: `SOURCES=$PWD/sources tools/bare
 >    sources/<org>/<package>.bundle /test/full` for each of the
 >    twenty-nine (exit 0, last line `"ok":true`).
-> 6. **The products, only when 2 to 5 passed whole.** From the clone's
->    root, `main` checked out and still the commit tested:
->    - the modules, one at a time so that one missing does not stop the
->      rest: `for m in $(ls pear-full-square); do sh tools/products.sh
->      "$m" || echo "$m: FAILED"; done`;
->    - the packages: `for p in $(ls -d haiccing/*/ splectral/*/ | sed
->      's:/$::'); do sh tools/packages.sh -m "service-every-mrepo: every
->      mrepo a service, the registry, the docs mrepo split on package,
->      the workbench; tested locally" "$p" || echo "$p: FAILED"; done`.
->
->    One line each ("up to date", or its new commit). A repository that
->    does not exist: do not create it (the human creates repositories);
->    list it in your note. A push refused: say which and why. Then check:
->    each repository's `main` the same content as its folder here
->    (LICENSE aside), as you did last time.
+> 6. **Two things to look at, by hand** (a workbench or a host of your
+>    own, torn down after):
+>    - a topic read both ways, and what each costs: `haicc --output host
+>      crud/read "done/*" --flags layer=request logical` and the same
+>      with `physical`; the time of each, and of one record by its
+>      address (`"done/*[@offset=<one of them>]"`);
+>    - the timings you measured last run (the ~0.65 s a hop, the help
+>      pages' first visits): the same, better or worse, now that the
+>      inbox is read through XPath.
 > 7. **Your note**: a section at the top of this file, as always: the
->    commit, each step's result and timings, each product's line, the
->    repositories missing, anything that looked wrong or slow. Commit it
->    alone to `main` and push.
-
+>    commit, each step's result and timings, the reports not `current`,
+>    anything that looked wrong or slow. Commit it alone to `main` and
+>    push. No products, no release, no Codeberg.

@@ -17,7 +17,7 @@ is its `initialise` hook; what sits behind its door is activated at
 # its state as it starts
 echo '{ "state": "booted" }' > haiccing/<pkg>/mrepo/runtime/service.json
 # the service protocol in its list, before the package that defines it
-$EDITOR haiccing/<pkg>/mrepo/packages/layer.json
+$EDITOR haiccing/<pkg>/mrepo/packages/.layer.json
 # its setup in its initialise hook, not at its runtime's start
 $EDITOR haiccing/<pkg>/mrepo/runtime/hooks/initialise.haicc
 # brought into service by its commission, after its deploy

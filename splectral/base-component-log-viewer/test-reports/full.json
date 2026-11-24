@@ -1,8 +1,8 @@
 {
   "package": "splectral/base-component-log-viewer",
-  "content": "118e278c831fec525ba7ffaedff1ed12e399f93e86001b753e3972c5428dee8d",
+  "content": "294f85d405e2a7866cc0a3b6d4732a3dd8cdee335c22966e72f2ef30b667621b",
   "bare": "v1.36.0",
-  "date": "2026-11-23T08:41:31.954Z",
+  "date": "2026-11-24T02:57:23.681Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -157,8 +157,8 @@
         "total": 21
       },
       "asserts": {
-        "passed": 238,
-        "total": 238
+        "passed": 254,
+        "total": 254
       },
       "failures": []
     },
@@ -170,8 +170,8 @@
         "total": 10
       },
       "asserts": {
-        "passed": 172,
-        "total": 172
+        "passed": 174,
+        "total": 174
       },
       "failures": []
     },
@@ -192,12 +192,12 @@
       "unit": "/test/modules/pear-full-square/mrepo-base-xpath",
       "ok": true,
       "tests": {
-        "passed": 5,
-        "total": 5
+        "passed": 6,
+        "total": 6
       },
       "asserts": {
-        "passed": 54,
-        "total": 54
+        "passed": 55,
+        "total": 55
       },
       "failures": []
     },
@@ -205,12 +205,12 @@
       "unit": "/test/modules/pear-full-square/mycelium-container-document",
       "ok": true,
       "tests": {
-        "passed": 1,
-        "total": 1
+        "passed": 6,
+        "total": 6
       },
       "asserts": {
-        "passed": 8,
-        "total": 8
+        "passed": 42,
+        "total": 42
       },
       "failures": []
     },
@@ -231,12 +231,12 @@
       "unit": "/test/modules/pear-full-square/mycelium-uri",
       "ok": true,
       "tests": {
-        "passed": 21,
-        "total": 21
+        "passed": 22,
+        "total": 22
       },
       "asserts": {
-        "passed": 195,
-        "total": 195
+        "passed": 217,
+        "total": 217
       },
       "failures": []
     },
@@ -322,12 +322,12 @@
       "unit": "/test/modules/pear-full-square/pkgm-base-check",
       "ok": true,
       "tests": {
-        "passed": 23,
-        "total": 23
+        "passed": 24,
+        "total": 24
       },
       "asserts": {
-        "passed": 70,
-        "total": 70
+        "passed": 72,
+        "total": 72
       },
       "failures": []
     },
