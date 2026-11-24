@@ -1,10 +1,11 @@
 // read: crud/read <URI>, the nodes a URI selects (README.md beside it).
 import { modeOf } from 'mrepo-base-request'
+import { readingOf } from 'mrepo-base-xpath'
 import { place, select } from '../../internal/node/index.js'
 
 // log: in select (../../internal/node/index.js): each node; the query's steps in mrepo-base-xpath
-// (its flags: how the URI is read: logical, a topic as its records; else
-// as its layer is stored)
+// (how the URI is read: its flags say, logical, a topic as its records, or
+// physical, as its layer is stored; none: the mrepo's setting)
 export async function read (exec, { uri, flags = {} }) {
-  return (await select(exec, place(uri), { mode: modeOf(flags) })).map(s => s.node)
+  return (await select(exec, place(uri), { mode: modeOf(flags, await readingOf(exec)) })).map(s => s.node)
 }

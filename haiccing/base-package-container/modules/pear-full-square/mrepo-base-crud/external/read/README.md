@@ -14,8 +14,9 @@ array, not an error.
 
 `--flags logical` reads a topic as its records, the latest first, each
 under its address (`done/*[@offset=<offset>]`), nothing of how it is
-stored in the answer; without it, or with `--flags physical`, the layer
-is read as it is stored (`mrepo-base-xpath`, `query`).
+stored in the answer; `--flags physical` reads the layer as it is
+stored (`mrepo-base-xpath`, `query`). With neither, the mrepo's setting
+says (`/runtime/xpath.json`, `reading`); with no setting, physical.
 
 ## Signature
 

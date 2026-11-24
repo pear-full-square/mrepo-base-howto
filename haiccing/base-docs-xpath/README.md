@@ -139,12 +139,14 @@ done/*[@offset=1795400000002]/value/value/output    a field of one
 
 - **A record's address** is `<topic>/*[@offset=<offset>]`: what an
   answer says, and what reads it back.
-- **The flag chooses**: `--flags logical` reads a topic so;
-  `--flags physical`, or neither, reads the layer as it is stored
-  (`done/17954/179540/1795400000002.json`,
-  `done/*[last()]/*[last()]/*[position()>last()-50]`). Physical is the
-  reading without a flag while the logical one is being built. A layer
-  that is a plain tree reads the same either way.
+- **A flag says for a command, a setting for an mrepo**:
+  `--flags logical` reads a topic so; `--flags physical` reads the layer
+  as it is stored (`done/17954/179540/1795400000002.json`,
+  `done/*[last()]/*[last()]/*[position()>last()-50]`). With neither, the
+  mrepo's setting says: its runtime config `/runtime/xpath.json`,
+  `{ "reading": "logical" }`, its defining package's. With no setting,
+  physical: the reading everywhere today, turned an mrepo at a time. A
+  layer that is a plain tree reads the same either way.
 - **Not built yet**: a position after a filter on the data
   (`done/*[value/value/protocol='crud'][last()]`) or counted from the
   topic's start (`done/*[position()<=50]`): refused, said; the node set
