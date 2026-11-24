@@ -160,6 +160,11 @@ repository's and its tools'.
   written so it can be copied as it is (the human, 2026-11-24: "requests
   for new repositories always need descriptions that can be copied"):
   the description its `package.json`'s.
+- **Who does what** (the human, 2026-11-24): the cloud session
+  implements, in this repository; the local agent builds, tests, pushes
+  the products, sets up the manual test, releases and syncs to
+  Codeberg, from the prompt in `steps/2-rebuild/local-note.md`
+  (`steps/2-rebuild/handover-local.md`, "Who does what").
 - **Planning:** in `splectrum/roadmap-2` (the roadmap and the scheduled
   work), the direction in `base-docs-vision`; roadmap-1 transferred
   (2026-11-20), nothing reported back to it.
