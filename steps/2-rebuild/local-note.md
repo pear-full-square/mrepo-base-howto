@@ -42,10 +42,31 @@ offline: every download kept in a local source (`~/haicc-mirror/`), so
    later arm64 check: a tag of its own, never the shared one.
 
    `splectral.sh`'s page timings (ms, the two runs alike): `/help/`
-   1900–2170 first; `hdlc/validation` **4210–4370** first (1890–2690
-   last run: slower); `?at=` 1330–1450; a command typed 1300–1370;
-   `/help/no/such/thing` 4050–4270; two new pages at the end, 2960 and
-   **6110**: the slowest of the script. Kept pages 6–13.
+   1900–2170; `haiccing/base-docs-hdlc/validation` 4210–4370 (1890–2690
+   last run, as `hdlc/validation`); `/help/no/such/thing` 4050–4270;
+   the workbench's page 6110. **These are first visits, the worst
+   case, not what browsing feels like.** Measured after (a workbench
+   install, torn down after):
+   - the lookup itself is fast: the docs mrepo's info is local
+     (commission builds it); its own work under 0.1 s;
+   - a request costs ~0.65 s a hop between mrepos, whatever it asks
+     (root 0.5–0.65 s, `workbench` 1.2 s, `workbench/docs` 1.9–2.0 s;
+     `info/get` there the same as `crud/read`): the boxes, not the data;
+   - an mrepo answers one request at a time: four at once at the root
+     done at 1.0, 1.6, 2.1, 2.5 s;
+   - a page asks itself and each level above it (its drop-downs), sent
+     at once, answered in turn: cold, `/help/` 2.4 s, a page two levels
+     deep 6.3 s, three 8.0 s (the workbench); the split on package
+     made keywords a level deeper, one request more;
+   - the viewer keeps every answer until the install changes: the same
+     page again 3 ms; a new page whose levels are known one request
+     (~1.8 s in the workbench, ~1 s with the docs mrepo one hop away);
+     the command box asked each time (0.5–1 s).
+   Proposed, best first: one request a page (the levels above with
+   the answer, or the whole path asked once): a cold deep page ~2 s,
+   not 8; then where the 0.65 s a hop goes (the request records'
+   timestamps, hop by hop); read-only requests in parallel in an mrepo
+   is a design question, raised, not pushed.
 5. **Every bundle's own tests:** twenty-nine, exit 0, `"ok":true`
    each; the longest `base-component-boot` 262 s,
    `base-solution-workbench` 215 s, `base-package-container` 187 s.
