@@ -14,6 +14,7 @@ modules for linux-x64, linux-arm64, each with its version, licence and source in
 - [mrepo-base-haici](pear-full-square/mrepo-base-haici/)
 - [mrepo-base-info](pear-full-square/mrepo-base-info/)
 - [mrepo-base-request](pear-full-square/mrepo-base-request/)
+- [mrepo-base-xpath](pear-full-square/mrepo-base-xpath/)
 - [mycelium-container-document](pear-full-square/mycelium-container-document/)
 - [mycelium-git](pear-full-square/mycelium-git/)
 - [mycelium-uri](pear-full-square/mycelium-uri/)

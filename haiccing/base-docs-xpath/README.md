@@ -180,9 +180,12 @@ done/*[@offset=1795400000002]/value/value/output    a field of one
   `{ "reading": "logical" }`, its defining package's. With no setting,
   physical: the reading everywhere today, turned an mrepo at a time. A
   layer that is a plain tree reads the same either way.
-- **Not built yet**: reading forward (from the earliest, or on from a
-  pointer); the result handed to who asks from outside a request before
-  it is read to its end.
+- **The runtime's own reads go through it**: first the inbox after its
+  pointer, ascending (`mrepo-base-request`, `arriving`); its other
+  topics to follow.
+- **Not in scope yet**: a result read from outside the mrepo that made
+  it. XPath lives in the mrepo's context; going across repositories
+  comes when mycelium is a data repository.
 
 ## Attributes
 
