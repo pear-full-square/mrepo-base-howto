@@ -9,7 +9,7 @@ import { join } from 'bare-path'
 import { tmpdir } from 'bare-os'
 import Bundle from 'bare-bundle'
 import { openRepo, writer, p2pgitBackend } from 'mycelium-git'
-import { record, wrap, guid } from 'mrepo-base-request'
+import { record, drop, nameOf, layer, outboxOf } from 'mrepo-base-request'
 import { ask } from 'mrepo-base-runtime'
 import { spawn, spawnSync } from 'bare-subprocess'
 import process from 'bare-process'
@@ -322,14 +322,14 @@ test('deploy the runtime: the child\'s runtime started from its own packages, it
     t.ok(d.runtime?.pid, 'its runtime started')
     t.alike([(await ask({ repo: host, op: 'status' }))?.repository.name, (await ask({ repo: host, op: 'status' }))?.repository.uri], ['host', 'local/host'], 'running the child, by its directory; its unique URI its own')
     // a request into its inbox folder (the parent reaches it, forward): answered
-    const core = record('/test', ['info/get'], guid())
-    writeFileSync(join(host, 'inbox', `${core.key}.json`), JSON.stringify(wrap('/local/host/inbox', core)))
+    // (dropped as everyone drops a record: its offset given as it arrives)
+    const sent = drop(host, 'local/host', record('/test', ['info/get']))
     const child = openRepo(p2pgitBackend(join(host, '.git'), { fs }))
     let back = null
-    for (let i = 0; i < 100 && !back; i++) { back = await child.read(`/outbox/${core.key}.json`).then(json, () => null); if (!back) await new Promise(resolve => setTimeout(resolve, 100)) }
+    for (let i = 0; i < 100 && !back; i++) { back = await layer({ repo: child }, 'outbox').read(nameOf(sent)).catch(() => null); if (!back) await new Promise(resolve => setTimeout(resolve, 100)) }
     t.ok(back?.value.value.output?.choices?.[0]?.title, `its inbox operational: its boot hooks run (info activated, extracted), a request answered ${back?.value.value.error ?? ''}`)
     let inFolder = null
-    for (let i = 0; i < 50 && !inFolder; i++) { inFolder = existsSync(join(host, 'outbox', `${core.key}.json`)) ? JSON.parse(readFileSync(join(host, 'outbox', `${core.key}.json`))) : null; if (!inFolder) await new Promise(resolve => setTimeout(resolve, 100)) }
+    for (let i = 0; i < 50 && !inFolder; i++) { inFolder = outboxOf(host).has(sent) ? outboxOf(host).read(sent) : null; if (!inFolder) await new Promise(resolve => setTimeout(resolve, 100)) }
     t.alike(inFolder?.value.value, back.value.value, 'and in its outbox folder, as committed (for a subscriber)')
     await teardown(exec, { uri: ['main', 'host'] })
     await commit()

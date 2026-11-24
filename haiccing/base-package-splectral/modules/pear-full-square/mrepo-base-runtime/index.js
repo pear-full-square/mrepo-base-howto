@@ -57,7 +57,7 @@ import { openStore } from 'p2p-store'
 import { mrepos } from 'p2p-mrepo'
 import { openRepo, writer } from 'mycelium-git'
 import { nativeBackend, p2pgitBackend } from 'mycelium-git'
-import { INBOX, OUTBOX, MREPOS, inboxFolder, inboxOf, post, viewOf, gitdirOf, setting, request, principals, layer, internal, hookOf, parse, runLines, DONE, OUTSIDE, guid } from 'mrepo-base-request'
+import { INBOX, OUTBOX, MREPOS, inboxFolder, inboxOf, post, viewOf, gitdirOf, setting, request, principals, layer, internal, hookOf, parse, runLines, DONE, OUTSIDE, nameOf, tick, drop, wrap } from 'mrepo-base-request'
 import { execute, failed } from 'mrepo-base-execute'
 import { IDENTITY } from 'mrepo-base-xpath'
 export { run as runtimeRun } from './external/run/index.js'
@@ -167,16 +167,27 @@ export async function run ({ work: w, repo: given = null, every = 200, idle = 20
   // the runtime's next pass as an internal request (standing at main, as a
   // line is written), its completed form waited for in request/done.
   ctx.queued = []
+  // Its clock: the offsets of what arrives, its own requests' too: its
+  // inbox folder's (the one every sender takes); on git alone, its own.
+  ctx.offset = repo.storage === 'git' ? () => tick() : () => inboxOf(dir ?? viewOf(work, repo.name)).reserve()
   ctx.own = parts => new Promise((resolve, reject) => {
-    const name = guid()
+    const name = nameOf(ctx.offset())
     ctx.queued.push({ name, parts })
     wake()
-    const look = () => ctx.repo.read(`/${DONE}/${name}.json`).then(b => resolve(JSON.parse(b.toString()).value.value), () => setTimeout(look, 30))
+    // catch: not in done yet: looked at again
+    const look = () => layer(ctx, DONE).read(name).then(done => resolve(done.value.value), () => setTimeout(look, 30))
     setTimeout(look, 30)
   })
   // a request's completed form, from its outbox layer: null until it is there
-  ctx.answer = key => ctx.repo.read(`/outbox/${key}.json`).then(b => JSON.parse(b.toString()).value.value, () => null)
-  ctx.submit = async (key, envelope) => { if (repo.storage === 'git') await post(ctx, envelope, key); else inboxOf(dir ?? viewOf(work, repo.name)).write(key, envelope); wake() }
+  // catch: not in the outbox yet: none
+  ctx.answer = offset => layer(ctx, 'outbox').read(nameOf(offset)).then(out => out.value.value, () => null)
+  // (a core record, no offset yet: given as it arrives; -> its offset)
+  ctx.submit = async core => {
+    let offset
+    if (repo.storage === 'git') { offset = ctx.offset(); await post(ctx, wrap(`/${ctx.uri}/inbox`, { ...core, offset })) } else offset = drop(dir ?? viewOf(work, repo.name), ctx.uri, core)
+    wake()
+    return offset
+  }
   // The protocols its packages offer: each linked package with a protocol
   // entry, loaded from its bundle in the mrepo's packages/ (its dispatcher's
   // run('/protocol')), its actions beside the framework's.
@@ -306,6 +317,7 @@ export async function run ({ work: w, repo: given = null, every = 200, idle = 20
   }
   const inbox = repo.storage !== 'git' ? join(dir ?? viewOf(work, repo.name), 'inbox') : null
   const heads = async () => (await repo.backend.listBranches()).map(([b, c]) => `${b} ${c}`).sort().join('\n')
+  let booting = false
   async function pass () {
     timer = null
     due = Infinity
@@ -322,9 +334,9 @@ export async function run ({ work: w, repo: given = null, every = 200, idle = 20
       stage = 'intake'
       // operational once its own requests are done: the inbox taken in
       // catch: not in done yet: its own requests still going, not operational yet
-      if (ctx.intake === false && (await Promise.all(starting.map(n => layer(ctx, DONE).read(n).then(() => true, () => false)))).every(Boolean)) {
+      if (ctx.intake === false && !booting && (await Promise.all(starting.map(n => layer(ctx, DONE).read(n).then(() => true, () => false)))).every(Boolean)) {
         if (boot === null) { ctx.intake = true; commissioning() } else {
-          ctx.intake = 'internal'
+          booting = true
           // the boot hook's lines, each its own request; whatever came of
           // them, the inbox open after
           // catch: a line that failed is in its own record; the boot goes on

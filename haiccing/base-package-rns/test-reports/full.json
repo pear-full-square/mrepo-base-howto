@@ -1,8 +1,8 @@
 {
   "package": "haiccing/base-package-rns",
-  "content": "696c422382060413531d7e21dda35101a03b35b0e75dc09d5710890868811aea",
+  "content": "e1d7985662c7dfda41e16ef9c3b0a8690906c78b66ca2e5ceae087182f8fab53",
   "bare": "v1.36.0",
-  "date": "2026-11-23T23:33:51.831Z",
+  "date": "2026-11-24T02:35:59.263Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -101,12 +101,12 @@
       "unit": "/test/modules/pear-full-square/mycelium-container-document",
       "ok": true,
       "tests": {
-        "passed": 1,
-        "total": 1
+        "passed": 6,
+        "total": 6
       },
       "asserts": {
-        "passed": 8,
-        "total": 8
+        "passed": 42,
+        "total": 42
       },
       "failures": []
     },
@@ -118,8 +118,8 @@
         "total": 22
       },
       "asserts": {
-        "passed": 213,
-        "total": 213
+        "passed": 217,
+        "total": 217
       },
       "failures": []
     },

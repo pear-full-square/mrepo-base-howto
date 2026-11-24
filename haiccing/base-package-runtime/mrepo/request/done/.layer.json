@@ -1,4 +1,5 @@
 {
   "mode": "non-atomic",
-  "description": "Requests done: the history."
+  "description": "Requests done: the history.",
+  "stream": [5, 6]
 }

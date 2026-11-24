@@ -1,6 +1,6 @@
 # Test report: haiccing/base-package-crud
 
-The package passed its `full` set: all 16 units, 276 of 276 tests and 1785 of 1785 asserts.
+The package passed its `full` set: all 16 units, 281 of 281 tests and 1839 of 1839 asserts.
 
 | | |
 |---|---|
@@ -8,11 +8,11 @@ The package passed its `full` set: all 16 units, 276 of 276 tests and 1785 of 17
 | Set | `full` |
 | Result | passed |
 | Units | 16 of 16 passed |
-| Tests | 276 of 276 passed |
-| Asserts | 1785 of 1785 passed |
-| Run | 2026-11-23 23:29 UTC |
+| Tests | 281 of 281 passed |
+| Asserts | 1839 of 1839 passed |
+| Run | 2026-11-24 02:30 UTC |
 | Bare | v1.36.0 |
-| Content | `96e65dcb44561e0d280658957d666f8b1e4de786c5c9269d5b0d8434e8ad4c93` |
+| Content | `0d1f031c8def1da758c8b52b52a12e87256fcfa5779d55045f3d6c3d80931a1d` |
 
 ## Units
 
@@ -25,11 +25,11 @@ The package passed its `full` set: all 16 units, 276 of 276 tests and 1785 of 17
 | `/test/package` | passed | 1 of 1 | 1 of 1 |
 | `/test/modules/pear-full-square/mrepo-base-crud` | passed | 9 of 9 | 80 of 80 |
 | `/test/modules/pear-full-square/mrepo-base-info` | passed | 10 of 10 | 86 of 86 |
-| `/test/modules/pear-full-square/mrepo-base-request` | passed | 21 of 21 | 238 of 238 |
+| `/test/modules/pear-full-square/mrepo-base-request` | passed | 21 of 21 | 254 of 254 |
 | `/test/modules/pear-full-square/mrepo-base-xpath` | passed | 6 of 6 | 55 of 55 |
-| `/test/modules/pear-full-square/mycelium-container-document` | passed | 1 of 1 | 8 of 8 |
+| `/test/modules/pear-full-square/mycelium-container-document` | passed | 6 of 6 | 42 of 42 |
 | `/test/modules/pear-full-square/mycelium-git` | passed | 144 of 144 | 777 of 777 |
-| `/test/modules/pear-full-square/mycelium-uri` | passed | 22 of 22 | 213 of 213 |
+| `/test/modules/pear-full-square/mycelium-uri` | passed | 22 of 22 | 217 of 217 |
 | `/test/modules/pear-full-square/mycelium-value-avro` | passed | 8 of 8 | 57 of 57 |
 | `/test/modules/pear-full-square/mycelium-value-json` | passed | 1 of 1 | 3 of 3 |
 | `/test/modules/pear-full-square/mycelium-xpath` | passed | 21 of 21 | 141 of 141 |

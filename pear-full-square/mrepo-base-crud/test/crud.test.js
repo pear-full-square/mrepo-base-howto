@@ -132,12 +132,12 @@ test('read: a binary record (AVRO) is decoded, every level, by the install\'s re
   const store = mkdtempSync(join(tmpdir(), 'crud-store-'))
   try {
     const reg = registry(schemasOf(store))
-    const done = complete(record('/local/host/outbox', { protocol: 'crud', action: 'read', uri: ['main', 'swarms'], args: [] }, 'r3'), { ok: true, value: [{ uri: ['main', 'swarms'], children: ['swarm-1'] }] })
+    const done = complete(record('/local/host/outbox', { protocol: 'crud', action: 'read', uri: ['main', 'swarms'], args: [] }, 1795312345678), { ok: true, value: [{ uri: ['main', 'swarms'], children: ['swarm-1'] }] })
     const { exec } = execution({ '/packages/manifest.json': B({ store }), '/request/done/r3.avro': encodeRecord(reg, done) })
     const [node] = await read(exec, { uri: ['request', 'done/r3.avro'] })
     t.alike([node.value.value.protocol, node.value.value.action, node.value.value.uri], ['crud', 'read', ['main', 'swarms']], 'its form, the level below the record, as written')
     t.alike(node.value.value.output, done.value.output, 'its output, the level below that, decoded in its place')
-    t.alike([node.value.key, node.value.timestamp], [done.key, done.timestamp], 'the record around it')
+    t.alike([node.value.offset, node.value.timestamp], [done.offset, done.timestamp], 'the record around it')
     const unknown = execution({ '/packages/manifest.json': B({ store: join(store, 'none') }), '/request/done/r3.avro': encodeRecord(reg, done) })
     await t.exception(read(unknown.exec, { uri: ['request', 'done/r3.avro'] }), /unknown schema/, 'a fingerprint the registry does not know: an error')
   } finally { rmSync(store, { recursive: true, force: true }) }

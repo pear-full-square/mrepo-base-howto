@@ -39,7 +39,7 @@ mrepo/
   starting with a dot is no URI's, so a query never selects it and
   nothing from outside can name it. The hidden names there are:
   `.layer.json`, a node's `.node.json` and `.shortcuts.json`, a streaming
-  folder's `.lock`; any other
+  folder's `.lock`, a consumer's `.pointer.json`; any other
   fails a package's structure check.
 - **No README inside a layer** of a package that brings structure: it
   would be committed into it. A layer explains itself in its

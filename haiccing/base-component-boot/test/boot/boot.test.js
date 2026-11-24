@@ -14,7 +14,7 @@ import { join, dirname, resolve } from '../../modules/node_modules/bare-path/ind
 import os, { tmpdir } from '../../modules/node_modules/bare-os/index.js'
 import { fileURLToPath } from '../../modules/node_modules/bare-url/index.js'
 import { openRepo, p2pgitBackend } from '../../modules/pear-full-square/mycelium-git/index.js'
-import { record, wrap, guid, layer, follow } from '../../modules/pear-full-square/mrepo-base-request/index.js'
+import { record, drop, nameOf, layer, follow } from '../../modules/pear-full-square/mrepo-base-request/index.js'
 import { ask, gitdirOf, viewOf } from '../../modules/pear-full-square/mrepo-base-runtime/index.js'
 
 const pkg = join(dirname(fileURLToPath(import.meta.url)), '..', '..')
@@ -77,10 +77,9 @@ test('the boot: put in place, its runtime started, nothing deployed; the host de
     // a command as typed, its parts, into the boot mrepo's inbox folder; its
     // completed form read from request/done
     const typed = async (parts, tries = 300) => {
-      const c = record('/test', parts, guid())
-      writeFileSync(join(viewOf(work, 'boot'), 'inbox', `${c.key}.json`), JSON.stringify(wrap('/local/boot/inbox', c)))
+      const c = nameOf(drop(viewOf(work, 'boot'), 'local/boot', record('/test', parts)))
       let v = null
-      for (let i = 0; i < tries && !v; i++) { v = await repo.read(`/request/done/${c.key}.json`).then(b => JSON.parse(b.toString()).value.value, () => null); if (!v) await wait(100) }
+      for (let i = 0; i < tries && !v; i++) { v = await layer({ repo: repo }, 'request/done').read(c).then(r => r.value.value, () => null); if (!v) await wait(100) }
       return v
     }
     // nothing deployed by the boot: no host, nothing pending
@@ -109,11 +108,15 @@ test('the boot: put in place, its runtime started, nothing deployed; the host de
     const backend = p2pgitBackend(gitdirOf(work, 'boot'), { fs })
     for (let i = 0; i < 300 && history.length < 11; i++) {
       history = []
-      for (const n of await layer({ repo, backend }, 'request/done').arrived()) history.push((await repo.read(`/request/done/${n}.json`).then(b => JSON.parse(b.toString()))).value.value)
+      // (request/done's natural order is its offsets': when each arrived; the
+      // history told here is when each was done: its envelope's time there)
+      const done = []
+      for (const n of await layer({ repo, backend }, 'request/done').arrived()) done.push(await layer({ repo }, 'request/done').read(n))
+      history = done.sort((a, b) => String(a.timestamp).localeCompare(String(b.timestamp))).map(r => r.value.value)
       if (history.length < 11) await wait(100)
     }
     t.alike(history.map(f => `${f.protocol} ${f.action} ${Array.isArray(f.uri) ? f.uri.join("/") : f.uri} ${(f.args ?? []).join(' ')}`.trim()), ['boot deploy boot', 'protocol activate . protocol', 'protocol activate main/. boot', 'protocol activate main/. crud', 'protocol activate main/. haicc', 'protocol activate main/. haici', 'protocol activate main/. help', 'protocol activate main/. info', 'protocol activate main/. runtime', 'info extract main/.', 'boot deploy main/host haiccing/base-package-runtime'], 'the history: the boot\'s deploy, the protocol protocol opened by the runtime, then its boot hook file a line a request (its protocols activated, its info extracted), then the first command')
-    t.alike(await repo.select('/inbox/*').then(r => r.filter(([p]) => !p.endsWith('.layer.json')).length, () => 0), 1, 'through the inbox: only the command; the boot hook file\'s lines are the mrepo\'s own, internal')
+    t.alike(await layer({ repo }, 'inbox').list().then(r => r.length, () => 0), 1, 'through the inbox: only the command; the boot hook file\'s lines are the mrepo\'s own, internal')
     t.ok(history.slice(1, 10).every(f => !f.error), `its hooks done without an error ${history.slice(1, 10).map(f => f.error).filter(Boolean).join('; ')}`)
     t.alike((await repo.select('/protocols/*')).map(([p]) => p.slice(p.lastIndexOf('/') + 1)).filter(n => n !== '.layer.json').sort(), ['boot.json', 'crud.json', 'haicc.json', 'haici.json', 'help.json', 'info.json', 'protocol.json', 'runtime.json'], 'its active protocols, in its protocols layer: the boot\'s, crud, haicc, haici, help, info, the runtime\'s; the protocol protocol, opened by the runtime itself')
     const info = history.find(f => f.protocol === 'info' && f.action === 'extract')
@@ -124,16 +127,15 @@ test('the boot: put in place, its runtime started, nothing deployed; the host de
     const f = follow({ dir: viewOf(work, 'boot'), name: 'boot', print: l => lines.push(l) })
     await f.pass()
     f.stop()
-    t.ok(lines.every(l => !l.includes('\n') && JSON.parse(l).key), 'one compact record a line')
+    t.ok(lines.every(l => !l.includes('\n') && JSON.parse(l).offset), 'one compact record a line')
     const topics = lines.map(l => JSON.parse(l).topic)
     t.ok(topics.includes('/boot/request/done'), 'the boot mrepo\'s, its topic the full path')
     t.ok(topics.every(x => x.startsWith('/boot/')), 'from the root')
     // redeploy, sent to the running boot mrepo through its inbox folder: the
     // host's runtime stopped, the host rebuilt, its runtime started again
-    const core = record('/test', { protocol: 'boot', action: 'redeploy', uri: 'host' }, guid())
-    writeFileSync(join(viewOf(work, 'boot'), 'inbox', `${core.key}.json`), JSON.stringify(wrap('/local/boot/inbox', core)))
+    const core = nameOf(drop(viewOf(work, 'boot'), 'local/boot', record('/test', { protocol: 'boot', action: 'redeploy', uri: 'host' })))
     let redone = null
-    for (let i = 0; i < 300 && !redone; i++) { redone = await repo.read(`/request/done/${core.key}.json`).then(b => JSON.parse(b.toString()).value.value, () => null); if (!redone) await wait(100) }
+    for (let i = 0; i < 300 && !redone; i++) { redone = await layer({ repo: repo }, 'request/done').read(core).then(r => r.value.value, () => null); if (!redone) await wait(100) }
     t.ok(redone, 'boot redeploy /host: done')
     t.absent(redone?.error, `without an error ${redone?.error ?? ''}`)
     t.alike([redone?.output.tornDown, redone?.output.deployed, redone?.output.package], ['host', 'host', 'haiccing/base-package-runtime'], 'torn down and deployed again, its type as recorded')
@@ -151,10 +153,9 @@ test('the boot: put in place, its runtime started, nothing deployed; the host de
     // teardown, then deploy again, each a request to the running boot mrepo
     // (the child the runtime package alone)
     const sent = async (form, tries = 300) => {
-      const c = record('/test', { protocol: 'boot', ...form }, guid())
-      writeFileSync(join(viewOf(work, 'boot'), 'inbox', `${c.key}.json`), JSON.stringify(wrap('/local/boot/inbox', c)))
+      const c = nameOf(drop(viewOf(work, 'boot'), 'local/boot', record('/test', { protocol: 'boot', ...form })))
       let v = null
-      for (let i = 0; i < tries && !v; i++) { v = await repo.read(`/request/done/${c.key}.json`).then(b => JSON.parse(b.toString()).value.value, () => null); if (!v) await wait(100) }
+      for (let i = 0; i < tries && !v; i++) { v = await layer({ repo: repo }, 'request/done').read(c).then(r => r.value.value, () => null); if (!v) await wait(100) }
       return v
     }
     const down = await sent({ action: 'teardown', uri: 'host' })
@@ -174,14 +175,17 @@ test('the boot: put in place, its runtime started, nothing deployed; the host de
     // linked there, unchanged; the request waits, the response its result
     const far = await typed(['haicc', 'host', 'info/get'])
     t.alike([far?.error, far?.protocol, far?.action, far?.uri, far?.args], [undefined, 'haicc', 'goto', ['main', 'host'], ['info/get']], `haicc host info/get: haicc alone is haicc/goto, what follows its arguments ${far?.error ?? ''}`)
-    t.alike([far?.output?.keyword, far?.remote?.at, far?.remote?.folder, typeof far?.remote?.key], ['.', 'host', '../local/host', 'string'], 'answered by the host: host is a shortcut, the command sent on to the mrepo linked there')
+    t.alike([far?.output?.keyword, far?.remote?.at, far?.remote?.folder, typeof far?.remote?.offset], ['.', 'host', '../local/host', 'number'], 'answered by the host: host is a shortcut, the command sent on to the mrepo linked there')
     const hostRepo = openRepo(p2pgitBackend(join(host, '.git'), { fs }))
-    const passed = await hostRepo.read(`/request/done/${far?.remote?.key}.json`).then(b => JSON.parse(b.toString()).value, () => null)
-    t.alike([/^\/local\/boot\/execute\/[0-9a-f-]{36}$/.test(passed?.topic ?? ''), passed?.value?.command, passed?.value?.protocol, passed?.value?.uri], [true, ['info/get'], 'info', ['main', '.']], 'in the host: the command that followed, unchanged (the hop taken off, nothing rewritten), addressed back to the waiting request\'s branch')
+    // (what it waits for: the child's offset, at the host)
+    const passed = await layer({ repo: hostRepo }, 'request/done').read(nameOf(far?.remote?.offset)).then(r => r.value, () => null)
+    t.alike([/^\/local\/boot\/execute\/\d{13}$/.test(passed?.topic ?? ''), passed?.value?.command, passed?.value?.protocol, passed?.value?.uri], [true, ['info/get'], 'info', ['main', '.']], 'in the host: the command that followed, unchanged (the hop taken off, nothing rewritten), addressed back to the waiting request\'s branch')
     let kept = null // moved to done right after its principal, in the same pass
-    for (let i = 0; i < 50 && !kept; i++) { kept = await repo.read(`/request/done/${far?.remote?.key}.json`).then(b => JSON.parse(b.toString()).value, () => null); if (!kept) await wait(100) }
+    // (here under an offset of its own, given as it came in; the host's on its core)
+    const responseIn = async l => { for (const n of (await layer({ repo }, l).list()).reverse()) { const r = await layer({ repo }, l).read(n); if (r.value?.offset === far?.remote?.offset && String(r.value?.topic).startsWith('/local/boot/execute/')) return r } return null }
+    for (let i = 0; i < 50 && !kept; i++) { kept = (await responseIn('request/done'))?.value ?? null; if (!kept) await wait(100) }
     t.alike([kept?.value?.uri, kept?.value?.output?.keyword, 'output' in (kept?.value ?? {})], [['main', '.'], '.', true], 'the host\'s response, merged in with its principal: kept in done')
-    t.absent(await repo.read(`/outbox/${far?.remote?.key}.json`).then(() => true, () => false), 'and not sent on')
+    t.absent(await responseIn('outbox'), 'and not sent on')
     const near = await typed(['haicc', '.', 'info/get'])
     t.alike([near?.error, near?.remote], [undefined, undefined], `haicc . info/get: the root, executed here ${near?.error ?? ''}`)
     const packagesOf = async parts => (await typed(parts))?.output?.choices?.[0]?.below.map(b => b.keyword) ?? []
@@ -223,10 +227,9 @@ test('the boot: put in place, its runtime started, nothing deployed; the host de
     const svc = viewOf(work, 'local/svc')
     const svcRepo = openRepo(p2pgitBackend(join(svc, '.git'), { fs }))
     const toSvc = async (form, tries = 600) => {
-      const c = record('/test', form, guid())
-      writeFileSync(join(svc, 'inbox', `${c.key}.json`), JSON.stringify(wrap('/local/svc/inbox', c)))
+      const c = nameOf(drop(svc, 'local/svc', record('/test', form)))
       let v = null
-      for (let i = 0; i < tries && !v; i++) { v = await svcRepo.read(`/outbox/${c.key}.json`).then(b => JSON.parse(b.toString()).value.value, () => null); if (!v) await wait(100) }
+      for (let i = 0; i < tries && !v; i++) { v = await layer({ repo: svcRepo }, 'outbox').read(c).then(r => r.value.value, () => null); if (!v) await wait(100) }
       return v
     }
     const svcReq = (protocol, action, uri, args) => toSvc({ protocol, action, uri, ...(args ? { args } : {}) })
@@ -287,7 +290,7 @@ test('the boot: put in place, its runtime started, nothing deployed; the host de
     // again: only its own requests are added, nothing done before is repeated
     const doneNow = async () => {
       const out = {}
-      for (const [p] of await repo.select('/request/done/*')) if (!p.endsWith('.layer.json')) { const v = JSON.parse((await repo.read(p)).toString()).value.value; out[p] = `${v.protocol} ${v.action} ${Array.isArray(v.uri) ? v.uri.join("/") : v.uri}` }
+      for (const p of await layer({ repo }, 'request/done').list()) { const v = (await layer({ repo }, 'request/done').read(p)).value.value; out[p] = `${v.protocol} ${v.action} ${Array.isArray(v.uri) ? v.uri.join("/") : v.uri}` }
       return out
     }
     const before = await doneNow()

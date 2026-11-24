@@ -2,6 +2,7 @@
 // URI: feedback on a command, recorded in the request log, the command not
 // executed (README.md beside it).
 import { segmented, joined, MAIN } from 'mrepo-base-request'
+import { placeOf } from 'mycelium-container-document'
 
 // The URI as written, where the outside stands: main's prefix not part of it.
 const written = uri => { const s = segmented(uri); return joined(s[0] === MAIN && s.length > 1 ? s.slice(1) : s) }
@@ -18,8 +19,9 @@ export async function feedback (exec, { uri = ['.'], args = [], flags = {} }) {
   const protocols = exec.runtime.protocols ?? {}
   const [protocol, action = protocols[protocol]?.default ?? null] = first.split('/')
   const on = typed([action ? `${protocol}/${action}` : protocol, written(uri), ...given, ...(Object.keys(flags).length ? ['--flags', ...Object.entries(flags).map(([k, v]) => (v === true ? k : `${k}=${v}`))] : [])])
-  // the store: this request's own record, request/done/<id>.json once done
-  const read = `crud/read done/${exec.id}.json --flags layer=request`
+  // the store: this request's own record, in request/done once done, under
+  // its offset (a streaming layer: in its buckets)
+  const read = `crud/read done/${placeOf(exec.id)}.json --flags layer=request`
   exec.log('verbose', 'recorded', { on, id: exec.id })
   return {
     feedback: 'recorded',

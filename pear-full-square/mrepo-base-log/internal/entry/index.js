@@ -1,5 +1,6 @@
 // entry: a completed request, as an mrepo's outbox holds it, made a log
 // record (README.md beside it).
+import { nameOf } from 'mrepo-base-request'
 
 // envelope: the outbox's record: in it the record as it was sent, in that
 // its completed form. -> { key, timestamp, value }: the log record's key
@@ -11,10 +12,10 @@ export function recordOf (envelope) {
   if (!form || typeof form !== 'object' || Array.isArray(form) || !('output' in form || 'error' in form)) return null
   const ms = Date.parse(envelope.timestamp) - Date.parse(core.timestamp)
   return {
-    key: envelope.key,
+    key: nameOf(envelope.offset),
     timestamp: envelope.timestamp,
     value: {
-      request: envelope.key,
+      request: nameOf(envelope.offset),
       // when it was sent; how long until it was completed
       sent: core.timestamp ?? null,
       ms: Number.isFinite(ms) ? ms : null,

@@ -12,6 +12,7 @@ import { topics } from 'p2p-topic'
 import * as handler from 'mycelium-value-json'
 import { socketOf, listen, request, open } from 'p2p-local'
 import { lookup } from 'mrepo-base-rns'
+import { outboxOf, nameOf } from 'mrepo-base-request'
 import { recordOf } from '../entry/index.js'
 import { SIDE, SOCKET } from '../client/index.js'
 
@@ -66,11 +67,14 @@ export async function serve ({ dir, every = 500, sync = 2000, swarm = lookup(dir
   const take = async () => {
     if (!existsSync(outbox)) return
     const found = []
-    for (const name of readdirSync(outbox)) {
-      if (!name.endsWith('.json') || logged.has(name.slice(0, -5)) || failed.has(name)) continue
+    // (a streaming folder: its records in their natural order)
+    const box = outboxOf(dir)
+    for (const offset of box.list({ ascending: true })) {
+      const name = nameOf(offset)
+      if (logged.has(name) || failed.has(name)) continue
       let envelope = null
       // catch: not whole yet, or not JSON: looked at again the next time
-      try { envelope = JSON.parse(readFileSync(join(outbox, name), 'utf8')) } catch { continue }
+      try { envelope = box.read(offset) } catch { continue }
       const record = recordOf(envelope)
       if (!record || logged.has(record.key)) { failed.add(name); continue }
       found.push(record)

@@ -9,7 +9,7 @@ import { join } from 'bare-path'
 import { tmpdir } from 'bare-os'
 import process from 'bare-process'
 import { openRepo, writer, p2pgitBackend } from 'mycelium-git'
-import { record, wrap, guid } from 'mrepo-base-request'
+import { record, drop, outboxOf } from 'mrepo-base-request'
 import { ask } from 'mrepo-base-runtime'
 import { build, place, parseSource } from 'mrepo-base-boot'
 import { create, start, stop, remove, status, replica, docker, available, imageOf, stateOf, AT, CONTAINERS, MOUNT, IMAGE } from '../index.js'
@@ -140,10 +140,10 @@ test('a replica made, started, reached, stopped, started again and removed: a re
     const s = await ask({ repo: placed, op: 'status' })
     t.alike([s?.pid, s?.repository.uri], [1, 'swarm-1/node-1/container'], 'its runtime answering on its socket in the mapped folder: process 1 of its container')
     // a request into its inbox folder, as the bridgehead reaches it: answered
-    const core = record('/test', ['info/get'], guid())
-    writeFileSync(join(placed, 'inbox', `${core.key}.json`), JSON.stringify(wrap('/swarm-1/node-1/container/inbox', core)))
+    // (dropped as everyone drops a record, into the folder mapped into the container)
+    const sent = drop(placed, 'swarm-1/node-1/container', record('/test', ['info/get']))
     let back = null
-    for (let i = 0; i < 150 && !back; i++) { back = existsSync(join(placed, 'outbox', `${core.key}.json`)) ? JSON.parse(readFileSync(join(placed, 'outbox', `${core.key}.json`))) : null; if (!back) await new Promise(resolve => setTimeout(resolve, 100)) }
+    for (let i = 0; i < 150 && !back; i++) { back = outboxOf(placed).has(sent) ? outboxOf(placed).read(sent) : null; if (!back) await new Promise(resolve => setTimeout(resolve, 100)) }
     t.ok(back?.value.value.output?.choices?.[0]?.title, `its inbox operational: a request dropped into the mapped folder answered in its outbox folder ${back?.value.value.error ?? ''}`)
     t.alike(await start(exec), { started: 'container', container: name, state: 'running' }, 'start again: running already, left as it is')
     t.is((await status(exec)).state, 'running', 'status: running')

@@ -190,21 +190,22 @@ has "$out" '"commission":"done","service":"started"' "its commission done before
 has "$out" '"topic":"/haicc/terminal"' "--raw: the response record as it is stored, the core addressed back to the terminal"
 is "$(printf '%s\n' "$out" | wc -l | tr -d ' ')" 1 "one line"
 out=$(haicc . info/get 2>&1); is $? 0 "haicc . info/get: by default the record unpacked"
-has "$out" '    "topic": "/haicc/terminal", "key": "' "across lines, indented, its entries packed on a line up to the width: the core two deep"
+has "$out" '    "topic": "/haicc/terminal", "offset": ' "across lines, indented, its entries packed on a line up to the width: the core two deep"
 has "$out" '      "command": ["info/get"], "protocol": "info",' "the form three deep, packed too"
 has "$out" '"keyword": "."' "and its output, opened below: an entry that does not fit a line of its own"
 [ "$(printf '%s\n' "$out" | wc -l | tr -d ' ')" -gt 5 ] && ok "several lines" || no "several lines" "$out"
 has "$(haicc --output host info/get 2>&1)" '"title":"base-component-haicc"' "the host, commissioned: its info extracted by its initialise hook"
 # nothing of a record changed by the unpacking: what is printed, its line
-# breaks and spaces taken off, is the record as it is stored in the outbox,
+# breaks and spaces taken off, is the record as it is stored in the outbox
+# (a streaming folder: under its offset, in its buckets),
 # its spaces taken off the same way (an output, an error; the exact check,
 # strings minded, is the app's own test)
 back=yes
 for c in ". info/get" ". info/get haiccing" ". boot/deploy host haiccing/base-component-haicc"; do
   out=$(haicc $c 2>/dev/null)
-  key=$(printf '%s\n' "$out" | sed -n 's/^  "topic": "[^"]*", "key": "\([^"]*\)".*$/\1/p')
+  key=$(printf '%s\n' "$out" | sed -n 's/^  "topic": "[^"]*", "offset": \([0-9]*\),.*$/\1/p')
   packed=$(printf '%s\n' "$out" | tr -d ' \n')
-  [ -n "$key" ] && [ "$packed" = "$(tr -d ' \n' < "$T/home/work/mrepos/boot/outbox/$key.json")" ] || { no "unpacked and packed again: the record as stored" "haicc $c"; back=''; break; }
+  [ -n "$key" ] && [ "$packed" = "$(tr -d ' \n' < "$T/home/work/mrepos/boot/outbox/${key%????????}/${key%???????}/$key.json")" ] || { no "unpacked and packed again: the record as stored" "haicc $c"; back=''; break; }
 done
 [ -z "$back" ] || ok "unpacked and packed again: every record in the outbox as stored"
 is "$(haicc output 2>&1)" "auto: 80 (the output is no terminal)" "haicc output: the width in force: auto, 80 here"
@@ -281,12 +282,15 @@ hasnt "$out" '"topic":' "not the record (--raw for it)"
 out=$(haicc host crud/read swarms --flags feedback the list is empty, a swarm was expected 2>&1); is $? 0 "haicc host crud/read swarms --flags feedback <text>: recorded, exit 0"
 id=$(printf '%s\n' "$out" | sed -n 's/^Feedback on crud\/read swarms recorded: request \([0-9a-f-]*\)\.$/\1/p')
 [ -n "$id" ] && ok "answered in natural language: the command as understood, its request's id" || no "answered in natural language: the command as understood, its request's id" "$out"
-has "$out" "To read it back: crud/read done/$id.json --flags layer=request" "the command to read it back, as typed after the position"
-out=$(haicc --output host crud/read "done/$id.json" --flags layer=request 2>&1); is $? 0 "read back: haicc host crud/read done/<id>.json --flags layer=request"
+# (where its record is in request/done, a streaming layer: under its offset,
+# in its buckets; the query reads the layer as it is stored: logical = physical)
+at="${id%????????}/${id%???????}/$id"
+has "$out" "To read it back: crud/read done/$at.json --flags layer=request" "the command to read it back, as typed after the position"
+out=$(haicc --output host crud/read "done/$at.json" --flags layer=request 2>&1); is $? 0 "read back: haicc host crud/read done/<buckets>/<id>.json --flags layer=request"
 has "$out" '"protocol":"haici","action":"feedback","uri":["main","swarms"],"args":["the list is empty, a swarm was expected","crud/read"]' "its record: haici/feedback at the command's URI, the text, then the command"
 has "$out" '"rewritten":"feedback"' "made by the flag"
 has "$out" "\"output\":{\"feedback\":\"recorded\",\"on\":\"crud/read swarms\",\"id\":\"$id\"" "its answer kept with it"
-out=$(haicc --output host crud/read "done/*[value/value/protocol='haici']" --flags layer=request 2>&1); has "$out" "\"key\":\"$id\"" "all the feedback there: the request layer read by protocol"
+out=$(haicc --output host crud/read "done/*/*/*[value/value/protocol='haici']" --flags layer=request 2>&1); has "$out" "\"offset\":$id" "all the feedback there: the request layer read by protocol"
 out=$(haicc --output . boot/teardown host --flags feedback do not, it is in use 2>&1); has "$out" '"on":"boot/teardown host"' "haicc . boot/teardown host --flags feedback <text>: recorded at the root"
 is "$(running | wc -l | tr -d ' ')" 3 "nothing of it executed: the host and its node still running"
 out=$(haicc --output host haici/feedback swarms "asked directly" crud/read 2>&1); has "$out" '"on":"crud/read swarms"' "asked directly: haicc host haici/feedback swarms <text> crud/read"
@@ -411,14 +415,14 @@ is "$(haicc --output . boot/teardown extra-1 2>&1)$(haicc --output . boot/teardo
 [ ! -e "$T/home/work/mrepos/local/extra-1" ] && [ ! -e "$T/home/work/mrepos/local/extra-2" ] && [ -d "$T/home/work/mrepos/local/host" ] && ok "their folders removed, the host left" || no "their folders removed, the host left"
 is "$(running | wc -l | tr -d ' ')" 3 "three runtimes running again"
 # main is the default layer; layer=<name> changes it: the request records read
-out=$(haicc --output . crud/read "done/*[value/value/protocol='boot']" --flags layer=request 2>&1); is "$?" "0" "haicc . crud/read \"done/*[...]\" --flags layer=request: the request layer read"
+out=$(haicc --output . crud/read "done/*/*/*[value/value/protocol='boot']" --flags layer=request 2>&1); is "$?" "0" "haicc . crud/read \"done/*/*/*[...]\" --flags layer=request: the request layer read"
 has "$out" '"uri":["request","done/' "records, each a file answered with its document, its URI at that layer"
 has "$out" '"protocol":"boot"' "those the filter holds for"
 hasnt "$out" '"protocol":"service"' "and no others"
-out=$(haicc --output . --flags layer=request -- crud/read "done/*[value/value/protocol='boot']" 2>&1)
+out=$(haicc --output . --flags layer=request -- crud/read "done/*/*/*[value/value/protocol='boot']" 2>&1)
 has "$out" '"uri":["request","done/' "the flag at the step: held for the command that follows"
 is "$(haicc --output . crud/read 'done/*' 2>&1)" '[]' "without the flag: main, where there is no done"
-out=$(haicc --output host crud/read 'done/*' --flags layer=request 2>&1)
+out=$(haicc --output host crud/read 'done/*/*/*' --flags layer=request 2>&1)
 has "$out" '"uri":["request","done/' "through a shortcut: the host's records, the routing still in main"
 out=$(haicc --flags log=debug -- host crud/read . 2>&1 >/dev/null); is "$?" "2" "flags in front of the URI: refused, exit 2"
 has "$out" "flags follow a URI: they are that step's" "said"
@@ -477,7 +481,7 @@ has "$(haicc --output host info/get howto 2>&1)" '"keyword":"haiccing/base-compo
 out=$(haicc docs info/get haiccing/base-docs-hdlc/validation --flags feedback unclear: which state holds a request? 2>&1); is $? 0 "haicc docs info/get <keywords> --flags feedback <text>: recorded at the docs mrepo"
 id=$(printf '%s\n' "$out" | sed -n 's/^Feedback on info\/get haiccing\/base-docs-hdlc\/validation recorded: request \([0-9a-f-]*\)\.$/\1/p')
 [ -n "$id" ] && ok "answered with its request's id" || no "answered with its request's id" "$out"
-out=$(haicc --output docs crud/read "done/$id.json" --flags layer=request 2>&1); has "$out" '"protocol":"haici","action":"feedback","uri":["main","haiccing/base-docs-hdlc/validation"]' "read back there: haici/feedback at the keywords' URI"
+out=$(haicc --output docs crud/read "done/${id%????????}/${id%???????}/$id.json" --flags layer=request 2>&1); has "$out" '"protocol":"haici","action":"feedback","uri":["main","haiccing/base-docs-hdlc/validation"]' "read back there: haici/feedback at the keywords' URI"
 # its build: removed at shutdown, built again at initialise
 haicc --output docs service/stop >/dev/null 2>&1; out=$(haicc --output docs service/shutdown 2>&1); has "$out" '"state":"booted"' "haicc docs service/shutdown: shut down, its shutdown hook run"
 out=$(haicc --output docs info/get 2>&1 >/dev/null); has "$out" "no info extracted in this mrepo yet" "its build removed (info/clear)"

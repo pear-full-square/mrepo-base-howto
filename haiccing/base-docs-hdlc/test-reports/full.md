@@ -1,6 +1,6 @@
 # Test report: haiccing/base-docs-hdlc
 
-The package passed its `full` set: all 11 units, 70 of 70 tests and 445 of 445 asserts.
+The package passed its `full` set: all 11 units, 75 of 75 tests and 483 of 483 asserts.
 
 | | |
 |---|---|
@@ -8,11 +8,11 @@ The package passed its `full` set: all 11 units, 70 of 70 tests and 445 of 445 a
 | Set | `full` |
 | Result | passed |
 | Units | 11 of 11 passed |
-| Tests | 70 of 70 passed |
-| Asserts | 445 of 445 passed |
-| Run | 2026-11-23 23:22 UTC |
+| Tests | 75 of 75 passed |
+| Asserts | 483 of 483 passed |
+| Run | 2026-11-24 02:21 UTC |
 | Bare | v1.36.0 |
-| Content | `e37870d41c44c8596997c74b8649f2a2b4ed026a42b5a390fee7316637285d12` |
+| Content | `4f7e4979493195e320de15ea1c80332c63ef094585fa65c3d989f084684fc25c` |
 
 ## Units
 
@@ -24,8 +24,8 @@ The package passed its `full` set: all 11 units, 70 of 70 tests and 445 of 445 a
 | `/test/mrepo` | passed | 1 of 1 | 1 of 1 |
 | `/test/package` | passed | 1 of 1 | 1 of 1 |
 | `/test/modules/pear-full-square/mrepo-base-info` | passed | 10 of 10 | 86 of 86 |
-| `/test/modules/pear-full-square/mycelium-container-document` | passed | 1 of 1 | 8 of 8 |
-| `/test/modules/pear-full-square/mycelium-uri` | passed | 22 of 22 | 213 of 213 |
+| `/test/modules/pear-full-square/mycelium-container-document` | passed | 6 of 6 | 42 of 42 |
+| `/test/modules/pear-full-square/mycelium-uri` | passed | 22 of 22 | 217 of 217 |
 | `/test/modules/pear-full-square/mycelium-value-avro` | passed | 8 of 8 | 57 of 57 |
 | `/test/modules/pear-full-square/mycelium-value-json` | passed | 1 of 1 | 3 of 3 |
 | `/test/modules/pear-full-square/pkgm-base-check` | passed | 24 of 24 | 72 of 72 |

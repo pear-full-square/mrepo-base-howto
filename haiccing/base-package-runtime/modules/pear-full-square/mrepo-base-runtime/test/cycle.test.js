@@ -5,7 +5,7 @@ import { join, dirname } from 'bare-path'
 import { tmpdir } from 'bare-os'
 import { fileURLToPath } from 'bare-url'
 import { openRepo, p2pgitBackend, nativeBackend } from 'mycelium-git'
-import { gitdirOf } from 'mrepo-base-request'
+import { gitdirOf, layer } from 'mrepo-base-request'
 import { start, ask, open, commissioned, decommission } from '../index.js'
 import { bootedHost, send, sendForm } from './fixture.js'
 
@@ -69,17 +69,17 @@ for (const storage of ['p2p', 'git']) {
       const r = await open(work)
       try {
         const repo = openRepo(r.backend)
-        const done = await repo.select('/request/done/*')
+        const done = await layer({ repo }, 'request/done').list()
         t.is(done.length, 29, 'every request done, the refused ones too, the protocol protocol opened by the runtime, and each hook line its own request')
-        const recs = await Promise.all(done.map(async ([p]) => JSON.parse((await repo.read(p)).toString())))
+        const recs = await Promise.all(done.map(n => layer({ repo }, 'request/done').read(n)))
         t.ok(recs.every(x => x.topic === '/request/done' && ('output' in x.value.value || 'error' in x.value.value)), 'each in its envelope at its topic, its form completed')
         t.is(recs.filter(x => x.value.topic === null).length, 5, 'no sender: the preloaded one, the protocol protocol opened by the runtime, and the hook lines (boot, start, stop), the mrepo\'s own internal requests')
         t.alike((await repo.select('/protocols/*')).map(([p]) => p), ['/protocols/protocol.json', '/protocols/service.json'], 'the active set: protocol (the runtime\'s own), service (the boot hook); crud activated by start, deactivated by stop')
         t.alike((await r.backend.listBranches()).map(([b]) => b).filter(b => !b.startsWith('execute/')).sort(), ['inbox', 'main', 'outbox', 'packages', 'protocols', 'request/done', 'request/execute', 'request/pending/default', 'runtime'], 'the layers (the execution branches not among them)')
         t.alike(await repo.select('/request/execute/*'), [], 'nothing left executing')
         t.alike(await repo.select('/main/*'), [], 'main: the note deleted again')
-        t.is((await repo.select('/inbox/*')).length, 22, 'the inbox: every envelope posted, kept (housekeeping later); the hook lines not among them: internal')
-        t.is((await repo.select('/outbox/*')).length, 22, 'the outbox: every completed form sent back')
+        t.is((await layer({ repo }, 'inbox').list()).length, 22, 'the inbox: every envelope posted, kept (housekeeping later); the hook lines not among them: internal')
+        t.is((await layer({ repo }, 'outbox').list()).length, 22, 'the outbox: every completed form sent back')
         t.is(JSON.parse((await repo.read('/runtime/service.json')).toString()).state, 'booted')
       } finally { await r.close() }
       t.absent(existsSync(join(work, 'mrepos', 'host', 'log')), 'no log folder')
@@ -89,15 +89,16 @@ for (const storage of ['p2p', 'git']) {
       try {
         const repo = openRepo(r2.backend)
         let name = null
-        for (const [p] of await repo.select('/inbox/*')) {
-          const env = JSON.parse((await repo.read(p)).toString())
-          if (env.value.value.action === 'create' && env.value.value.uri === 'notes/hello') { name = p.slice('/inbox/'.length, -'.json'.length); break }
+        for (const n of await layer({ repo }, 'inbox').list()) {
+          const env = await layer({ repo }, 'inbox').read(n)
+          if (env.value.value.action === 'create' && env.value.value.uri === 'notes/hello') { name = n; break }
         }
-        const input = JSON.parse((await repo.read(`/inbox/${name}.json`)).toString())
-        const done = JSON.parse((await repo.read(`/request/done/${name}.json`)).toString())
-        const output = JSON.parse((await repo.read(`/outbox/${name}.json`)).toString())
+        const input = await layer({ repo }, 'inbox').read(name)
+        const done = await layer({ repo }, 'request/done').read(name)
+        const output = await layer({ repo }, 'outbox').read(name)
         t.alike([input.topic, done.topic, output.topic], ['/host/inbox', '/request/done', '/outbox'], 'each place: a new envelope, its topic the place')
-        t.ok([input, done, output].every(r => r.key === name && r.value.key === name), 'one key throughout: every envelope, its core')
+        t.ok([input, done, output].every(r => r.offset === Number(name) && r.value.offset === Number(name)), 'one offset throughout: every envelope, its core, its name in every layer')
+        t.ok(await repo.find(`/request/done/${name.slice(0, 5)}/${name.slice(0, 6)}/${name}.json`), 'done, a streaming layer: in its buckets')
         t.alike(done.value, output.value, 'the core completed: in done, and sent back')
         const { log: written, ...completed } = done.value.value
         t.alike({ ...input.value, value: { ...input.value.value, uri: ['main', 'notes/hello'], output: CREATED } }, { ...done.value, value: completed }, 'the core as posted, its URI as held inside, completed (its output)')

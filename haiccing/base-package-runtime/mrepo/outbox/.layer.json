@@ -1,4 +1,5 @@
 {
   "mode": "non-atomic",
-  "description": "Records the mrepo sends."
+  "description": "Records the mrepo sends.",
+  "stream": [5, 6]
 }

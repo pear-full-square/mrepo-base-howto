@@ -1,8 +1,8 @@
 {
   "package": "haiccing/base-docs-xpath",
-  "content": "10e4806b76ce8d3bd02e78f14ba3a60713150e1e569ce70fafc5c9b7ee2f0e8b",
+  "content": "34bf64679211e7e0f0c5106e6a1c096cf5745d789ecf3c8453af49e4b3a72943",
   "bare": "v1.36.0",
-  "date": "2026-11-23T23:23:22.314Z",
+  "date": "2026-11-24T03:28:42.930Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -88,12 +88,12 @@
       "unit": "/test/modules/pear-full-square/mycelium-container-document",
       "ok": true,
       "tests": {
-        "passed": 1,
-        "total": 1
+        "passed": 6,
+        "total": 6
       },
       "asserts": {
-        "passed": 8,
-        "total": 8
+        "passed": 42,
+        "total": 42
       },
       "failures": []
     },
@@ -105,8 +105,8 @@
         "total": 22
       },
       "asserts": {
-        "passed": 213,
-        "total": 213
+        "passed": 217,
+        "total": 217
       },
       "failures": []
     },

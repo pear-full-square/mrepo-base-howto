@@ -429,7 +429,7 @@ export async function execute (ctx, { actions = {} } = {}) {
       for (const t of made.keys()) await close(backend, name, t)
       try {
         const value = park(ctx, name, core, waited)
-        write('info', 'request.waiting', { key: value.remote.key })
+        write('info', 'request.waiting', { offset: value.remote.offset })
         metrics(null)
         const c = await w.change(await open(w, backend, name, EXECUTE))
         await c.put(`/${name}.json`, Buffer.from(JSON.stringify(wrap(`/${EXECUTE}`, { ...core, value: { ...value, log: entries } })) + '\n'))
@@ -444,7 +444,7 @@ export async function execute (ctx, { actions = {} } = {}) {
       for (const t of made.keys()) await close(backend, name, t)
       try {
         const value = pass(ctx, name, core, forwarded.to, forwarded.command, flags)
-        write('info', 'request.sent', { to: forwarded.to.at, mrepo: forwarded.to.mrepo, key: value.remote.key })
+        write('info', 'request.sent', { to: forwarded.to.at, mrepo: forwarded.to.mrepo, offset: value.remote.offset })
         metrics(null)
         // what it logged so far stays with it, waiting
         const c = await w.change(await open(w, backend, name, EXECUTE))

@@ -9,7 +9,7 @@ import { join, dirname } from '../../modules/node_modules/bare-path/index.js'
 import os, { tmpdir } from '../../modules/node_modules/bare-os/index.js'
 import { fileURLToPath } from '../../modules/node_modules/bare-url/index.js'
 import { openRepo, writer, p2pgitBackend } from '../../modules/pear-full-square/mycelium-git/index.js'
-import { record, wrap, guid, gitdirOf, viewOf } from '../../modules/pear-full-square/mrepo-base-request/index.js'
+import { record, drop, nameOf, layer, gitdirOf, viewOf } from '../../modules/pear-full-square/mrepo-base-request/index.js'
 import { ask } from '../../modules/pear-full-square/mrepo-base-runtime/index.js'
 
 const pkg = join(dirname(fileURLToPath(import.meta.url)), '..', '..')
@@ -36,11 +36,10 @@ async function mrepo (work) {
 }
 
 async function send (work, backend, form) {
-  const core = record('/test', { ...form }, guid())
-  writeFileSync(join(viewOf(work, 'test'), 'inbox', `${core.key}.json`), JSON.stringify(wrap('/test/inbox', core)))
+  const core = nameOf(drop(viewOf(work, 'test'), 'test', record('/test', { ...form })))
   const repo = openRepo(backend)
   for (let i = 0; i < 100; i++) {
-    const back = await repo.read(`/outbox/${core.key}.json`).then(b => JSON.parse(b.toString()), () => null)
+    const back = await layer({ repo: repo }, 'outbox').read(core).then(r => r, () => null)
     if (back) return back.value.value
     await wait(100)
   }
@@ -66,7 +65,7 @@ test('the runtime: started, answering, stopped', { timeout: 60000 }, async (t) =
     let done = []
     for (let i = 0; i < 100 && done.length < 2; i++) {
       done = []
-      for (const [p] of await repo.select('/request/done/*')) if (!p.endsWith('.layer.json')) done.push(JSON.parse((await repo.read(p)).toString()).value.value)
+      for (const n of await layer({ repo }, 'request/done').list()) done.push((await layer({ repo }, 'request/done').read(n)).value.value)
       if (done.length < 2) await wait(100)
     }
     t.alike(done.map(f => (f.command ?? []).join(' ')).sort(), ['protocol/activate . help', 'protocol/activate . protocol'], 'the runtime\'s own, then the boot hook file\'s first line: each a request of its own, done')

@@ -12,7 +12,7 @@ import { join } from 'bare-path'
 import { openStore } from 'p2p-store'
 import { mrepos } from 'p2p-mrepo'
 import { writer, openRepo, nativeBackend, p2pgitBackend } from 'mycelium-git'
-import { record, wrap, guid, post, inboxFolder, setting, gitdirOf, PENDING } from 'mrepo-base-request'
+import { record, wrap, tick, nameOf, layer, post, inboxFolder, setting, gitdirOf, PENDING } from 'mrepo-base-request'
 
 const author = { name: 'test', email: 'test@localhost' }
 // The hooks, as a defining package would drop them into the runtime layer.
@@ -34,8 +34,8 @@ async function layers (backend, { preload, hooks = true, more = {} }) {
   await r.commit('Booted', { author })
   if (preload) {
     const q = await w.change(PENDING)
-    const core = record(null, { protocol: 'service', action: 'initialise', uri: ['.'] }, guid())
-    await q.put(`/${core.key}.json`, Buffer.from(JSON.stringify(wrap(`/${PENDING}`, core))))
+    const core = record(null, { protocol: 'service', action: 'initialise', uri: ['.'] }, tick())
+    await q.put(`/${nameOf(core.offset)}.json`, Buffer.from(JSON.stringify(wrap(`/${PENDING}`, core))))
     await q.commit('Preloaded', { author })
   }
 }
@@ -65,14 +65,15 @@ export async function sendForm (work, form, { wait = 10000, to } = {}) {
   const { storage, name } = setting(work)
   const disk = storage === 'git' ? nativeBackend(gitdirOf(work, name)) : p2pgitBackend(gitdirOf(work, name), { fs })
   // a form, or a command as typed (a string, an array of parts)
-  const core = record('/haicc/terminal', typeof form === 'string' || Array.isArray(form) ? form : { ...form }, guid())
-  const envelope = wrap(to ?? `/${name}/inbox`, core)
-  const id = core.key
-  if (storage === 'git') await post({ work, backend: disk, writer: writer(disk), repo: openRepo(disk) }, envelope, id)
-  else inboxFolder(work).write(id, envelope)
+  const core = record('/haicc/terminal', typeof form === 'string' || Array.isArray(form) ? form : { ...form })
+  // its offset given as it arrives: on git alone, by the post; else by the
+  // inbox folder, as everyone drops a record
+  let id
+  if (storage === 'git') [id] = await post({ work, backend: disk, writer: writer(disk), repo: openRepo(disk) }, wrap(to ?? `/${name}/inbox`, core))
+  else id = nameOf(inboxFolder(work).create(offset => wrap(to ?? `/${name}/inbox`, { ...core, offset })))
   const repo = openRepo(disk)
   for (const end = Date.now() + wait; Date.now() < end;) {
-    const back = await repo.read(`/outbox/${id}.json`).then(b => JSON.parse(b.toString()), () => null)
+    const back = await layer({ repo }, 'outbox').read(id).catch(() => null)
     if (back) return back.value
     await new Promise(resolve => setTimeout(resolve, 100))
   }

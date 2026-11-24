@@ -1,4 +1,5 @@
 {
   "mode": "non-atomic",
-  "description": "Completed forms sent back."
+  "description": "Completed forms sent back.",
+  "stream": [5, 6]
 }

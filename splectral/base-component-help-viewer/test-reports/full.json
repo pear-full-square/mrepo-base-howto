@@ -1,8 +1,8 @@
 {
   "package": "splectral/base-component-help-viewer",
-  "content": "eedcca0527b29d5451a01706c57748712d92ddf355450b2e4385a824334a0a60",
+  "content": "419e1cfe84029ee5cc0c6fcca7e233b125f7e8e41d027cb1bb9542e36d2d875e",
   "bare": "v1.36.0",
-  "date": "2026-11-23T23:47:50.376Z",
+  "date": "2026-11-24T02:53:14.588Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -92,8 +92,8 @@
         "total": 18
       },
       "asserts": {
-        "passed": 195,
-        "total": 195
+        "passed": 196,
+        "total": 196
       },
       "failures": []
     },
@@ -170,8 +170,8 @@
         "total": 21
       },
       "asserts": {
-        "passed": 238,
-        "total": 238
+        "passed": 254,
+        "total": 254
       },
       "failures": []
     },
@@ -183,8 +183,8 @@
         "total": 10
       },
       "asserts": {
-        "passed": 172,
-        "total": 172
+        "passed": 174,
+        "total": 174
       },
       "failures": []
     },
@@ -218,12 +218,12 @@
       "unit": "/test/modules/pear-full-square/mycelium-container-document",
       "ok": true,
       "tests": {
-        "passed": 1,
-        "total": 1
+        "passed": 6,
+        "total": 6
       },
       "asserts": {
-        "passed": 8,
-        "total": 8
+        "passed": 42,
+        "total": 42
       },
       "failures": []
     },
@@ -248,8 +248,8 @@
         "total": 22
       },
       "asserts": {
-        "passed": 213,
-        "total": 213
+        "passed": 217,
+        "total": 217
       },
       "failures": []
     },

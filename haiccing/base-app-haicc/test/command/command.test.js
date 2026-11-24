@@ -8,6 +8,7 @@ import { join, dirname } from '../../modules/node_modules/bare-path/index.js'
 import { fileURLToPath } from '../../modules/node_modules/bare-url/index.js'
 import { spawn } from '../../modules/node_modules/bare-subprocess/index.js'
 import { CONFIG, USAGE } from '../../modules/pear-full-square/haicc-base-app/index.js'
+import { inboxOf, outboxOf, nameOf } from '../../modules/pear-full-square/mrepo-base-request/index.js'
 
 const pkg = join(dirname(fileURLToPath(import.meta.url)), '..', '..')
 const home = mkdtempSync(join(os.tmpdir(), 'app-haicc-'))
@@ -31,17 +32,17 @@ function haicc (args, { env = {}, via = ['main.js', '/run'] } = {}) {
 // The next record in the root's inbox answered in its outbox, as its
 // runtime would: the envelope it read, the response it wrote.
 function answer (result) {
-  const seen = new Set(readdirSync(join(root, 'inbox')))
+  // (what arrives after the last one there: a pointer; both boxes streaming folders)
+  const last = inboxOf(root).list({ limit: 1 })[0] ?? null
   return new Promise(resolve => {
     const t = setInterval(() => {
-      const file = readdirSync(join(root, 'inbox')).find(f => !seen.has(f) && f.endsWith('.json'))
-      if (!file) return
+      const [offset] = inboxOf(root).list({ after: last, ascending: true, limit: 1 })
+      if (offset === undefined) return
       clearInterval(t)
-      const envelope = JSON.parse(readFileSync(join(root, 'inbox', file), 'utf8'))
-      const text = JSON.stringify({ topic: '/outbox', key: envelope.key, timestamp: '2026-11-14T00:00:00.000Z', headers: {}, value: { ...envelope.value, value: result === null ? envelope.value.value : { command: envelope.value.value, ...result } } }) + '\n'
-      writeFileSync(join(root, 'outbox', `${file}.part`), text)
-      writeFileSync(join(root, 'outbox', file), text)
-      resolve({ file, envelope, text })
+      const envelope = inboxOf(root).read(offset)
+      outboxOf(root).put(offset, { topic: '/outbox', offset, timestamp: '2026-11-14T00:00:00.000Z', headers: {}, value: { ...envelope.value, value: result === null ? envelope.value.value : { command: envelope.value.value, ...result } } })
+      const text = readFileSync(outboxOf(root).fileOf(offset), 'utf8')
+      resolve({ file: nameOf(offset), envelope, text })
     }, 20)
   })
 }
@@ -109,14 +110,14 @@ test('a command for the mrepos: its record in the root\'s inbox, value by value'
   let { file, envelope } = await a
   t.is(r.code, 0, r.err)
   t.is(envelope.topic, `/${CONFIG.root.uri}/inbox`, 'an envelope addressed to the root mrepo\'s inbox: /local/boot/inbox')
-  t.is(file, `${envelope.key}.json`, 'its document named by its key')
-  t.ok(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(envelope.key), 'the key a GUID')
+  t.is(file, nameOf(envelope.offset), 'its record named by its offset')
+  t.ok(/^\d{13}$/.test(file) && Math.abs(envelope.offset - Date.now()) < 60000, 'the offset: the milliseconds when it arrived')
   t.alike(envelope.headers, {}, 'its headers empty')
   t.is(envelope.value.topic, '/haicc/terminal', 'its core addressed back to the terminal')
-  t.is(envelope.value.key, envelope.key, 'the same key')
+  t.is(envelope.value.offset, envelope.offset, 'the same offset')
   t.alike(envelope.value.headers, { trigger: 'external' }, 'the core\'s headers: triggered from outside, a terminal')
   t.alike(envelope.value.value, ['boot/deploy', 'host', 'haiccing/base-component-haicc'], 'at the root the command plain, its parts as typed, unnamed')
-  t.alike(readdirSync(join(root, 'inbox')), [file], 'nothing half written left beside it')
+  t.alike(readdirSync(join(root, 'inbox', file.slice(0, 5), file.slice(0, 6))), [`${file}.json`], 'a streaming folder: in its buckets, nothing half written left beside it')
 
   a = answer({ output: 1 })
   r = await haicc(['--output', 'host', 'haicc', 'node-1', 'info/get', '.', 'packages', 'no "such" section'])
@@ -141,7 +142,7 @@ test('its response: the record unpacked, as stored, or the output alone; the exi
   let r = await haicc(['.', 'boot/deploy', 'host', 'haiccing/base-component-haicc'])
   let { text } = await a
   t.alike([r.code, r.err], [0, ''], 'an output: exit 0')
-  t.ok(r.out.includes('\n    "topic": "/haicc/terminal", "key": "'), 'by default the record unpacked across lines: the core two deep, its entries packed on a line')
+  t.ok(r.out.includes('\n    "topic": "/haicc/terminal", "offset": 17'), 'by default the record unpacked across lines: the core two deep, its entries packed on a line')
   t.ok(r.out.includes('\n      "command": ["boot/deploy","host","haiccing/base-component-haicc"],'), 'the form three deep; what fits on a line left as stored, an entry never split')
   t.ok(r.out.trimEnd().split('\n').every(l => l.length <= 80), 'to 80 columns: the output is no terminal, no width set')
   t.is(packed(r.out), text.trim(), 'packed again: the record as stored, nothing of it changed')
@@ -182,7 +183,7 @@ test('its response: the record unpacked, as stored, or the output alone; the exi
 
   r = await haicc(['.', 'info/get'], { env: { HAICC_TIMEOUT: '0.5' } })
   t.is(r.code, 4, 'HAICC_TIMEOUT: no response in time, exit 4')
-  t.ok(/^haicc: no response in 0\.5 s \(the request stays: [0-9a-f-]{36}\)\n$/.test(r.err), 'said, with the request\'s key')
+  t.ok(/^haicc: no response in 0\.5 s \(the request stays: \d{13}\)\n$/.test(r.err), 'said, with the request\'s offset')
 })
 
 test('boot/teardown: what boot/deploy put in place removed by name, the packages\' scripts too, the rest kept; twice: a repeat', async (t) => {

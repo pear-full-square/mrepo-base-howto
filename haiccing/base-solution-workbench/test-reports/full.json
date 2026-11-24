@@ -1,8 +1,8 @@
 {
   "package": "haiccing/base-solution-workbench",
-  "content": "a2bee94f030fd75010f540084971c50eb9bb3bc9dce51110a478de6f7ce72b93",
+  "content": "184d65d7cfc2ffa189cc5dab8158ff2c425d24c261df7e096d5000509da2d8ba",
   "bare": "v1.36.0",
-  "date": "2026-11-23T23:44:27.048Z",
+  "date": "2026-11-24T02:48:59.946Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -144,8 +144,8 @@
         "total": 21
       },
       "asserts": {
-        "passed": 238,
-        "total": 238
+        "passed": 254,
+        "total": 254
       },
       "failures": []
     },
@@ -157,8 +157,8 @@
         "total": 10
       },
       "asserts": {
-        "passed": 172,
-        "total": 172
+        "passed": 174,
+        "total": 174
       },
       "failures": []
     },
@@ -192,12 +192,12 @@
       "unit": "/test/modules/pear-full-square/mycelium-container-document",
       "ok": true,
       "tests": {
-        "passed": 1,
-        "total": 1
+        "passed": 6,
+        "total": 6
       },
       "asserts": {
-        "passed": 8,
-        "total": 8
+        "passed": 42,
+        "total": 42
       },
       "failures": []
     },
@@ -222,8 +222,8 @@
         "total": 22
       },
       "asserts": {
-        "passed": 213,
-        "total": 213
+        "passed": 217,
+        "total": 217
       },
       "failures": []
     },

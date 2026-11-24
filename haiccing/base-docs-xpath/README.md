@@ -61,6 +61,37 @@ out (`::`), a filter inside a filter, the other functions. The parent
 - **A name in a filter is a URI's**: lowercase, by the URI's rules; a
   document's key in its URI form, `[owner/public-key='k1']`.
 
+## Attributes
+
+An attribute is a leaf: a field holding one value, written `@name`. It
+is never an object.
+
+- **A leaf or a node, nothing else.** A field with one value is an
+  attribute (`@offset`, `@timestamp`); a field with structure is a
+  node, navigated by path (`value/...`, `headers/...`).
+- **The schema says which, where there is one.** In AVRO a field of a
+  primitive type (a string, a number, a boolean, a timestamp, an enum,
+  or one of those that may be null) is an attribute; a record, a map,
+  an array, or bytes that carry the next level is a node. This is known
+  before any data is read.
+- **A record's own fields are attributes, its data is below `value`.**
+  The base record (`mycelium-value-avro`, `record.json`) gives
+  `@topic`, `@key`, `@offset`, `@timestamp`; and the nodes `headers`
+  and `value`: `*[@offset>1795312345678]`,
+  `*[@offset=1795312345678]/value/value/output`.
+- **JSON follows the same rule.** Without a schema a leaf is found from
+  the value at hand: a key holding a value that is no object. JSON
+  documents are brought in line with AVRO's schemas, so that what is an
+  attribute is said the same way for both.
+- **Built now**: in a filter `@name` means the same as `name`, and a
+  leaf is a key with a value under it; the engine does not yet tell
+  the two apart (`[@value]` holds where `value` is there, structure or
+  not), and `@name` is not a step (`*/@offset` is refused).
+- **To come, with AVRO**: the attribute taken from the schema; `@name`
+  refused on a field that has structure; `@name` as a step, selecting
+  the value; a query checked against the schema before it reads; an
+  index is on an attribute, the offset the first.
+
 ## Commands over nodes
 
 - **Every command is a map over the nodes its URI selects**: one node,

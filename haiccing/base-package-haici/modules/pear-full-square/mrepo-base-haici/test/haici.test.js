@@ -6,7 +6,7 @@ import { feedback } from '../index.js'
 function execution (protocols) {
   const logged = []
   const nope = () => { throw new Error('written') }
-  return { id: 'r-1', logged, runtime: { protocols }, put: nope, remove: nope, log: (level, event, data) => logged.push([level, event, data]) }
+  return { id: '1795312345678', logged, runtime: { protocols }, put: nope, remove: nope, log: (level, event, data) => logged.push([level, event, data]) }
 }
 const PROTOCOLS = { crud: { default: 'read', actions: { read: { uris: ['**'] } } } }
 
@@ -16,14 +16,14 @@ test('feedback: recorded on an execution written for it: the command as understo
   t.alike(f, {
     feedback: 'recorded',
     on: 'crud/read swarms',
-    id: 'r-1',
-    read: 'crud/read done/r-1.json --flags layer=request',
-    answer: ['Feedback on crud/read swarms recorded: request r-1.', 'To read it back: crud/read done/r-1.json --flags layer=request']
+    id: '1795312345678',
+    read: 'crud/read done/17953/179531/1795312345678.json --flags layer=request',
+    answer: ['Feedback on crud/read swarms recorded: request 1795312345678.', 'To read it back: crud/read done/17953/179531/1795312345678.json --flags layer=request']
   }, 'a fixed place each, and the answer in natural language')
   t.is((await feedback(exec, { uri: ['main', 'swarms'], args: ['x', 'crud'] })).on, 'crud/read swarms', 'the protocol alone: its default action')
   t.is((await feedback(exec, { uri: ['main', 'x'], args: ['x', 'crud/create', 'a b'], flags: { log: 'debug' } })).on, 'crud/create x "a b" --flags log=debug', 'its arguments as typed, its other flags kept')
   t.is((await feedback(exec, { uri: ['main', 'x'], args: ['x', 'nope/thing'] })).on, 'nope/thing x', 'a command the door would refuse: recorded all the same')
-  t.ok(exec.logged.some(([level, event, d]) => level === 'verbose' && event === 'recorded' && d.id === 'r-1'), 'what it did, logged')
+  t.ok(exec.logged.some(([level, event, d]) => level === 'verbose' && event === 'recorded' && d.id === '1795312345678'), 'what it did, logged')
 })
 
 test('feedback: no text, no command', async (t) => {

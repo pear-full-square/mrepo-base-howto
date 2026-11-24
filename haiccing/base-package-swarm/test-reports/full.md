@@ -1,6 +1,6 @@
 # Test report: haiccing/base-package-swarm
 
-The package passed its `full` set: all 16 units, 271 of 271 tests and 1726 of 1726 asserts.
+The package passed its `full` set: all 16 units, 276 of 276 tests and 1780 of 1780 asserts.
 
 | | |
 |---|---|
@@ -8,11 +8,11 @@ The package passed its `full` set: all 16 units, 271 of 271 tests and 1726 of 17
 | Set | `full` |
 | Result | passed |
 | Units | 16 of 16 passed |
-| Tests | 271 of 271 passed |
-| Asserts | 1726 of 1726 passed |
-| Run | 2026-11-23 23:40 UTC |
+| Tests | 276 of 276 passed |
+| Asserts | 1780 of 1780 passed |
+| Run | 2026-11-24 02:44 UTC |
 | Bare | v1.36.0 |
-| Content | `445012ee9994d8f243b15c1b3b98ab42fab5323101c0b146b2e4a683aea647e7` |
+| Content | `b37c808e217736c00f8ad9a00a35f3c59ae169b26b9efd264abf4bc811de8404` |
 
 ## Units
 
@@ -24,12 +24,12 @@ The package passed its `full` set: all 16 units, 271 of 271 tests and 1726 of 17
 | `/test/mrepo` | passed | 1 of 1 | 1 of 1 |
 | `/test/package` | passed | 1 of 1 | 1 of 1 |
 | `/test/modules/pear-full-square/mrepo-base-info` | passed | 10 of 10 | 86 of 86 |
-| `/test/modules/pear-full-square/mrepo-base-request` | passed | 21 of 21 | 238 of 238 |
+| `/test/modules/pear-full-square/mrepo-base-request` | passed | 21 of 21 | 254 of 254 |
 | `/test/modules/pear-full-square/mrepo-base-swarm` | passed | 3 of 3 | 29 of 29 |
 | `/test/modules/pear-full-square/mrepo-base-xpath` | passed | 6 of 6 | 55 of 55 |
-| `/test/modules/pear-full-square/mycelium-container-document` | passed | 1 of 1 | 8 of 8 |
+| `/test/modules/pear-full-square/mycelium-container-document` | passed | 6 of 6 | 42 of 42 |
 | `/test/modules/pear-full-square/mycelium-git` | passed | 144 of 144 | 777 of 777 |
-| `/test/modules/pear-full-square/mycelium-uri` | passed | 22 of 22 | 213 of 213 |
+| `/test/modules/pear-full-square/mycelium-uri` | passed | 22 of 22 | 217 of 217 |
 | `/test/modules/pear-full-square/mycelium-value-avro` | passed | 8 of 8 | 57 of 57 |
 | `/test/modules/pear-full-square/mycelium-value-json` | passed | 1 of 1 | 3 of 3 |
 | `/test/modules/pear-full-square/mycelium-xpath` | passed | 21 of 21 | 141 of 141 |
