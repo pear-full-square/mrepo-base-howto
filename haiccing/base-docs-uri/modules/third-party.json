@@ -344,6 +344,13 @@
       "integrity": "sha512-Tas23gfqHmkNQe1VUID6ifMi3oAYHqTuYr8sCq/xcskpTaDChGxZKJnFJzi1/pSnHzgQCLlkX+FpPnqNJTyQgg=="
     },
     {
+      "name": "fs-native-extensions",
+      "version": "1.5.3",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/fs-native-extensions/-/fs-native-extensions-1.5.3.tgz",
+      "integrity": "sha512-pl39uoPqAdANcule683Wghiw3UlQc+tDagBtKT8ltKaK/Jxu9cDL5sMjca+4eTgrHnn3I7qRO5jPG/658GOsdg=="
+    },
+    {
       "name": "globbie",
       "version": "1.0.6",
       "license": "Apache-2.0",

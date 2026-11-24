@@ -37,7 +37,7 @@ functions work on valid values and don't check again.
 - `isSegment(s)` → boolean
 - `isHidden(s)` → boolean: a name starting with a dot, no URI's: what a
   container keeps beside its data. `HIDDEN`: the ones there are, in one
-  place: `.layer.json`, `.node.json`, `.shortcuts.json`
+  place: `.layer.json`, `.node.json`, `.shortcuts.json`, `.lock`
 - `parse(uri)` → segments: `'/a/b'` → `['a', 'b']`, `'/'` → `[]`. Strict:
   it throws on anything not canonical, naming the canonical form
 - `format(segments)` → uri
