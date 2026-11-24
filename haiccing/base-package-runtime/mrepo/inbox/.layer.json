@@ -1,5 +1,5 @@
 {
   "mode": "non-atomic",
   "description": "Records posted to the mrepo.",
-  "stream": [5, 6]
+  "structure": { "type": "offset-files", "levels": [5, 6], "batch": 50 }
 }

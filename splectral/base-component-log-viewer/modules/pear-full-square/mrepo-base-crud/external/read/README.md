@@ -10,6 +10,13 @@ key of the node's document, in its URI form: `publicKey` is written
 `public-key`. Nothing there selects nothing: an empty
 array, not an error.
 
+## Logical and physical
+
+`--flags logical` reads a topic as its records, the latest first, each
+under its address (`done/*[@offset=<offset>]`), nothing of how it is
+stored in the answer; without it, or with `--flags physical`, the layer
+is read as it is stored (`mrepo-base-xpath`, `query`).
+
 ## Signature
 
 `read(exec, { uri })`: requested as `crud/read <URI>`.

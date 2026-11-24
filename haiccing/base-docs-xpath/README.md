@@ -83,12 +83,50 @@ inside a filter, the other functions. The parent
   is in the request's log (`batch`: the logical query, from where, the
   physical query, how many came).
 - **A structure type a way of storing**: `tree`, a plain tree read as
-  it is: its physical query is the logical one, its answer one batch.
-  Built. To come: a streaming layer's records by their offsets
-  (`offset-files`), batches of 50, read from the latest back; then the
-  logical reading of a topic, its storage hidden.
+  it is: its physical query is the logical one, its answer one batch;
+  `offset-files`, a topic's records, each a file named by its offset in
+  folders by its digits: batches of 50 from the latest back, each
+  physical query inside one folder, by name and position, no record
+  opened to choose them. A layer says its own in its `.layer.json`
+  (`structure`), the physical side's file: no query reads it.
+- **Fixed at the time of the request**: a topic's node set is fixed by
+  the topic's latest offset when it is made; what arrives after is not
+  in it.
 - **Every action reads it to its end** today: what a command answers is
-  unchanged.
+  all of it.
+
+## Logical and physical
+
+A query is logical: it navigates the structure as it finds it, and
+knows nothing of how it is stored. What a logical reading hides is the
+storage: the folders, the files' names.
+
+- **A topic is a node; its children are its records**, in the order
+  they arrived, read from the latest back.
+- **A record** has the record's top level: `topic`, `offset`,
+  `timestamp`, `headers`, and `value`, its data. Its own fields are
+  written as attributes, its data by path:
+
+```
+done/*                                  every record, the latest first
+done/*[@offset=1795400000002]           one record: its address
+done/*[value/value/protocol='crud']     by its data
+done/*[@offset=1795400000002]/value/value/output    a field of one
+```
+
+- **A record's address** is `<topic>/*[@offset=<offset>]`: what an
+  answer says, and what reads it back.
+- **The flag chooses**: `--flags logical` reads a topic so;
+  `--flags physical`, or neither, reads the layer as it is stored
+  (`done/17954/179540/1795400000002.json`,
+  `done/*[last()]/*[last()]/*[position()>last()-50]`). Physical is the
+  reading without a flag while the logical one is being built. A layer
+  that is a plain tree reads the same either way.
+- **Not built yet**: a position among a topic's records
+  (`done/*[last()]`, `done/*[position()<=50]`: refused, said); an
+  offset found by its digits without reading the batches before it (an
+  index); the node set handed to who asked before it is read to its
+  end.
 
 ## Attributes
 
