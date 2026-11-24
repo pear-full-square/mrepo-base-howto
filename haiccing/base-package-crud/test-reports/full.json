@@ -1,8 +1,8 @@
 {
   "package": "haiccing/base-package-crud",
-  "content": "4e5aea96b3ccd9d8cdda0447db485f03bcfbef2c443c28ac8b91ab12340de079",
+  "content": "d5658707df14905f347716dbc5ada22fd6ec14a2216b2490295cacf0c79aa5a0",
   "bare": "v1.36.0",
-  "date": "2026-11-24T22:34:05.178Z",
+  "date": "2026-11-24T23:07:41.990Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -79,8 +79,8 @@
         "total": 10
       },
       "asserts": {
-        "passed": 90,
-        "total": 90
+        "passed": 88,
+        "total": 88
       },
       "failures": []
     },
@@ -105,8 +105,8 @@
         "total": 21
       },
       "asserts": {
-        "passed": 264,
-        "total": 264
+        "passed": 263,
+        "total": 263
       },
       "failures": []
     },

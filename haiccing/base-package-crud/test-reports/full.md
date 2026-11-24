@@ -1,6 +1,6 @@
 # Test report: haiccing/base-package-crud
 
-The package passed its `full` set: all 17 units, 300 of 300 tests and 2020 of 2020 asserts.
+The package passed its `full` set: all 17 units, 300 of 300 tests and 2017 of 2017 asserts.
 
 | | |
 |---|---|
@@ -9,10 +9,10 @@ The package passed its `full` set: all 17 units, 300 of 300 tests and 2020 of 20
 | Result | passed |
 | Units | 17 of 17 passed |
 | Tests | 300 of 300 passed |
-| Asserts | 2020 of 2020 passed |
-| Run | 2026-11-24 22:34 UTC |
+| Asserts | 2017 of 2017 passed |
+| Run | 2026-11-24 23:07 UTC |
 | Bare | v1.36.0 |
-| Content | `4e5aea96b3ccd9d8cdda0447db485f03bcfbef2c443c28ac8b91ab12340de079` |
+| Content | `d5658707df14905f347716dbc5ada22fd6ec14a2216b2490295cacf0c79aa5a0` |
 
 ## Units
 
@@ -23,9 +23,9 @@ The package passed its `full` set: all 17 units, 300 of 300 tests and 2020 of 20
 | `/test/code` | passed | 1 of 1 | 2 of 2 |
 | `/test/mrepo` | passed | 1 of 1 | 1 of 1 |
 | `/test/package` | passed | 1 of 1 | 1 of 1 |
-| `/test/modules/pear-full-square/mrepo-base-crud` | passed | 10 of 10 | 90 of 90 |
+| `/test/modules/pear-full-square/mrepo-base-crud` | passed | 10 of 10 | 88 of 88 |
 | `/test/modules/pear-full-square/mrepo-base-info` | passed | 10 of 10 | 86 of 86 |
-| `/test/modules/pear-full-square/mrepo-base-request` | passed | 21 of 21 | 264 of 264 |
+| `/test/modules/pear-full-square/mrepo-base-request` | passed | 21 of 21 | 263 of 263 |
 | `/test/modules/pear-full-square/mrepo-base-xpath` | passed | 9 of 9 | 97 of 97 |
 | `/test/modules/pear-full-square/mycelium-container-document` | passed | 6 of 6 | 42 of 42 |
 | `/test/modules/pear-full-square/mycelium-git` | passed | 144 of 144 | 777 of 777 |

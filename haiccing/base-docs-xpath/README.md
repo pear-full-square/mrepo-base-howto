@@ -180,10 +180,11 @@ done/*[@offset=1795400000002]/value/value/output    a field of one
   `--flags physical` reads the layer as it is stored
   (`done/17954/179540/1795400000002.json`,
   `done/*[last()]/*[last()]/*[position()>last()-50]`): for looking at
-  the storage itself. An mrepo can be set to it: its runtime config
-  `/runtime/xpath.json`, `{ "reading": "physical" }`, its defining
-  package's; `--flags logical` then says for a command. A layer that is
-  a plain tree reads the same either way.
+  the storage itself, in a test or a repair. The flag is the one way to
+  switch, a command at a time: no setting turns an mrepo's reading
+  (it would break what relies on logical addresses there, and not
+  reach the runtime's own reads). A layer that is a plain tree reads
+  the same either way.
 - **What a command writes to is addressed as stored**: the reading is
   `crud/read`'s; the commands that change a layer take its paths as
   they are.

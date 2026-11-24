@@ -16,9 +16,8 @@ A topic is read as its records, the latest first, each under its
 address (`done/*[@offset=<offset>]`), nothing of how it is stored in
 the answer: the reading when nothing is said, and `--flags logical`'s.
 `--flags physical` reads the layer as it is stored (`mrepo-base-xpath`,
-`query`). With neither flag, the mrepo's setting says
-(`/runtime/xpath.json`, `reading`); with no setting, logical. A layer
-that is a plain tree reads the same either way.
+`query`). The flag is the one way to switch. A layer that is a plain tree reads
+the same either way.
 
 ## Signature
 

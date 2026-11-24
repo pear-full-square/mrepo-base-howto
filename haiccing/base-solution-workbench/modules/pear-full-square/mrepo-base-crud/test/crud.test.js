@@ -136,14 +136,6 @@ test('read: a topic read logically, the reading when nothing is said: its record
   t.alike((await read(exec, { uri: at('done/*[@offset=1795400000000]/value/value/protocol'), flags: logical })).map(n => [n.uri[1], n.value]), [['done/*[@offset=1795400000000]/value/value/protocol', 'crud']], 'a field of one')
   t.alike((await read(exec, { uri: at('done/*/*/*'), flags: { physical: true } })).map(n => n.uri[1]), ['done/17953/179539/1795399999999.json', 'done/17954/179540/1795400000000.json', 'done/17954/179540/1795400000001.json'], 'physical said: as it is stored')
   await t.exception(read(exec, { uri: at('done/17954/179540/1795400000000.json') }), /not a topic's records/, 'a path of its storage with nothing said: refused, said')
-  // the mrepo's setting: its reading where a command says nothing
-  const set = execution({
-    '/runtime/xpath.json': B({ reading: 'physical' }),
-    '/request/done/.layer.json': B({ mode: 'non-atomic', structure: { type: 'offset-files', levels: [5, 6], batch: 50 } }),
-    '/request/done/17954/179540/1795400000000.json': B(record(1795400000000, 'crud'))
-  }).exec
-  t.alike((await read(set, { uri: at('done/*/*/*') })).map(n => n.uri[1]), ['done/17954/179540/1795400000000.json'], 'the mrepo\'s setting physical: its layers read as stored with no flag')
-  t.alike((await read(set, { uri: at('done/*'), flags: logical })).map(n => n.uri[1]), ['done/*[@offset=1795400000000]'], 'a command\'s own flag says for it: logical')
 })
 
 test('read: a file is its own document: the records of another layer', async (t) => {
