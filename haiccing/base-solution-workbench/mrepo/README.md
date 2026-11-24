@@ -2,7 +2,7 @@
 
 The workbench's part of the structure: the list of the packages the workbench mrepo is made of, and its runtime config.
 
-- **Its packages** (`packages/layer.json`): the haicc component's (the
+- **Its packages** (`packages/.layer.json`): the haicc component's (the
   runtime, info, help, haici, protocol, boot, service, haicc, crud,
   container, swarm), this solution last: it fulfils the host's role, the
   local manager.

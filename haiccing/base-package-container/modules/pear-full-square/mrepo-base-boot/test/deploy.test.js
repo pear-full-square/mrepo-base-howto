@@ -16,7 +16,7 @@ import process from 'bare-process'
 import { registry } from 'mycelium-value-avro'
 import { build, deploy, teardown, redeploy, place, parseSource, lay, schemasOf } from '../index.js'
 
-const lj = (dir, mode) => { mkdirSync(dir, { recursive: true }); writeFileSync(join(dir, 'layer.json'), JSON.stringify({ mode, description: 'test' })) }
+const lj = (dir, mode) => { mkdirSync(dir, { recursive: true }); writeFileSync(join(dir, '.layer.json'), JSON.stringify({ mode, description: 'test' })) }
 const sha256 = b => crypto.createHash('sha256').update(b).digest('hex')
 const json = b => JSON.parse(b.toString())
 
@@ -92,10 +92,10 @@ test('documents: store: the list laid in and placed, nothing more: its info extr
   const store = mkdtempSync(join(tmpdir(), 'documents-store-'))
   try {
     source(pkgs, {
-      'haiccing/base': { 'runtime/layer.json': { mode: 'atomic' } },
-      'haiccing/other': { 'other/layer.json': { mode: 'atomic' } },
-      'haiccing/docs': { 'packages/layer.json': { mode: 'replicated', packages: ['haiccing/base', 'haiccing/docs'], documents: 'store' } },
-      'haiccing/odd': { 'packages/layer.json': { mode: 'replicated', packages: ['haiccing/odd'], documents: 'sources' } }
+      'haiccing/base': { 'runtime/.layer.json': { mode: 'atomic' } },
+      'haiccing/other': { 'other/.layer.json': { mode: 'atomic' } },
+      'haiccing/docs': { 'packages/.layer.json': { mode: 'replicated', packages: ['haiccing/base', 'haiccing/docs'], documents: 'store' } },
+      'haiccing/odd': { 'packages/.layer.json': { mode: 'replicated', packages: ['haiccing/odd'], documents: 'sources' } }
     })
     const sources = [parseSource(`folder:${pkgs}`)]
     const { list } = lay({ store, sources, target: 'haiccing/docs', into })
@@ -117,7 +117,7 @@ test('schemas: each package placed registers the schemas it carries, its own and
     const answer = { type: 'record', name: 'haiccing.base.answer', fields: [{ name: 'a', type: 'string' }] }
     const inner = { type: 'record', name: 'pearFullSquare.someModule.thing', fields: [{ name: 'n', type: 'long' }] }
     source(pkgs, {
-      'haiccing/base': { 'runtime/layer.json': { mode: 'atomic' }, '/schemas/answer.json': answer, '/modules/pear-full-square/some-module/schemas/thing.json': inner, '/schemas/README.md': '# not one' },
+      'haiccing/base': { 'runtime/.layer.json': { mode: 'atomic' }, '/schemas/answer.json': answer, '/modules/pear-full-square/some-module/schemas/thing.json': inner, '/schemas/README.md': '# not one' },
       'haiccing/bad': { '/schemas/bad.json': { type: 'record', name: 'X', fields: [{ name: 'a', type: 'nope' }] } }
     })
     const sources = [parseSource(`folder:${pkgs}`)]
@@ -139,8 +139,8 @@ test('deploy from a target package\'s list, linked first, placed by its unique U
   const pkgs = mkdtempSync(join(tmpdir(), 'deploy-src-'))
   try {
     source(pkgs, {
-      'haiccing/base': { 'runtime/layer.json': { mode: 'atomic' }, 'runtime/kind.json': { kind: 'base' }, 'runtime/hooks/boot/base.json': ['x/y'], 'inbox/layer.json': { mode: 'non-atomic' } },
-      'haiccing/target': { '/scripts/hello.haicc': 'crud/read .\n', 'main/layer.json': { mode: 'atomic' }, 'runtime/kind.json': { kind: 'target' }, 'packages/layer.json': { mode: 'replicated', packages: ['haiccing/base', 'haiccing/target'] } }
+      'haiccing/base': { 'runtime/.layer.json': { mode: 'atomic' }, 'runtime/kind.json': { kind: 'base' }, 'runtime/hooks/boot/base.json': ['x/y'], 'inbox/.layer.json': { mode: 'non-atomic' } },
+      'haiccing/target': { '/scripts/hello.haicc': 'crud/read .\n', 'main/.layer.json': { mode: 'atomic' }, 'runtime/kind.json': { kind: 'target' }, 'packages/.layer.json': { mode: 'replicated', packages: ['haiccing/base', 'haiccing/target'] } }
     })
     const dir = await parent(work, [parseSource(`folder:${pkgs}`)])
     const backend = p2pgitBackend(join(dir, '.git'), { fs })
@@ -169,7 +169,7 @@ test('deploy from a target package\'s list, linked first, placed by its unique U
     const child = openRepo(p2pgitBackend(join(host, '.git'), { fs }))
     t.alike(json(await child.read('/runtime/kind.json')), { kind: 'target' }, 'its runtime config: the last package\'s, the one that defines the mrepo')
     t.is(await child.read('/runtime/hooks/boot/base.json').catch(() => null), null, 'runtime config from the last package only: another\'s is not laid in')
-    t.ok(await child.read('/runtime/layer.json').then(() => true, () => false), 'the runtime layer itself is structure: from whichever package brings it')
+    t.ok(await child.read('/runtime/.layer.json').then(() => true, () => false), 'the runtime layer itself is structure: from whichever package brings it')
     t.alike(d.packages, ['haiccing/base', 'haiccing/target'], 'its packages, in order')
     t.is(statSync(join(work, 'packages', 'haiccing', 'base.bundle')).ino, statSync(join(host, 'packages', 'haiccing', 'base.bundle')).ino, 'each linked from the store')
     const [shortcut] = json(await repo.read('/main/host/.shortcuts.json'))
@@ -208,7 +208,7 @@ test('deploy from a target package\'s list, linked first, placed by its unique U
     t.alike(exec.entries.filter(e => e.level === 'info').map(e => e.event), ['torn down'], 'what it did, at info')
     await commit()
     t.absent(existsSync(host), 'removed')
-    t.alike([await repo.read('/main/host/.shortcuts.json').catch(() => null), await repo.read('/main/host/.node.json').catch(() => null), (await repo.select('/links/*')).filter(([p]) => !p.endsWith('layer.json')).length], [null, null, 0], 'its shortcut and its node out of main, what was local out of the runtime layer')
+    t.alike([await repo.read('/main/host/.shortcuts.json').catch(() => null), await repo.read('/main/host/.node.json').catch(() => null), (await repo.select('/links/*')).filter(([p]) => !p.endsWith('.layer.json')).length], [null, null, 0], 'its shortcut and its node out of main, what was local out of the runtime layer')
     t.is((await teardown(exec, { uri: ['main', 'host'] })).again, true, 'torn down again: idempotent, allowed')
     t.ok(existsSync(join(work, 'scripts', 'haiccing', 'target', 'hello.haicc')), 'the scripts placed stay: the install\'s')
     // the registry: the work folder's mrepos/, its folders by unique URI; nothing in main
@@ -220,7 +220,7 @@ test('deploy from a target package\'s list, linked first, placed by its unique U
     // linked first, undone on a failure: nothing of it left, its link out again
     await t.exception(deploy(exec, { uri: ['main', 'x'], args: ['haiccing/none'] }), /not in the store nor the sources/)
     await commit()
-    t.alike([await repo.find('/main/x/.node.json'), await repo.find('/main/x/.shortcuts.json'), (await repo.select('/links/*')).filter(([p]) => !p.endsWith('layer.json')).length, existsSync(join(work, 'mrepos', 'local', 'x'))], [null, null, 0, false], 'a deploy that failed: its link out again, nothing built')
+    t.alike([await repo.find('/main/x/.node.json'), await repo.find('/main/x/.shortcuts.json'), (await repo.select('/links/*')).filter(([p]) => !p.endsWith('.layer.json')).length, existsSync(join(work, 'mrepos', 'local', 'x'))], [null, null, 0, false], 'a deploy that failed: its link out again, nothing built')
     await t.exception(deploy(exec, { uri: ['main', '../x'], args: ['haiccing/target'] }), /bad segment/, 'no way up')
     await t.exception(deploy(exec, { uri: ['main', 'a/B'], args: ['haiccing/target'] }), /not canonical|not a position for an mrepo/, 'a name of lowercase letters, digits, hyphens')
     exec.put('/main/linked/.node.json', Buffer.from('{}\n'))
@@ -345,11 +345,11 @@ test('commission and decommission: the deploy waits for the child\'s commission,
   const alive = pid => spawnSync('kill', ['-0', String(pid)], { stdio: 'ignore' }).status === 0
   try {
     // packages on the runtime alone, each its hooks: lines of the protocols the runtime brings
-    const on = hooks => ({ 'main/layer.json': { mode: 'atomic' }, ...Object.fromEntries(Object.entries(hooks).map(([h, text]) => [`runtime/hooks/${h}.haicc`, text])) })
+    const on = hooks => ({ 'main/.layer.json': { mode: 'atomic' }, ...Object.fromEntries(Object.entries(hooks).map(([h, text]) => [`runtime/hooks/${h}.haicc`, text])) })
     source(pkgs, {
-      'haiccing/good': { ...on({ commission: 'protocol/activate . info\n', decommission: 'protocol/deactivate . info\n' }), 'packages/layer.json': { mode: 'replicated', packages: ['haiccing/base-package-runtime', 'haiccing/base-package-protocol', 'haiccing/base-package-info', 'haiccing/good'] } },
-      'haiccing/bad': { ...on({ commission: 'protocol/activate . info\nnope/nothing\n' }), 'packages/layer.json': { mode: 'replicated', packages: ['haiccing/base-package-runtime', 'haiccing/base-package-protocol', 'haiccing/base-package-info', 'haiccing/bad'] } },
-      'haiccing/stuck': { ...on({ decommission: 'nope/nothing\n' }), 'packages/layer.json': { mode: 'replicated', packages: ['haiccing/base-package-runtime', 'haiccing/base-package-protocol', 'haiccing/base-package-info', 'haiccing/stuck'] } }
+      'haiccing/good': { ...on({ commission: 'protocol/activate . info\n', decommission: 'protocol/deactivate . info\n' }), 'packages/.layer.json': { mode: 'replicated', packages: ['haiccing/base-package-runtime', 'haiccing/base-package-protocol', 'haiccing/base-package-info', 'haiccing/good'] } },
+      'haiccing/bad': { ...on({ commission: 'protocol/activate . info\nnope/nothing\n' }), 'packages/.layer.json': { mode: 'replicated', packages: ['haiccing/base-package-runtime', 'haiccing/base-package-protocol', 'haiccing/base-package-info', 'haiccing/bad'] } },
+      'haiccing/stuck': { ...on({ decommission: 'nope/nothing\n' }), 'packages/.layer.json': { mode: 'replicated', packages: ['haiccing/base-package-runtime', 'haiccing/base-package-protocol', 'haiccing/base-package-info', 'haiccing/stuck'] } }
     })
     const dir = await parent(work, [parseSource(`folder:${pkgs}`), parseSource(`folder:${SOURCES}`)])
     const { exec, commit } = context(dir, p2pgitBackend(join(dir, '.git'), { fs }), work)

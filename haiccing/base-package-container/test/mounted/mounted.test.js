@@ -59,7 +59,7 @@ test('its config, value by value', (t) => {
 })
 
 test('no replica there: status says none; start, stop and remove say so; nothing written', async (t) => {
-  const { exec, writes } = execution({ '/main/layer.json': B({}) })
+  const { exec, writes } = execution({ '/main/.layer.json': B({}) })
   t.alike(await act('status', exec), { replica: null, state: 'none' }, 'status: none, without asking Docker')
   await t.exception(act('start', exec), /no replica: container \(container\/create\)/, 'start: no replica, create first')
   await t.exception(act('stop', exec), /no replica: container \(container\/create\)/, 'stop the same')
@@ -70,14 +70,14 @@ test('no replica there: status says none; start, stop and remove say so; nothing
 
 test('what create refuses before anything is made', async (t) => {
   // the position holding data of the mrepo's own
-  const local = execution({ '/main/layer.json': B({}), '/main/container/notes.json': B(1) })
+  const local = execution({ '/main/.layer.json': B({}), '/main/container/notes.json': B(1) })
   await t.exception(act('create', local.exec), /container exists locally: the container protocol cannot use it/, 'data in main at container: not the replica\'s place')
   await t.exception(act('remove', local.exec), /container exists locally/, 'nor removed as one')
   // a replica there already
-  const there = execution({ '/main/layer.json': B({}), '/main/container/.node.json': B({}), '/main/container/.shortcuts.json': B([{ mrepo: 'swarm-1/node-1/container', link: 'k' }]), '/links/k.json': B({ key: 'k', uri: 'swarm-1/node-1/container', at: 'container', how: 'container' }) })
+  const there = execution({ '/main/.layer.json': B({}), '/main/container/.node.json': B({}), '/main/container/.shortcuts.json': B([{ mrepo: 'swarm-1/node-1/container', link: 'k' }]), '/links/k.json': B({ key: 'k', uri: 'swarm-1/node-1/container', at: 'container', how: 'container' }) })
   await t.exception(act('create', there.exec), /created already: container/, 'a replica there already')
   // an mrepo without a unique URI of a swarm's kind
-  const boot = execution({ '/main/layer.json': B({}) }, { name: 'boot', uri: 'boot', dir: '/w/mrepos/boot', work: '/w' })
+  const boot = execution({ '/main/.layer.json': B({}) }, { name: 'boot', uri: 'boot', dir: '/w/mrepos/boot', work: '/w' })
   await t.exception(act('create', boot.exec), /no unique URI to make a replica by: boot \(<swarm>\/<name>, a path\)/, 'no unique URI: no replica')
   t.alike([local.writes, there.writes, boot.writes], [[], [], []], 'nothing written by any of it')
 })

@@ -12,11 +12,11 @@ import { send } from 'mrepo-base-runtime/test/fixture.js'
 const here = join(dirname(fileURLToPath(import.meta.url)), '..')
 const PRELOADED = '7b0c1f4e-2d3a-4c5b-9e6f-0a1b2c3d4e5f'
 // A boot mrepo's structure, written here (the module's tests stand on their
-// own): its layers, a layer.json each, a preloaded boot deploy /host.
+// own): its layers, a .layer.json each, a preloaded boot deploy /host.
 const BOOT = mkdtempSync(join(tmpdir(), 'boot-structure-'))
 for (const l of ['main', 'runtime', 'protocols', 'inbox', 'outbox', 'packages', 'request/pending/default', 'request/execute', 'request/done']) {
   mkdirSync(join(BOOT, l), { recursive: true })
-  writeFileSync(join(BOOT, l, 'layer.json'), JSON.stringify({ mode: l.startsWith('request') || l.endsWith('box') ? 'non-atomic' : 'atomic', description: l }))
+  writeFileSync(join(BOOT, l, '.layer.json'), JSON.stringify({ mode: l.startsWith('request') || l.endsWith('box') ? 'non-atomic' : 'atomic', description: l }))
 }
 // a boot hook, as a defining package would drop it: crud active from boot
 mkdirSync(join(BOOT, 'runtime', 'hooks'), { recursive: true })
@@ -36,11 +36,11 @@ test('the boot mrepo: built from its folder, the same twice', async (t) => {
     t.alike(Object.keys(one.layers).sort(), ['inbox', 'main', 'outbox', 'packages', 'protocols', 'request/done', 'request/execute', 'request/pending/default', 'runtime'], 'a layer per leaf')
     t.alike(one.layers, two.layers, 'the same folder, the same commits')
     t.alike(JSON.parse(readFileSync(join(a, 'mrepo.json'))), { storage: 'filesystem', name: 'boot' }, 'the setting: every layer on the filesystem')
-    t.ok(existsSync(join(a, 'mrepos', 'boot', 'inbox', 'layer.json')), 'the inbox\'s working tree')
-    t.ok(existsSync(join(a, 'mrepos', 'boot', 'outbox', 'layer.json')), 'the outbox\'s working folder, there before any record')
+    t.ok(existsSync(join(a, 'mrepos', 'boot', 'inbox', '.layer.json')), 'the inbox\'s working tree')
+    t.ok(existsSync(join(a, 'mrepos', 'boot', 'outbox', '.layer.json')), 'the outbox\'s working folder, there before any record')
     const r = await open(a)
     const repo = openRepo(r.backend)
-    t.is(JSON.parse((await repo.read('/runtime/layer.json')).toString()).mode, 'atomic', 'layer.json committed with its layer')
+    t.is(JSON.parse((await repo.read('/runtime/.layer.json')).toString()).mode, 'atomic', '.layer.json committed with its layer')
     t.is((await repo.read('/runtime/hooks/boot.haicc')).toString(), 'protocol/activate . crud\n', 'a hook file dropped into the runtime layer: committed with it')
     t.is((await repo.select(`/request/pending/default/${PRELOADED}.json`)).length, 1, 'the request preloaded')
     await t.exception(build({ from: BOOT, work: a, name: 'boot' }), /exists/, 'never over an existing one')
@@ -68,7 +68,7 @@ test('the boot mrepo running, without its packages: its boot hook run, what it a
     const done = JSON.parse((await repo.read(`/request/done/${PRELOADED}.json`)).toString()).value.value
     t.alike([done.protocol, done.action, done.uri, done.args], ['boot', 'deploy', ['main', 'host'], ['haiccing/base-package-runtime']], 'the preloaded request: boot deploy main/host, the runtime its target')
     t.is(done.error, 'no protocol: boot (crud, protocol, service)', 'done, refused here: no boot protocol linked, said with those there (the package\'s test runs it with its packages)')
-    t.alike((await repo.select('/request/pending/default/*')).map(([p]) => p), ['/request/pending/default/layer.json'], 'nothing pending')
+    t.alike((await repo.select('/request/pending/default/*')).map(([p]) => p), ['/request/pending/default/.layer.json'], 'nothing pending')
   } finally {
     rmSync(work, { recursive: true, force: true })
   }

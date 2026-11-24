@@ -34,9 +34,9 @@ for (const m of modules) for (const p of checkTestPage(join(dev, 'pear-full-squa
 for (const p of packages) for (const q of checkPackage(join(dev, p))) say(p, q)
 // a list: fully qualified, its own organisation's packages only
 for (const p of packages) {
-  const f = join(dev, p, 'mrepo', 'packages', 'layer.json')
+  const f = join(dev, p, 'mrepo', 'packages', '.layer.json')
   if (!existsSync(f)) continue
-  for (const d of checkList(p.split('/')[0], JSON.parse(readFileSync(f, 'utf8')).packages ?? [])) { n++; console.log(`${p}/mrepo/packages/layer.json\tlist\t${d}`) }
+  for (const d of checkList(p.split('/')[0], JSON.parse(readFileSync(f, 'utf8')).packages ?? [])) { n++; console.log(`${p}/mrepo/packages/.layer.json\tlist\t${d}`) }
 }
 // a package's structure: those that are bundled (they carry the checks)
 for (const p of packages) {

@@ -4,7 +4,7 @@ An mrepo that documents every package in the install's store, beyond the package
 
 Pattern: documents
 
-A list (`mrepo/packages/layer.json`) with `"documents": "store"`: its
+A list (`mrepo/packages/.layer.json`) with `"documents": "store"`: its
 info extraction reads, besides its own packages, every package in the
 install's store, `<work>/packages/`, through its packages manifest's
 mapping, read only. Nothing of them is placed in the mrepo or runs.
@@ -16,7 +16,7 @@ the install's manual.
 
 ```sh
 # the list: what the mrepo is made of, and what it documents beyond it
-$EDITOR haiccing/<pkg>/mrepo/packages/layer.json   # "documents": "store"
+$EDITOR haiccing/<pkg>/mrepo/packages/.layer.json   # "documents": "store"
 # its hooks: the build at initialise, removed at shutdown
 $EDITOR haiccing/<pkg>/mrepo/runtime/hooks/initialise.haicc   # info/extract
 $EDITOR haiccing/<pkg>/mrepo/runtime/hooks/shutdown.haicc     # info/clear

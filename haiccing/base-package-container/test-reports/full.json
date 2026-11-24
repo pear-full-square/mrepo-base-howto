@@ -1,8 +1,8 @@
 {
   "package": "haiccing/base-package-container",
-  "content": "83228fc4747ed4cf306f71f34b32ae01d393fed15ca9f950a04dfe244b9a0d00",
+  "content": "5c54ca63f8bb22d5755937c805cee0f26bcfc17f8d66f337b4573cf1eb38f548",
   "bare": "v1.36.0",
-  "date": "2026-11-23T04:27:20.822Z",
+  "date": "2026-11-24T00:12:23.794Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -192,12 +192,12 @@
       "unit": "/test/modules/pear-full-square/mrepo-base-xpath",
       "ok": true,
       "tests": {
-        "passed": 5,
-        "total": 5
+        "passed": 6,
+        "total": 6
       },
       "asserts": {
-        "passed": 54,
-        "total": 54
+        "passed": 55,
+        "total": 55
       },
       "failures": []
     },
@@ -231,12 +231,12 @@
       "unit": "/test/modules/pear-full-square/mycelium-uri",
       "ok": true,
       "tests": {
-        "passed": 21,
-        "total": 21
+        "passed": 22,
+        "total": 22
       },
       "asserts": {
-        "passed": 195,
-        "total": 195
+        "passed": 213,
+        "total": 213
       },
       "failures": []
     },
@@ -322,12 +322,12 @@
       "unit": "/test/modules/pear-full-square/pkgm-base-check",
       "ok": true,
       "tests": {
-        "passed": 23,
-        "total": 23
+        "passed": 24,
+        "total": 24
       },
       "asserts": {
-        "passed": 70,
-        "total": 70
+        "passed": 72,
+        "total": 72
       },
       "failures": []
     }

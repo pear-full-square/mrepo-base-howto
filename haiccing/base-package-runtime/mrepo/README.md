@@ -11,7 +11,7 @@ The runtime's part of every mrepo's structure, laid in when an mrepo is deployed
 Deployed as the target, the runtime package makes an mrepo with a runtime,
 its info and its service, and no other protocol:
 
-- **Its packages** (`packages/layer.json`): the info protocol, the help
+- **Its packages** (`packages/.layer.json`): the info protocol, the help
   protocol, the protocol protocol, the service protocol, and itself
   last.
 - **Its runtime config**, laid in only when this package is the one

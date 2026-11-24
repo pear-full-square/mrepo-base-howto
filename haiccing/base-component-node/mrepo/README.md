@@ -2,7 +2,7 @@
 
 The component's part of the structure: the list of the packages a swarm's node is made of, and its runtime config.
 
-- **Its packages** (`packages/layer.json`): the haicc mrepo's (the
+- **Its packages** (`packages/.layer.json`): the haicc mrepo's (the
   runtime, info, help, haici, the protocol protocol, boot, service,
   haicc, crud, container), then the rns protocol, the log protocol and
   the dispatch protocol, and this component last.

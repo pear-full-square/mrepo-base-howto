@@ -1,8 +1,8 @@
 {
   "package": "haiccing/base-docs-package",
-  "content": "30f96d4ff7df7fe06f0056b834dd483164331503b1aff2cdf92ffe15901c5e46",
+  "content": "ffe810a7ff5cb6ecb23bf46e2cb8a127561767d125eb80baa2c0061a3b98c213",
   "bare": "v1.36.0",
-  "date": "2026-11-23T04:20:38.348Z",
+  "date": "2026-11-23T23:23:04.015Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -88,12 +88,12 @@
       "unit": "/test/modules/pear-full-square/mycelium-uri",
       "ok": true,
       "tests": {
-        "passed": 21,
-        "total": 21
+        "passed": 22,
+        "total": 22
       },
       "asserts": {
-        "passed": 195,
-        "total": 195
+        "passed": 213,
+        "total": 213
       },
       "failures": []
     },
@@ -127,12 +127,12 @@
       "unit": "/test/modules/pear-full-square/pkgm-base-check",
       "ok": true,
       "tests": {
-        "passed": 23,
-        "total": 23
+        "passed": 24,
+        "total": 24
       },
       "asserts": {
-        "passed": 70,
-        "total": 70
+        "passed": 72,
+        "total": 72
       },
       "failures": []
     }

@@ -1,6 +1,6 @@
 # Test report: splectral/base-component-log-viewer
 
-The package passed its `full` set: all 27 units, 358 of 358 tests and 2507 of 2507 asserts.
+The package passed its `full` set: all 27 units, 361 of 361 tests and 2528 of 2528 asserts.
 
 | | |
 |---|---|
@@ -8,11 +8,11 @@ The package passed its `full` set: all 27 units, 358 of 358 tests and 2507 of 25
 | Set | `full` |
 | Result | passed |
 | Units | 27 of 27 passed |
-| Tests | 358 of 358 passed |
-| Asserts | 2507 of 2507 passed |
-| Run | 2026-11-23 08:41 UTC |
+| Tests | 361 of 361 passed |
+| Asserts | 2528 of 2528 passed |
+| Run | 2026-11-23 23:51 UTC |
 | Bare | v1.36.0 |
-| Content | `118e278c831fec525ba7ffaedff1ed12e399f93e86001b753e3972c5428dee8d` |
+| Content | `494afcd4c3dd8470f44642041c87a47f95fc46b2fafe6aa216446a49cde9c9a9` |
 
 ## Units
 
@@ -32,17 +32,17 @@ The package passed its `full` set: all 27 units, 358 of 358 tests and 2507 of 25
 | `/test/modules/pear-full-square/mrepo-base-request` | passed | 21 of 21 | 238 of 238 |
 | `/test/modules/pear-full-square/mrepo-base-runtime` | passed | 10 of 10 | 172 of 172 |
 | `/test/modules/pear-full-square/mrepo-base-service` | passed | 3 of 3 | 19 of 19 |
-| `/test/modules/pear-full-square/mrepo-base-xpath` | passed | 5 of 5 | 54 of 54 |
+| `/test/modules/pear-full-square/mrepo-base-xpath` | passed | 6 of 6 | 55 of 55 |
 | `/test/modules/pear-full-square/mycelium-container-document` | passed | 1 of 1 | 8 of 8 |
 | `/test/modules/pear-full-square/mycelium-git` | passed | 144 of 144 | 777 of 777 |
-| `/test/modules/pear-full-square/mycelium-uri` | passed | 21 of 21 | 195 of 195 |
+| `/test/modules/pear-full-square/mycelium-uri` | passed | 22 of 22 | 213 of 213 |
 | `/test/modules/pear-full-square/mycelium-value-avro` | passed | 8 of 8 | 57 of 57 |
 | `/test/modules/pear-full-square/mycelium-value-json` | passed | 1 of 1 | 3 of 3 |
 | `/test/modules/pear-full-square/mycelium-xpath` | passed | 21 of 21 | 141 of 141 |
 | `/test/modules/pear-full-square/p2p-mrepo` | passed | 34 of 34 | 171 of 171 |
 | `/test/modules/pear-full-square/p2p-replicate` | passed | 1 of 1 | 10 of 10 |
 | `/test/modules/pear-full-square/p2p-store` | passed | 5 of 5 | 20 of 20 |
-| `/test/modules/pear-full-square/pkgm-base-check` | passed | 23 of 23 | 70 of 70 |
+| `/test/modules/pear-full-square/pkgm-base-check` | passed | 24 of 24 | 72 of 72 |
 | `/test/modules/pear-full-square/splectral-base-log-viewer` | passed | 2 of 2 | 24 of 24 |
 | `/test/modules/pear-full-square/splectral-server` | passed | 10 of 10 | 128 of 128 |
 

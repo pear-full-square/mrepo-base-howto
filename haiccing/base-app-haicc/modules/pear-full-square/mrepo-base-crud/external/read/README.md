@@ -37,7 +37,7 @@ A URI that goes on inside a node's document selects the value there:
 A file is its own document, JSON or its text: `{ "uri": [...],
 "value": ... }`. So the records of another layer are read:
 `crud/read done/* --flags layer=request`. A folder without a document
-is not among them, nor a layer's own config (`layer.json` at its root).
+is not among them, nor a layer's own config (`.layer.json` at its root).
 
 A binary record, AVRO in its single-object encoding (`.avro`), is
 decoded by the install's registry (`mycelium-value-avro`, its folder

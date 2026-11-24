@@ -73,7 +73,7 @@ const brought = {}
 for (const f of existsSync(hooksDir) ? readdirSync(hooksDir).sort() : []) readFileSync(join(hooksDir, f), 'utf8').split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('#')).forEach((l, i) => { brought[`${f.replace(/\.haicc$/, '')}/${i + 1}`] = l.split(/\s+/) })
 
 test('the mrepo it defines: its list of packages, itself last; its hooks, file by file; the state it starts in', (t) => {
-  t.alike(json('mrepo', 'packages', 'layer.json').packages, [
+  t.alike(json('mrepo', 'packages', '.layer.json').packages, [
     'haiccing/base-package-runtime',
     'haiccing/base-package-info',
     'haiccing/base-package-help',

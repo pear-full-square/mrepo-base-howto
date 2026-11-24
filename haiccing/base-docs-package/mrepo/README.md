@@ -25,20 +25,24 @@ folder documents a layer.
 
 ```
 mrepo/
-  main/                     layer.json  the mrepo's content
-  runtime/                  layer.json  the runtime's data: service state, hooks
-  packages/                 layer.json  the packages to source, in its layer.json
-  <layer>/                  layer.json  any other layer the package brings
+  main/                     .layer.json  the mrepo's content
+  runtime/                  .layer.json  the runtime's data: service state, hooks
+  packages/                 .layer.json  the packages to source, in its .layer.json
+  <layer>/                  .layer.json  any other layer the package brings
 ```
 
-- **A leaf** is a folder holding a `layer.json`; the folders above it
-  only group. A leaf's files are committed with it, `layer.json` too, so
+- **A leaf** is a folder holding a `.layer.json`; the folders above it
+  only group. A leaf's files are committed with it, `.layer.json` too, so
   no folder is empty.
-- **`layer.json`**: `{ "mode": "atomic", "description": "..." }`, its mode
-  below.
+- **`.layer.json`**: `{ "mode": "atomic", "description": "..." }`, its mode
+  below. Hidden, as everything a container keeps beside its data: a name
+  starting with a dot is no URI's, so a query never selects it and
+  nothing from outside can name it. The hidden names there are:
+  `.layer.json`, a node's `.node.json` and `.shortcuts.json`; any other
+  fails a package's structure check.
 - **No README inside a layer** of a package that brings structure: it
   would be committed into it. A layer explains itself in its
-  `layer.json`, and here.
+  `.layer.json`, and here.
 
 ## The rules
 
@@ -54,7 +58,7 @@ mrepo/
 
 ## Modes and storage
 
-Each layer has a mode, in its `layer.json`:
+Each layer has a mode, in its `.layer.json`:
 
 | mode | written | layers |
 |---|---|---|
@@ -239,7 +243,7 @@ Requests are checked at the inbox, and again as they execute.
 ## Deploying an mrepo
 
 `boot deploy <name> <package>`, executed by the parent, names a target
-package; the target's `mrepo/packages/layer.json` lists the packages the mrepo is made
+package; the target's `mrepo/packages/.layer.json` lists the packages the mrepo is made
 of, in order.
 
 1. **Laid in**: each listed package's `mrepo/` part, read from its bundle,

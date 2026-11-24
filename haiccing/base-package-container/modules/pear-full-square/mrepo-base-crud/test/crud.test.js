@@ -65,13 +65,13 @@ test('where a URI points: its layer, its names, the URI of a node in the same fo
 })
 
 test('create: the node and every node above it, each a folder with its document; idempotent', async (t) => {
-  const { exec, files, writes } = execution({ '/main/layer.json': B({}) })
+  const { exec, files, writes } = execution({ '/main/.layer.json': B({}) })
   const made = await create(exec, { uri: out('swarms/swarm-1'), args: ['{"size":3}'] })
   t.alike(made, [
     { uri: ['main', 'swarms'], value: {}, children: ['swarm-1'], outcome: 'created' },
     { uri: ['main', 'swarms/swarm-1'], value: { size: 3 }, children: [], outcome: 'created' }
   ], 'what it answers: each node of the path, its URI in the internal format, its document, its children by name, what happened')
-  t.alike(Object.keys(files).sort(), ['/main/layer.json', `/main/swarms/${NODE}`, `/main/swarms/swarm-1/${NODE}`], 'stored: a folder a node, its document in it under a hidden name')
+  t.alike(Object.keys(files).sort(), ['/main/.layer.json', `/main/swarms/${NODE}`, `/main/swarms/swarm-1/${NODE}`], 'stored: a folder a node, its document in it under a hidden name')
   t.alike([J(files[`/main/swarms/${NODE}`]), J(files[`/main/swarms/swarm-1/${NODE}`])], [{}, { size: 3 }], 'the parent an empty document, the node the value given')
   const n = writes.length
   const again = await create(exec, { uri: out('swarms/swarm-1'), args: ['{"size":99}'] })
@@ -89,7 +89,7 @@ test('create: the node and every node above it, each a folder with its document;
 })
 
 test('read: the nodes a URI selects, an array; none there: empty, not an error', async (t) => {
-  const { exec } = execution({ '/main/layer.json': B({}), [`/main/swarms/${NODE}`]: B({ kind: 'group' }), [`/main/swarms/swarm-1/${NODE}`]: B({}), [`/main/swarms/swarm-2/${NODE}`]: B({ size: 2 }), '/main/swarms/swarm-2/.other.json': B({}), '/main/loose/file.json': B({}) })
+  const { exec } = execution({ '/main/.layer.json': B({}), [`/main/swarms/${NODE}`]: B({ kind: 'group' }), [`/main/swarms/swarm-1/${NODE}`]: B({}), [`/main/swarms/swarm-2/${NODE}`]: B({ size: 2 }), '/main/swarms/swarm-2/.other.json': B({}), '/main/loose/file.json': B({}) })
   t.alike(await read(exec, { uri: out('swarms') }), [{ uri: ['main', 'swarms'], value: { kind: 'group' }, children: ['swarm-1', 'swarm-2'] }], 'one node: an array of one, its children by name only')
   t.alike(await read(exec, { uri: out('swarms/*') }), [{ uri: ['main', 'swarms/swarm-1'], value: {}, children: [] }, { uri: ['main', 'swarms/swarm-2'], value: { size: 2 }, children: [] }], 'a last name part of *: its children, each a node; a hidden file is not a child')
   t.alike(await read(exec, { uri: out('.') }), [{ uri: ['main', '.'], value: {}, children: ['swarms'] }], 'the layer itself: a node, its document {} when it has none; a folder without a document is no node, so no child')
@@ -100,7 +100,7 @@ test('read: the nodes a URI selects, an array; none there: empty, not an error',
 })
 
 test('read: a query: a * anywhere, filters on the nodes\' documents, a value inside one', async (t) => {
-  const { exec } = execution({ '/main/layer.json': B({}), [`/main/swarms/${NODE}`]: B({}), [`/main/swarms/swarm-1/${NODE}`]: B({ name: 'sam', size: 3, owner: { name: 'ann' } }), [`/main/swarms/swarm-1/nodes/${NODE}`]: B({}), [`/main/swarms/swarm-1/nodes/node-1/${NODE}`]: B({ state: 'started' }), [`/main/swarms/swarm-2/${NODE}`]: B({ name: 'tom', size: 1 }), [`/main/swarms/swarm-2/nodes/${NODE}`]: B({}), [`/main/swarms/swarm-2/nodes/node-1/${NODE}`]: B({ state: 'stopped' }) })
+  const { exec } = execution({ '/main/.layer.json': B({}), [`/main/swarms/${NODE}`]: B({}), [`/main/swarms/swarm-1/${NODE}`]: B({ name: 'sam', size: 3, owner: { name: 'ann' } }), [`/main/swarms/swarm-1/nodes/${NODE}`]: B({}), [`/main/swarms/swarm-1/nodes/node-1/${NODE}`]: B({ state: 'started' }), [`/main/swarms/swarm-2/${NODE}`]: B({ name: 'tom', size: 1 }), [`/main/swarms/swarm-2/nodes/${NODE}`]: B({}), [`/main/swarms/swarm-2/nodes/node-1/${NODE}`]: B({ state: 'stopped' }) })
   const uris = async u => (await read(exec, { uri: out(u) })).map(n => n.uri[1])
   t.alike(await uris("swarms/*[name='sam']"), ['swarms/swarm-1'], 'a filter on a leaf of the document')
   t.alike(await uris('swarms/*[size>=1][owner]'), ['swarms/swarm-1'], 'several in a row')
@@ -118,7 +118,7 @@ test('read: a query: a * anywhere, filters on the nodes\' documents, a value ins
 })
 
 test('read: a file is its own document: the records of another layer', async (t) => {
-  const { exec } = execution({ '/request/done/layer.json': B({ kind: 'topic' }), '/request/done/r1.json': B({ key: 'r1', value: { protocol: 'crud', uri: ['main', 'host'] } }), '/request/done/r2.json': B({ key: 'r2', value: { protocol: 'boot', uri: ['main', '.'] } }), '/request/done/note': Buffer.from('a text') })
+  const { exec } = execution({ '/request/done/.layer.json': B({ kind: 'topic' }), '/request/done/r1.json': B({ key: 'r1', value: { protocol: 'crud', uri: ['main', 'host'] } }), '/request/done/r2.json': B({ key: 'r2', value: { protocol: 'boot', uri: ['main', '.'] } }), '/request/done/note': Buffer.from('a text') })
   const at = u => ['request', u]
   t.alike(await read(exec, { uri: at('done/r1.json') }), [{ uri: ['request', 'done/r1.json'], value: { key: 'r1', value: { protocol: 'crud', uri: ['main', 'host'] } } }], 'a file named: its document, its URI in the request\'s format')
   t.alike((await read(exec, { uri: at("done/*[value/protocol='crud']") })).map(n => n.uri[1]), ['done/r1.json'], 'a filter on the records\' documents')
@@ -144,7 +144,7 @@ test('read: a binary record (AVRO) is decoded, every level, by the install\'s re
 })
 
 test('delete: the nodes selected made sure to be gone; children only with recurse; idempotent', async (t) => {
-  const start = () => execution({ '/main/layer.json': B({}), [`/main/swarms/${NODE}`]: B({}), [`/main/swarms/swarm-1/${NODE}`]: B({}), [`/main/swarms/swarm-1/node-1/${NODE}`]: B({}), [`/main/swarms/swarm-2/${NODE}`]: B({ size: 2 }), [`/main/other/${NODE}`]: B({}) })
+  const start = () => execution({ '/main/.layer.json': B({}), [`/main/swarms/${NODE}`]: B({}), [`/main/swarms/swarm-1/${NODE}`]: B({}), [`/main/swarms/swarm-1/node-1/${NODE}`]: B({}), [`/main/swarms/swarm-2/${NODE}`]: B({ size: 2 }), [`/main/other/${NODE}`]: B({}) })
   let { exec, files, writes } = start()
   t.alike(await remove(exec, { uri: out('swarms/swarm-2') }), [{ uri: ['main', 'swarms/swarm-2'], value: { size: 2 }, children: [], outcome: 'deleted' }], 'what it answers: the node as it was, deleted')
   t.absent(`/main/swarms/swarm-2/${NODE}` in files, 'its document gone, and with it the folder')
@@ -154,10 +154,10 @@ test('delete: the nodes selected made sure to be gone; children only with recurs
   await t.exception(remove(exec, { uri: out('*') }), /swarms has children/, 'a selection with one such node: refused whole')
   t.is(writes.length, n, 'a refusal removes nothing')
   t.alike((await remove(exec, { uri: out('swarms'), args: ['recurse'] })).map(x => [x.uri, x.children, x.outcome]), [[['main', 'swarms'], ['swarm-1'], 'deleted']], 'with recurse: the node answered, as it was')
-  t.alike(Object.keys(files).sort(), ['/main/layer.json', `/main/other/${NODE}`], 'everything below it gone with it; nothing else')
+  t.alike(Object.keys(files).sort(), ['/main/.layer.json', `/main/other/${NODE}`], 'everything below it gone with it; nothing else')
   ;({ exec, files } = start())
   t.alike((await remove(exec, { uri: out('swarms/*'), args: ['recurse'] })).map(x => x.uri[1]), ['swarms/swarm-1', 'swarms/swarm-2'], 'a selection: each node of it')
-  t.alike(Object.keys(files).sort(), ['/main/layer.json', `/main/other/${NODE}`, `/main/swarms/${NODE}`], 'the children gone, the node itself kept')
+  t.alike(Object.keys(files).sort(), ['/main/.layer.json', `/main/other/${NODE}`, `/main/swarms/${NODE}`], 'the children gone, the node itself kept')
   await t.exception(remove(exec, { uri: out('.') }), /missing argument: target/, 'the layer itself is not deleted')
   ;({ exec, files } = start())
   t.alike((await remove(exec, { uri: out('swarms/*[size=2]') })).map(x => x.uri[1]), ['swarms/swarm-2'], 'a filter: the nodes it selects')
@@ -172,7 +172,7 @@ test('delete: the nodes selected made sure to be gone; children only with recurs
 })
 
 test('a shortcut: a node that is a link, read with where it leads; deleted, the link goes; a URI does not run through it', async (t) => {
-  const { exec, files } = execution({ '/main/layer.json': B({}), [`/main/host/${NODE}`]: B({}), '/main/host/.shortcuts.json': B([{ mrepo: 'local/host' }]) })
+  const { exec, files } = execution({ '/main/.layer.json': B({}), [`/main/host/${NODE}`]: B({}), '/main/host/.shortcuts.json': B([{ mrepo: 'local/host' }]) })
   t.alike(await read(exec, { uri: out('host') }), [{ uri: ['main', 'host'], value: {}, children: [], shortcuts: [{ mrepo: 'local/host' }] }], 'read: a node, with its shortcuts: the mrepos its data comes from')
   await t.exception(read(exec, { uri: out('host/swarms') }), /host is a shortcut: a URI does not run through it \(haicc host haicc swarms \.\.\.\)/, 'below it: not read here; the way across said')
   await t.exception(read(exec, { uri: out('host/*') }), /host is a shortcut: a URI does not run through it \(haicc host haicc \* \.\.\.\)/, 'its children neither')
@@ -180,11 +180,11 @@ test('a shortcut: a node that is a link, read with where it leads; deleted, the 
   await t.exception(create(exec, { uri: out('host/swarms') }), /host is a shortcut/, 'nothing created below it')
   t.alike((await create(exec, { uri: out('host') })).map(x => x.outcome), ['there'], 'itself: there')
   t.alike((await remove(exec, { uri: out('host') })).map(x => [x.shortcuts, x.outcome]), [[[{ mrepo: 'local/host' }], 'deleted']], 'deleted: the node and its link, not what it leads to')
-  t.alike(Object.keys(files), ['/main/layer.json'], 'its document and its shortcuts gone')
+  t.alike(Object.keys(files), ['/main/.layer.json'], 'its document and its shortcuts gone')
 })
 
 test('another layer, for the mrepo\'s own requests: the same, the layer first', async (t) => {
-  const { exec, files } = execution({ '/runtime/layer.json': B({}), '/runtime/host/.shortcuts.json': B([{ mrepo: 'x' }]) })
+  const { exec, files } = execution({ '/runtime/.layer.json': B({}), '/runtime/host/.shortcuts.json': B([{ mrepo: 'x' }]) })
   t.alike((await create(exec, { uri: own('runtime/log/levels'), args: ['{"level":"info"}'] })).map(x => [x.uri, x.outcome]), [[['runtime/log'], 'created'], [['runtime/log/levels'], 'created']])
   t.alike(J(files[`/runtime/log/levels/${NODE}`]), { level: 'info' })
   t.alike((await create(exec, { uri: own('runtime/host/x') })).map(x => x.outcome), ['created', 'created'], 'shortcuts are main\'s: nothing in the way elsewhere')

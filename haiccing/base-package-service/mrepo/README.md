@@ -9,7 +9,7 @@ The service protocol's part of an mrepo's structure: the service state, booted, 
   brings it into service after.
 - **Its hooks** (`runtime/hooks/`): at `boot`, `service`, `help`,
   `info` and `runtime` activated; at `initialise`, its info extracted.
-- **Its packages** (`packages/layer.json`): the runtime, the info
+- **Its packages** (`packages/.layer.json`): the runtime, the info
   protocol, the help protocol, the protocol protocol, and this
   package last.
 

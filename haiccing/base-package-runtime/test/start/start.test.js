@@ -66,7 +66,7 @@ test('the runtime: started, answering, stopped', { timeout: 60000 }, async (t) =
     let done = []
     for (let i = 0; i < 100 && done.length < 2; i++) {
       done = []
-      for (const [p] of await repo.select('/request/done/*')) if (!p.endsWith('layer.json')) done.push(JSON.parse((await repo.read(p)).toString()).value.value)
+      for (const [p] of await repo.select('/request/done/*')) if (!p.endsWith('.layer.json')) done.push(JSON.parse((await repo.read(p)).toString()).value.value)
       if (done.length < 2) await wait(100)
     }
     t.alike(done.map(f => (f.command ?? []).join(' ')).sort(), ['protocol/activate . help', 'protocol/activate . protocol'], 'the runtime\'s own, then the boot hook file\'s first line: each a request of its own, done')

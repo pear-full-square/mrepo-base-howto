@@ -83,7 +83,7 @@ try {
     try {
       lay({ store: storeOf(work), sources, target: TARGET, into: tmp })
       // its identity, in its runtime layer
-      if (existsSync(join(tmp, 'runtime', 'layer.json'))) writeFileSync(join(tmp, 'runtime', 'mrepo.json'), JSON.stringify({ uri: URI }, null, 2) + '\n')
+      if (existsSync(join(tmp, 'runtime', '.layer.json'))) writeFileSync(join(tmp, 'runtime', 'mrepo.json'), JSON.stringify({ uri: URI }, null, 2) + '\n')
       const { layers } = await build({ from: tmp, work, name: NAME, time: BUILT })
       log('info', 'built', { mrepo: viewOf(work, NAME), layers: Object.keys(layers) })
     } finally { rmSync(tmp, { recursive: true, force: true }) }
@@ -92,7 +92,7 @@ try {
   // 2. Its packages put in place: the list its packages layer holds.
   const repo = await open(work)
   let list
-  try { list = JSON.parse((await openRepo(repo.backend).read('/packages/layer.json')).toString()).packages } finally { await repo.close() }
+  try { list = JSON.parse((await openRepo(repo.backend).read('/packages/.layer.json')).toString()).packages } finally { await repo.close() }
   const placed = await place({ dir: viewOf(work, NAME), store: storeOf(work), sources, list })
   // (at info the packages by name, what an agent reads; each with its
   // hashes and addons at verbose)

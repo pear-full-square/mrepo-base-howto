@@ -1,8 +1,8 @@
 {
   "package": "splectral/base-component-log-viewer",
-  "content": "118e278c831fec525ba7ffaedff1ed12e399f93e86001b753e3972c5428dee8d",
+  "content": "494afcd4c3dd8470f44642041c87a47f95fc46b2fafe6aa216446a49cde9c9a9",
   "bare": "v1.36.0",
-  "date": "2026-11-23T08:41:31.954Z",
+  "date": "2026-11-23T23:51:12.418Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -192,12 +192,12 @@
       "unit": "/test/modules/pear-full-square/mrepo-base-xpath",
       "ok": true,
       "tests": {
-        "passed": 5,
-        "total": 5
+        "passed": 6,
+        "total": 6
       },
       "asserts": {
-        "passed": 54,
-        "total": 54
+        "passed": 55,
+        "total": 55
       },
       "failures": []
     },
@@ -231,12 +231,12 @@
       "unit": "/test/modules/pear-full-square/mycelium-uri",
       "ok": true,
       "tests": {
-        "passed": 21,
-        "total": 21
+        "passed": 22,
+        "total": 22
       },
       "asserts": {
-        "passed": 195,
-        "total": 195
+        "passed": 213,
+        "total": 213
       },
       "failures": []
     },
@@ -322,12 +322,12 @@
       "unit": "/test/modules/pear-full-square/pkgm-base-check",
       "ok": true,
       "tests": {
-        "passed": 23,
-        "total": 23
+        "passed": 24,
+        "total": 24
       },
       "asserts": {
-        "passed": 70,
-        "total": 70
+        "passed": 72,
+        "total": 72
       },
       "failures": []
     },

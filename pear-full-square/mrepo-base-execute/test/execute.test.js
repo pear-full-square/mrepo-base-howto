@@ -221,7 +221,7 @@ test('a step of an action: measured at the boundary, what it took and what it re
         seen.runtime = [await exec.runtime.find('main/a/.node.json'), await exec.runtime.find('main/nope')]
         const main = await exec.node('main')
         const kids = await exec.children(main)
-        seen.tree = [main.type, kids.map(([n]) => n).filter(n => !n.startsWith('.') && n !== 'layer.json'), (await exec.bytes((await exec.children(kids.find(([n]) => n === 'a')[1]))[0][1])).toString(), await exec.node('main/nope'), (await exec.runtime.children(await exec.runtime.node('main/a'))).length]
+        seen.tree = [main.type, kids.map(([n]) => n).filter(n => !n.startsWith('.') && n !== '.layer.json'), (await exec.bytes((await exec.children(kids.find(([n]) => n === 'a')[1]))[0][1])).toString(), await exec.node('main/nope'), (await exec.runtime.children(await exec.runtime.node('main/a'))).length]
         const found = await exec.step('look', r => ({ found: r.length }), async () => { await exec.read('main/a/.node.json'); return exec.select('main/*') })
         await exec.step('write', { what: 'two' }, async () => { exec.put('main/one.json', Buffer.from('1')); exec.put('main/two.json', Buffer.from('2')); await exec.commit('two') })
         await exec.step('inside', {}, async () => {}, 'debug')

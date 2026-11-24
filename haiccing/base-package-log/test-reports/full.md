@@ -1,6 +1,6 @@
 # Test report: haiccing/base-package-log
 
-The package passed its `full` set: all 15 units, 86 of 86 tests and 548 of 548 asserts.
+The package passed its `full` set: all 15 units, 88 of 88 tests and 568 of 568 asserts.
 
 | | |
 |---|---|
@@ -8,11 +8,11 @@ The package passed its `full` set: all 15 units, 86 of 86 tests and 548 of 548 a
 | Set | `full` |
 | Result | passed |
 | Units | 15 of 15 passed |
-| Tests | 86 of 86 passed |
-| Asserts | 548 of 548 passed |
-| Run | 2026-11-23 04:29 UTC |
+| Tests | 88 of 88 passed |
+| Asserts | 568 of 568 passed |
+| Run | 2026-11-23 23:33 UTC |
 | Bare | v1.36.0 |
-| Content | `f1ce3644becf7b48a6d9b21924fff550145372a25228ee364c38ddf6b789e27b` |
+| Content | `42d90f243e46830515a3bbe6ac7cea776f852571cb792aebe4ead280b9f561fb` |
 
 ## Units
 
@@ -27,11 +27,11 @@ The package passed its `full` set: all 15 units, 86 of 86 tests and 548 of 548 a
 | `/test/modules/pear-full-square/mrepo-base-log` | passed | 2 of 2 | 24 of 24 |
 | `/test/modules/pear-full-square/mrepo-base-rns` | passed | 3 of 3 | 40 of 40 |
 | `/test/modules/pear-full-square/mycelium-container-document` | passed | 1 of 1 | 8 of 8 |
-| `/test/modules/pear-full-square/mycelium-uri` | passed | 21 of 21 | 195 of 195 |
+| `/test/modules/pear-full-square/mycelium-uri` | passed | 22 of 22 | 213 of 213 |
 | `/test/modules/pear-full-square/mycelium-value-avro` | passed | 8 of 8 | 57 of 57 |
 | `/test/modules/pear-full-square/mycelium-value-json` | passed | 1 of 1 | 3 of 3 |
 | `/test/modules/pear-full-square/p2p-local` | passed | 4 of 4 | 16 of 16 |
 | `/test/modules/pear-full-square/p2p-topic` | passed | 4 of 4 | 16 of 16 |
-| `/test/modules/pear-full-square/pkgm-base-check` | passed | 23 of 23 | 70 of 70 |
+| `/test/modules/pear-full-square/pkgm-base-check` | passed | 24 of 24 | 72 of 72 |
 
 Written by the package's pre-release from `full.json`, beside it. The content is the hash of the bundle that was tested, its test reports left out.

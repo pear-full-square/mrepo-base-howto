@@ -15,7 +15,7 @@ import { build, place, parseSource } from 'mrepo-base-boot'
 import { create, start, stop, remove, status, replica, docker, available, imageOf, stateOf, AT, CONTAINERS, MOUNT, IMAGE } from '../index.js'
 
 const json = b => JSON.parse(b.toString())
-const lj = (dir, mode) => { mkdirSync(dir, { recursive: true }); writeFileSync(join(dir, 'layer.json'), JSON.stringify({ mode, description: 'test' })) }
+const lj = (dir, mode) => { mkdirSync(dir, { recursive: true }); writeFileSync(join(dir, '.layer.json'), JSON.stringify({ mode, description: 'test' })) }
 
 // The packages as a sources folder holds them (the packages' build). (SOURCES: a sources folder given, as a package's
 // tests pass theirs)
@@ -157,7 +157,7 @@ test('a replica made, started, reached, stopped, started again and removed: a re
     t.alike(await remove(exec), { removed: 'container', container: name }, 'remove, while it runs')
     await commit()
     t.alike([stateOf(name), existsSync(placed)], [null, false], 'its container gone, its folder gone')
-    t.alike([await repo.find('/main/container/.shortcuts.json'), await repo.find('/main/container/.node.json'), (await repo.select('/links/*')).filter(([p]) => !p.endsWith('layer.json')).length], [null, null, 0], 'its shortcut and its node out of main, its link\'s record out of the links layer')
+    t.alike([await repo.find('/main/container/.shortcuts.json'), await repo.find('/main/container/.node.json'), (await repo.select('/links/*')).filter(([p]) => !p.endsWith('.layer.json')).length], [null, null, 0], 'its shortcut and its node out of main, its link\'s record out of the links layer')
     t.alike(exec.entries.filter(e => e.level === 'info').map(e => e.event), ['removed'], 'what it did, at info')
     t.alike(await status(exec), { replica: null, state: 'none' }, 'status: none')
 
