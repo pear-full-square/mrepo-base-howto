@@ -24,10 +24,13 @@ export const HOOKS = {
 async function layers (backend, { preload, hooks = true, more = {} }) {
   const w = writer(backend)
   for (const l of ['main', 'packages', 'runtime', 'protocols', 'inbox', 'outbox', 'request/pending/default', 'request/execute', 'request/done', 'xpath/log']) await w.createLayer(l, `Create ${l}`, { author })
-  // (the xpath layer's log: a streaming layer, as its package's config says)
-  const x = await w.change('xpath/log')
-  await x.put('/.layer.json', Buffer.from(JSON.stringify({ mode: 'non-atomic', description: 'The physical log.', structure: { type: 'offset-files', levels: [5, 6], batch: 50 } })))
-  await x.commit('Configured', { author })
+  // (the streaming layers: each declares its structure, as its package's
+  // config does: a layer that declares none is a folder)
+  for (const l of ['inbox', 'outbox', 'request/done', 'xpath/log']) {
+    const x = await w.change(l)
+    await x.put('/.layer.json', Buffer.from(JSON.stringify({ mode: 'non-atomic', description: `The ${l}.`, structure: { type: 'offset-files', levels: [5, 6], batch: 50 } })))
+    await x.commit('Configured', { author })
+  }
   const p = await w.change('packages')
   await p.put('/manifest.json', Buffer.from(JSON.stringify({ packages: {} })))
   await p.commit('Installed', { author })

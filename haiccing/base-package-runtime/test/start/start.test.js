@@ -27,6 +27,13 @@ async function mrepo (work) {
   await backend.init()
   const w = writer(backend)
   for (const l of ['main', 'runtime', 'protocols', 'inbox', 'outbox', 'request/pending/default', 'request/execute', 'request/done']) await w.createLayer(l, `Create ${l}`, { author })
+  // each layer's own config, the package's (mrepo/<layer>/.layer.json): a
+  // streaming layer's structure declared there
+  for (const l of ['inbox', 'outbox', 'request/done']) {
+    const c = await w.change(l)
+    await c.put('/.layer.json', readFileSync(join(pkg, 'mrepo', l, '.layer.json')))
+    await c.commit('Its config', { author })
+  }
   const r = await w.change('runtime')
   await r.put('/hooks/boot.haicc', readFileSync(join(pkg, 'mrepo', 'runtime', 'hooks', 'boot.haicc')))
   await r.commit('Its boot hook file', { author })

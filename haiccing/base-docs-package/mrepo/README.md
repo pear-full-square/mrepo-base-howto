@@ -249,7 +249,12 @@ first come, first served, by a pointer to the last one taken; the
 queue in the order requests were queued. The `inbox`, the `outbox` and
 `request/done` only grow: streaming layers, a record under its offset
 in folders by its digits (`<layer>/17953/179531/<offset>.json`), their
-natural order the order requests arrived. A query reads them as they
+natural order the order requests arrived. Each declares it in its
+`.layer.json` (`"structure": { "type": "offset-files", "levels": [5, 6] }`):
+explicit, always. A layer that declares no structure is a folder,
+whatever its name (the human, 2026-11-24: "explicit declaration: yes.
+Otherwise it is just a folder"); the structure check fails a box or
+`request/done` that does not declare. A query reads them as they
 are stored: `done/*/*/*[value/value/protocol='boot']`.
 Requests are checked at the inbox, and again as they execute.
 

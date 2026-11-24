@@ -18,7 +18,8 @@ const PRELOADED = '0000000000001'
 const BOOT = mkdtempSync(join(tmpdir(), 'boot-structure-'))
 for (const l of ['main', 'runtime', 'protocols', 'inbox', 'outbox', 'packages', 'request/pending/default', 'request/execute', 'request/done']) {
   mkdirSync(join(BOOT, l), { recursive: true })
-  writeFileSync(join(BOOT, l, '.layer.json'), JSON.stringify({ mode: l.startsWith('request') || l.endsWith('box') ? 'non-atomic' : 'atomic', description: l }))
+  // (the boxes and request/done: streaming layers, their structure declared)
+  writeFileSync(join(BOOT, l, '.layer.json'), JSON.stringify({ mode: l.startsWith('request') || l.endsWith('box') ? 'non-atomic' : 'atomic', description: l, ...(l.endsWith('box') || l === 'request/done' ? { structure: { type: 'offset-files', levels: [5, 6], batch: 50 } } : {}) }))
 }
 // a boot hook, as a defining package would drop it: crud active from boot
 mkdirSync(join(BOOT, 'runtime', 'hooks'), { recursive: true })
