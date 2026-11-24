@@ -5,6 +5,7 @@ import { mkdtempSync, rmSync } from 'bare-fs'
 import { join } from 'bare-path'
 import { tmpdir } from 'bare-os'
 import { registry, schemasOf } from 'mycelium-value-avro'
+import { answered } from 'mycelium-xpath'
 import { record, complete, encodeRecord } from 'mrepo-base-request'
 import { create, read, remove, place, NODE } from '../index.js'
 
@@ -117,32 +118,51 @@ test('read: a query: a * anywhere, filters on the nodes\' documents, a value ins
   await t.exception(read(exec, { uri: out('swarms//node-1') }), /not canonical/)
 })
 
-test('read: a topic read logically (--flags logical): its records, the latest first, by their addresses; as stored without the flag', async (t) => {
+test('read: a topic read logically (--flags logical): its node set and one slice of its records, by their addresses; given a node set, its next slice; as stored without the flag', async (t) => {
   const record = (offset, protocol) => ({ topic: '/request/done', offset, value: { topic: null, offset, value: { protocol } } })
-  const { exec } = execution({
-    '/request/done/.layer.json': B({ mode: 'non-atomic', structure: { type: 'offset-files', levels: [5, 6], batch: 50 } }),
+  const files = {
+    '/request/done/.layer.json': B({ mode: 'non-atomic', structure: { type: 'offset-files', levels: [5, 6], batch: 2 } }),
     '/request/done/17953/179539/1795399999999.json': B(record(1795399999999, 'boot')),
     '/request/done/17954/179540/1795400000000.json': B(record(1795400000000, 'crud')),
     '/request/done/17954/179540/1795400000001.json': B(record(1795400000001, 'boot'))
-  })
+  }
+  const { exec } = execution(files)
   const at = u => ['request', u]
   const logical = { logical: true }
-  const all = await read(exec, { uri: at('done/*'), flags: logical })
-  t.alike(all.map(n => n.uri), [1795400000001, 1795400000000, 1795399999999].map(o => ['request', `done/*[@offset=${o}]`]), 'every record, the latest first, each under its address: nothing of its storage in it')
-  t.alike(all[0].value, record(1795400000001, 'boot'), 'its value the record')
-  t.alike((await read(exec, { uri: at("done/*[value/value/protocol='boot']"), flags: logical })).map(n => n.value.offset), [1795400000001, 1795399999999], 'by its data')
-  t.alike(await read(exec, { uri: all[1].uri, flags: logical }), [all[1]], 'an address an answer gave: read back, the same record')
-  t.alike((await read(exec, { uri: at('done/*[@offset=1795400000000]/value/value/protocol'), flags: logical })).map(n => [n.uri[1], n.value]), [['done/*[@offset=1795400000000]/value/value/protocol', 'crud']], 'a field of one')
-  t.alike((await read(exec, { uri: at('done/*/*/*') })).map(n => n.uri[1]), ['done/17953/179539/1795399999999.json', 'done/17954/179540/1795400000000.json', 'done/17954/179540/1795400000001.json'], 'without the flag: as it is stored')
+  const first = await read(exec, { uri: at('done/*'), flags: logical })
+  t.alike(Object.keys(first), ['nodeset', 'nodes'], 'what it answers: the node set, and one slice of its nodes')
+  t.alike(first.nodes.map(n => n.uri), [1795400000001, 1795400000000].map(o => ['request', `done/*[@offset=${o}]`]), 'the slice: the latest first, each under its address: nothing of its storage in it')
+  t.alike(first.nodes[0].value, record(1795400000001, 'boot'), 'its value the record')
+  t.alike([first.nodeset.logical, first.nodeset.fixed, first.nodeset.done, first.nodeset.reached !== null], [{ query: 'done/*', mode: 'logical', layer: 'request' }, 1795400000001, false, true], 'its node set as data: what was asked, where it is fixed, how far it is read, that there is more')
+  // given back, as who was answered holds it: its next slice; nothing kept here between
+  const next = await read(execution(files).exec, { uri: at('done/*'), args: [JSON.stringify(first.nodeset)], flags: logical })
+  t.alike([next.nodes.map(n => n.value.offset), next.nodeset.id, next.nodeset.done], [[1795399999999], first.nodeset.id, true], 'given its node set: the next slice, the same node set, read to its end')
+  t.alike((await read(execution(files).exec, { uri: at('done/*'), args: [next.nodeset], flags: logical })).nodes, [], 'given again at its end: nothing more')
+  await t.exception(read(exec, { uri: at('done/*'), args: ['{not json'], flags: logical }), /not a node set: its data, JSON/)
+  // the result held by who asked: iterated, its next slice asked for under the hood
+  let asks = 0
+  const held = answered(first, async set => { asks++; return read(execution(files).exec, { uri: at('done/*'), args: [set], flags: logical }) })
+  t.alike((await held.take(2)).map(n => n.value.offset), [1795400000001, 1795400000000], 'two taken: from the slice in hand')
+  t.is(asks, 0, 'nothing asked')
+  t.alike([(await held.all()).map(n => n.value.offset), asks, held.done], [[1795399999999], 1, true], 'on past the slice: the next asked for under the hood, once; the reader saw no boundary')
+  // what is asked of the records; an address read back
+  t.alike((await read(exec, { uri: at("done/*[value/value/protocol='boot']"), flags: logical })).nodes.map(n => n.value.offset), [1795400000001], 'by its data: of the slice read, those that hold')
+  t.alike((await read(exec, { uri: first.nodes[1].uri, flags: logical })).nodes, [first.nodes[1]], 'an address an answer gave: read back, the same record')
+  t.alike((await read(exec, { uri: at('done/*[@offset=1795400000000]/value/value/protocol'), flags: logical })).nodes.map(n => [n.uri[1], n.value]), [['done/*[@offset=1795400000000]/value/value/protocol', 'crud']], 'a field of one')
+  // as stored; a plain tree read logically: an array, as ever
+  t.alike((await read(exec, { uri: at('done/*/*/*') })).map(n => n.uri[1]), ['done/17953/179539/1795399999999.json', 'done/17954/179540/1795400000000.json', 'done/17954/179540/1795400000001.json'], 'without the flag: as it is stored, all of it')
   t.alike((await read(exec, { uri: at('done/*/*/*'), flags: { physical: true } })).length, 3, 'physical said: the same')
   // the mrepo's setting: its reading where a command says nothing
   const set = execution({
     '/runtime/xpath.json': B({ reading: 'logical' }),
     '/request/done/.layer.json': B({ mode: 'non-atomic', structure: { type: 'offset-files', levels: [5, 6], batch: 50 } }),
-    '/request/done/17954/179540/1795400000000.json': B(record(1795400000000, 'crud'))
+    '/request/done/17954/179540/1795400000000.json': B(record(1795400000000, 'crud')),
+    '/main/.node.json': B({}),
+    '/main/a/.node.json': B({})
   }).exec
-  t.alike((await read(set, { uri: at('done/*') })).map(n => n.uri[1]), ['done/*[@offset=1795400000000]'], 'the mrepo\'s setting logical: a topic read as its records with no flag')
+  t.alike((await read(set, { uri: at('done/*') })).nodes.map(n => n.uri[1]), ['done/*[@offset=1795400000000]'], 'the mrepo\'s setting logical: a topic read as its records with no flag')
   t.alike((await read(set, { uri: at('done/*/*/*'), flags: { physical: true } })).map(n => n.uri[1]), ['done/17954/179540/1795400000000.json'], 'a command\'s own flag says for it: physical')
+  t.alike((await read(set, { uri: out('*') })).map(n => n.uri[1]), ['a'], 'what is no topic, read logically: an array, all of it, as ever')
 })
 
 test('read: a file is its own document: the records of another layer', async (t) => {

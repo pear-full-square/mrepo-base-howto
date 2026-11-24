@@ -14,7 +14,7 @@ export const protocols = {
     description: 'An mrepo\'s nodes created, read and deleted by URI.',
     actions: {
       create: { uris: ['**'], target: true, args: ['value?'], description: 'A node made sure to exist, its parents too; its document the value given, {} when none. A node there already is left as it is.' },
-      read: { uris: ['**'], description: 'The nodes a URI selects, each with its document and its children\'s names; a * selects every child, a filter the nodes whose document it holds for.' },
+      read: { uris: ['**'], args: ['nodeset?'], description: 'The nodes a URI selects, each with its document and its children\'s names; a * selects every child, a filter the nodes whose document it holds for. A topic read logically: its node set and one slice of its records; given a node set, its next slice.' },
       delete: { uris: ['**'], target: true, args: ['recurse?'], description: 'The nodes a URI selects made sure to be gone; one that has children only with recurse.' }
     }
   }

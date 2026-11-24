@@ -440,11 +440,19 @@ hasnt "$out" "$name" "the offset itself not in it"
 out=$(haicc --output . crud/read 'done/*/offset' --flags layer=request logical 2>&1)
 has "$out" '"uri":["request","done/*[@offset=' "logical: the topic's records, each by its address"
 hasnt "$out" '.json' "nothing of its storage in it: no folder, no file's name"
-nl=$(printf '%s' "$out" | grep -o '@offset=[0-9]*' | wc -l | tr -d ' ')
 a1=$(printf '%s' "$out" | grep -o '@offset=[0-9]*' | sed -n 1p); a2=$(printf '%s' "$out" | grep -o '@offset=[0-9]*' | sed -n 2p)
 [ "${a1#@offset=}" -gt "${a2#@offset=}" ] && ok "the latest first" || no "the latest first" "$a1 $a2"
-np=$(haicc --output . crud/read 'done/*/*/*/offset' --flags layer=request physical 2>&1 | grep -o '\.json/offset' | wc -l | tr -d ' ')
-is "$np" "$((nl + 1))" "every record of it: as many as are stored (and the read itself, done since)"
+# what it answers: its node set and one slice of its records (50); the node
+# set given back, as who was answered holds it: its next slice, the same
+# node set, on from where the first ended; nothing kept at the mrepo between
+has "$out" '{"nodeset":{"id":"' "its node set, as data: its id the request that made it"
+has "$out" '"done":false}' "more there than one slice: said"
+is "$(printf '%s' "$out" | grep -o '@offset=[0-9]*' | wc -l | tr -d ' ')" 50 "one slice of it: 50 records"
+ns=$(printf '%s' "$out" | sed -n 's/^{"nodeset":\({.*}\),"nodes":\[.*$/\1/p'); low=$(printf '%s' "$out" | grep -o '@offset=[0-9]*' | tail -1)
+out=$(haicc --output . crud/read 'done/*/offset' "$ns" --flags layer=request logical 2>&1)
+has "$out" "{\"nodeset\":{\"id\":$(printf '%s' "$ns" | sed -n 's/^{"id":\("[0-9]*"\).*$/\1/p')," "given its node set: answered under the same id"
+b1=$(printf '%s' "$out" | grep -o '@offset=[0-9]*' | sed -n 1p)
+[ -n "$b1" ] && [ "${b1#@offset=}" -lt "${low#@offset=}" ] && ok "its next slice: on from where the first ended" || no "its next slice: on from where the first ended" "$low then $b1"
 out=$(haicc --output . crud/read "done/*[$a2]" --flags layer=request logical 2>&1)
 has "$out" "\"uri\":[\"request\",\"done/*[$a2]\"],\"value\":{\"topic\":\"/request/done\",\"offset\":${a2#@offset=}," "an address an answer gave: read back, its record"
 out=$(haicc --output . crud/read "done/*[value/value/protocol='boot']/value/value/action" --flags layer=request logical 2>&1)

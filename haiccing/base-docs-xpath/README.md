@@ -83,10 +83,20 @@ inside a filter, the other functions. The parent
 - **How many a reader takes is the reader's own**: a page that shows a
   hundred takes a hundred and stops; that has nothing to do with the
   data layer's slices, and only the slices it took are fetched.
+- **The same result for who asks from outside a request**: an answer
+  carries the node set's metadata and one slice of its nodes; who asked
+  iterates it as any result, and at the end of the slice in hand the
+  next is a request underneath: the same read, given the metadata. The
+  node set has one id, the request that made it, and every slice is
+  answered under it. Nothing is kept where the data is between two
+  slices: the metadata says where the reading is (the human,
+  2026-11-24: "the nodeset structure describes what it (should) hold
+  in metadata and the request is fulfilled by filling it up").
 - **Built so far**: the result inside an mrepo (`mrepo-base-xpath`,
-  `result`). Every action still reads it to its end (`query`). To come:
-  the same result for who asks from outside a request (a terminal, a
-  page), its next slice a request underneath.
+  `result`); a logical read of a topic answering its node set a slice
+  at a time (`crud/read`), and the result held by who asked
+  (`mycelium-xpath`, `answered`). Every other action still reads it to
+  its end (`query`). To come: a terminal and a page asking through it.
 
 ## The node set
 

@@ -18,13 +18,29 @@ stored in the answer; `--flags physical` reads the layer as it is
 stored (`mrepo-base-xpath`, `query`). With neither, the mrepo's setting
 says (`/runtime/xpath.json`, `reading`); with no setting, physical.
 
+A topic read logically answers its node set and one slice of its nodes,
+`{ nodeset, nodes }`: `nodeset` its metadata (what was asked, how far it
+is read, `done` when nothing is left), its id the request that made it.
+The same read given that metadata as its argument answers the next
+slice, under the same id, on from where the first ended; nothing is
+kept at the mrepo between the two. Who asked holds it as a result that
+is iterated, the next slice a request underneath (`mycelium-xpath`,
+`answered`).
+
 ## Signature
 
-`read(exec, { uri })`: requested as `crud/read <URI>`.
+`read(exec, { uri, args })`: requested as `crud/read <URI> [<node set>]`,
+the node set as an earlier answer carried it (JSON).
+
+## Arguments
+
+1. A node set, optional: its metadata as an earlier answer of this read
+   carried it (`nodeset`), JSON: the answer is its next slice.
 
 ## Returns
 
-An array of nodes:
+`{ nodeset, nodes }` for a topic read logically, and for a read given a
+node set: `nodes` as below. Otherwise an array of nodes:
 
 ```
 [{ "uri": ["main", "swarms"], "value": {}, "children": ["swarm-1"] }]

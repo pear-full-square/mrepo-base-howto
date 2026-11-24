@@ -13,6 +13,9 @@ it keeps the folder in git. `main/swarms/swarm-1` is
 - `nodeAt(exec, place, names)`: the node at those names below the layer.
 - `select(exec, place)`: what the URI selects, through the mrepo's query
   (`mrepo-base-xpath`).
+- `slice(exec, place, { mode, nodeset })`: one slice of what it selects,
+  through the mrepo's result; `nodeset` an earlier answer's metadata, to
+  go on from.
 
 ## Returns
 
@@ -27,6 +30,8 @@ it keeps the folder in git. `main/swarms/swarm-1` is
   marked `value: true` beside it; a file as `{ uri, value }`, its value
   the file's document, marked `file: true`. A folder without a document
   is not among them.
+- `slice`: `{ nodeset, nodes }`: the node set's metadata and its next
+  slice, each as `select` gives it.
 
 ## Errors
 
