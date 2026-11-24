@@ -87,10 +87,21 @@ history, and each package and module has its own repository).
 The rules are `base-docs-hdlc`'s "Validation"; here, how each is run.
 
 - A package's pre-release: `tools/bare tools/package-test.js <org>/<package>` (`haiccing/`, `splectral/`).
-- **Scoped to the change** (`base-docs-hdlc`, "Validation"): the changed
-  packages' pre-releases, the checks, and the boot's test or the one
-  end-to-end script the change touches. A release built from a tested
-  change stays valid.
+- **A batch of change, built up on `execute/main`** (the human,
+  2026-11-24: "the batch of change needs to be larger. We can do
+  (small) single package testing where the change is being exercised.
+  Build up batch of change in execute/main, then regularly run larger
+  tests with main commit at the end"): each change its own commit, on a
+  small test where it is exercised (one module's tests, or one
+  package's pre-release; documentation alone: the info check); no
+  rebuild of everything, no end-to-end script, for an edit. The module
+  copies in the packages not tested may lag inside a batch.
+- **The larger test closes a batch**: when a step of a design is
+  complete, at the latest at the end of a working day: the full test
+  (below) of a commit of `execute/main`, in the tree of its own; passed
+  whole, that commit is merged to `main`. `main` only ever holds a
+  state the larger test passed. What it finds is searched commit by
+  commit, fixed forward.
 - **The full test, every so often (overnight)**: every package's
   pre-release, `tools/bare tools/release.js --strict` (every report
   `current`), the boot's test several times, every end-to-end script.
@@ -136,7 +147,7 @@ repository's and its tools'.
   but organise it in a non-blocking way"): a committed state is tested
   whole in a tree of its own (a git worktree with its own `sources/`
   and `node_modules/`), in the background; the working tree stays free
-  and a commit waits only for the checks scoped to its change. What the
+  and a commit waits only for its own small test. What the
   background test finds is fixed forward.
 - **Before a long run**: `tools/bare tools/release.js`, then each changed
   package's own test from its folder: a slip is found in seconds.
