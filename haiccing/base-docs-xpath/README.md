@@ -164,6 +164,11 @@ done/*[@offset=1795400000002]/value/value/output    a field of one
   (`done/*[last()]`, `done/*[position()<=50]`: refused, said). Who reads
   the result takes as many as it wants; reading comes from the latest
   back, a slice at a time, under the hood.
+- **A reading has a direction**: from the latest back when none is
+  said, as a log is read; ascending, from the earliest on in the order
+  the records arrived, as an inbox is read after its pointer. The
+  direction is said by who makes the result, in the program, and is in
+  the result's metadata; it is no part of the query's text.
 
 - **A record's address** is `<topic>/*[@offset=<offset>]`: what an
   answer says, and what reads it back.

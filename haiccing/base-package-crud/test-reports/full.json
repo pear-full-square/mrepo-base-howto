@@ -1,8 +1,8 @@
 {
   "package": "haiccing/base-package-crud",
-  "content": "a4b9dd19d1e0c345519a345998337797a48b2b8d9aa673345ae034f575b47139",
+  "content": "7423e50bc6b3c73ccf7ce1e39b99bb7bf3dc80845164eb42ed8a833507620a30",
   "bare": "v1.36.0",
-  "date": "2026-11-24T10:48:52.248Z",
+  "date": "2026-11-24T11:20:32.545Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -118,8 +118,8 @@
         "total": 9
       },
       "asserts": {
-        "passed": 95,
-        "total": 95
+        "passed": 97,
+        "total": 97
       },
       "failures": []
     },
@@ -205,12 +205,12 @@
       "unit": "/test/modules/pear-full-square/mycelium-xpath-physical",
       "ok": true,
       "tests": {
-        "passed": 11,
-        "total": 11
+        "passed": 12,
+        "total": 12
       },
       "asserts": {
-        "passed": 80,
-        "total": 80
+        "passed": 91,
+        "total": 91
       },
       "failures": []
     },
