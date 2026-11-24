@@ -52,7 +52,7 @@ for (const storage of ['p2p', 'git']) {
       t.alike([log[0].ok, log[0].puts, log[0].commits], [true, 0, 0])
       const told = (await sendForm(work, { command: ['crud/read', 'notes/hello', '--flags', 'log=verbose'] })).value
       t.alike(told.flags, { log: 'verbose' }, 'flags written with a command: in the form, as written')
-      t.alike(told.log.map(e => [e.level, e.event]), [['verbose', 'crud.read.segment'], ['verbose', 'crud.read.query'], ['info', 'request.metrics']], 'log=verbose: the action\'s steps too')
+      t.alike(told.log.map(e => [e.level, e.event]), [['verbose', 'crud.read.segment'], ['verbose', 'crud.read.batch'], ['verbose', 'crud.read.query'], ['info', 'request.metrics']], 'log=verbose: the action\'s steps too: its query\'s rounds, the batch its node set was read with')
       const odd = (await sendForm(work, { command: ['crud/read', 'notes/hello', '--flags', 'log=verbose', 'nope'] })).value
       t.alike([odd.output, 'error' in odd], [{ run: false, command: 'crud/read notes/hello --flags log=verbose nope', why: ['no flag: nope (container, feedback, help, layer, log, logical, physical)'] }, false], 'a flag that is none: nothing of it run; completed, not failed, said why')
       t.alike(odd.log.map(e => [e.level, e.event, e.reason]), [['warn', 'request.flag', 'no flag: nope (container, feedback, help, layer, log, logical, physical)']], 'the reason a warning in its log')
@@ -75,12 +75,23 @@ for (const storage of ['p2p', 'git']) {
         t.ok(recs.every(x => x.topic === '/request/done' && ('output' in x.value.value || 'error' in x.value.value)), 'each in its envelope at its topic, its form completed')
         t.is(recs.filter(x => x.value.topic === null).length, 5, 'no sender: the preloaded one, the protocol protocol opened by the runtime, and the hook lines (boot, start, stop), the mrepo\'s own internal requests')
         t.alike((await repo.select('/protocols/*')).map(([p]) => p), ['/protocols/protocol.json', '/protocols/service.json'], 'the active set: protocol (the runtime\'s own), service (the boot hook); crud activated by start, deactivated by stop')
-        t.alike((await r.backend.listBranches()).map(([b]) => b).filter(b => !b.startsWith('execute/')).sort(), ['inbox', 'main', 'outbox', 'packages', 'protocols', 'request/done', 'request/execute', 'request/pending/default', 'runtime'], 'the layers (the execution branches not among them)')
+        t.alike((await r.backend.listBranches()).map(([b]) => b).filter(b => !b.startsWith('execute/')).sort(), ['inbox', 'main', 'outbox', 'packages', 'protocols', 'request/done', 'request/execute', 'request/pending/default', 'runtime', 'xpath/log'], 'the layers (the execution branches not among them)')
         t.alike(await repo.select('/request/execute/*'), [], 'nothing left executing')
         t.alike(await repo.select('/main/*'), [], 'main: the note deleted again')
         t.is((await layer({ repo }, 'inbox').list()).length, 22, 'the inbox: every envelope posted, kept (housekeeping later); the hook lines not among them: internal')
         t.is((await layer({ repo }, 'outbox').list()).length, 22, 'the outbox: every completed form sent back')
         t.is(JSON.parse((await repo.read('/runtime/service.json')).toString()).state, 'booted')
+        // the xpath layer's log: what the physical side did for each request
+        // that queried, a record under the request's offset; in its folder
+        // as each was made, committed at a checkpoint, apart from any request
+        if (storage === 'p2p') {
+          const logged = await layer({ repo }, 'xpath/log').list()
+          const requests = await layer({ repo }, 'request/done').list()
+          t.ok(logged.length > 0 && logged.every(n => requests.includes(n)), 'the physical log: its records committed at a checkpoint, each under its request\'s offset')
+          const one = await layer({ repo }, 'xpath/log').read(logged.at(-1))
+          t.alike([one.topic, one.offset, one.value.request, Object.keys(one.value.queries[0]).sort()], ['/xpath/log', Number(logged.at(-1)), Number(logged.at(-1)), ['from', 'logical', 'mode', 'ms', 'physical', 'returned', 'type']], 'a record: the request, its command, each physical query: the logical one it stood for, from where, its text, how many came, how long')
+          t.ok(await repo.find(`/xpath/log/${logged[0].slice(0, 5)}/${logged[0].slice(0, 6)}/${logged[0]}.json`), 'a streaming layer, by its config: in folders by its offset\'s digits')
+        }
       } finally { await r.close() }
       t.absent(existsSync(join(work, 'mrepos', 'host', 'log')), 'no log folder')
       // One request's journey, as the records show it: the put of the note,
@@ -125,7 +136,7 @@ test('where the layers live on the p2p host: the atomic ones in the store, the r
     await ask({ work, op: 'stop' })
     for (let i = 0; i < 100 && alive(s.pid); i++) await wait(100)
     const onDisk = (await p2pgitBackend(join(work, 'mrepos', 'host', '.git'), { fs }).listBranches()).map(([n]) => n)
-    t.alike(onDisk, ['inbox', 'outbox', 'request/done', 'request/execute', 'request/pending/default'], 'on disk: the boxes, the request layers (a request\'s execution branches there too while it runs: none left)')
+    t.alike(onDisk, ['inbox', 'outbox', 'request/done', 'request/execute', 'request/pending/default', 'xpath/log'], 'on disk: the boxes, the request layers, the xpath layer\'s log (a request\'s execution branches there too while it runs: none left)')
     const { openStore } = await import('p2p-store')
     const { mrepos } = await import('p2p-mrepo')
     const store = await openStore({ storage: join(work, 'store') })

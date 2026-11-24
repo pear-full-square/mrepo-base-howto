@@ -95,6 +95,17 @@ inside a filter, the other functions. The parent
 - **Every action reads it to its end** today: what a command answers is
   all of it.
 
+## Both visible
+
+- **The logical request** is the request: its record in `request/done`.
+- **What the physical side did for it** is in the `xpath` layer's log
+  (`xpath/log`), a record under the same offset: each physical query its
+  logical ones stood for, with what it gave and how long it took. A
+  layer of the XPath machinery's own, committed at checkpoints apart
+  from any request (`base-docs-package`, the mrepo's `/xpath`).
+- At `--flags log=verbose` the same queries are in the request's own
+  log too (`batch`).
+
 ## Logical and physical
 
 A query is logical: it navigates the structure as it finds it, and

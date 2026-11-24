@@ -57,8 +57,8 @@ import { openStore } from 'p2p-store'
 import { mrepos } from 'p2p-mrepo'
 import { openRepo, writer } from 'mycelium-git'
 import { nativeBackend, p2pgitBackend } from 'mycelium-git'
-import { INBOX, OUTBOX, MREPOS, inboxFolder, inboxOf, post, viewOf, gitdirOf, setting, request, principals, layer, internal, hookOf, parse, runLines, DONE, OUTSIDE, nameOf, tick, drop, wrap } from 'mrepo-base-request'
-import { execute, failed } from 'mrepo-base-execute'
+import { INBOX, OUTBOX, MREPOS, inboxFolder, inboxOf, post, viewOf, gitdirOf, setting, request, principals, layer, internal, hookOf, parse, runLines, DONE, OUTSIDE, nameOf, tick, drop, wrap, checkpoint } from 'mrepo-base-request'
+import { execute, failed, XPATH_LOG } from 'mrepo-base-execute'
 import { IDENTITY } from 'mrepo-base-xpath'
 export { run as runtimeRun } from './external/run/index.js'
 export { lay as runtimeLay } from './external/lay/index.js'
@@ -71,6 +71,8 @@ import pkg from './package.json' with { type: 'json' }
 // A pass running longer than this is said: the step it is at (stall).
 const STALL = 60000
 
+// How many passes the xpath layer's log may wait for its checkpoint while the runtime is busy.
+export const CHECKPOINT = 100
 export { INBOX, OUTBOX, inboxFolder, viewOf, gitdirOf, setting }
 
 export const version = { name: pkg.name, version: pkg.version }
@@ -318,6 +320,8 @@ export async function run ({ work: w, repo: given = null, every = 200, idle = 20
   const inbox = repo.storage !== 'git' ? join(dir ?? viewOf(work, repo.name), 'inbox') : null
   const heads = async () => (await repo.backend.listBranches()).map(([b, c]) => `${b} ${c}`).sort().join('\n')
   let booting = false
+  // (passes since the xpath layer's log was last committed)
+  let sinceCheckpoint = 0
   async function pass () {
     timer = null
     due = Infinity
@@ -352,6 +356,13 @@ export async function run ({ work: w, repo: given = null, every = 200, idle = 20
       await execute(ctx, { actions })
       stage = 'request again'
       await request(ctx)
+      // The xpath layer's log: its folder's new records committed, a
+      // checkpoint, apart from any request: when nothing else moved (the
+      // runtime idle), and at least every CHECKPOINT passes while it is
+      // busy. On the filesystem storage, where the layer is there.
+      stage = 'checkpoint'
+      const moved = (await heads()) !== before
+      if (repo.storage !== 'git' && (!moved || ++sinceCheckpoint >= CHECKPOINT) && before.includes(`${XPATH_LOG} `)) { sinceCheckpoint = 0; await checkpoint(ctx, XPATH_LOG) }
       stage = 'heads again'
       if ((await heads()) !== before || !ctx.intake) next = ctx.intake ? 0 : Math.min(every, 20)
       else if (inbox) {

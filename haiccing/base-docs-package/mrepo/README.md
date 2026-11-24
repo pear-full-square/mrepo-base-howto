@@ -20,6 +20,7 @@ folder documents a layer.
 - [outbox](outbox/)
 - [request](request/)
 - [execute](execute/)
+- [xpath](xpath/)
 
 ## A package's part
 
@@ -55,7 +56,8 @@ mrepo/
 - The repository is the truth; a folder on disk is a view of a commit.
 - Writes are commits only, never files edited in place.
 - No log of its own: a request is its own record, its `log` in it,
-  `request/done` the history.
+  `request/done` the history. What the physical side did for it is
+  apart, in the `xpath` layers.
 
 ## Modes and storage
 
@@ -65,7 +67,7 @@ Each layer has a mode, in its `.layer.json`:
 |---|---|---|
 | atomic | one commit at a time, by the runtime | `main`, `runtime`, `protocols`, `info` |
 | replicated | as atomic, also copied out as files | `packages` |
-| non-atomic | its own writers, in parallel | `inbox`, `outbox`, `request/*`, `execute/*` |
+| non-atomic | its own writers, in parallel | `inbox`, `outbox`, `request/*`, `execute/*`, `xpath/*` |
 
 Where the layers are stored:
 

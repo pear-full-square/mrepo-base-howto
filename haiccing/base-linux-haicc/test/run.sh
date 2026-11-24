@@ -454,6 +454,16 @@ is "$(printf '%s' "$out" | grep -o '@offset=[0-9]*' | wc -l | tr -d ' ')" 3 "log
 out=$(haicc --output . crud/read "done/*[${a2%=*}<${a2#@offset=}][last()]/offset" --flags layer=request logical 2>&1)
 is "$(printf '%s' "$out" | grep -o '@offset=[0-9]*' | wc -l | tr -d ' ')" 1 "the one before an offset: a bound then a position"
 hasnt "$out" "$a2" "below it: not the offset itself"
+# the physical log: what the physical side did for a request, in the xpath
+# layer, a record under the request's offset: each physical query its
+# logical ones stood for; committed at a checkpoint, apart from requests
+out=$(haicc --output . crud/read "log/*[$a2]" --flags layer=xpath logical 2>&1)
+has "$out" "\"request\":${a2#@offset=}," "the xpath layer's log: a request's record, under its offset"
+has "$out" '"physical":"' "its physical queries, each with the logical one it stood for"
+has "$out" '"logical":"' "and what was asked"
+n1=$(haicc --output . crud/read 'log/*/offset' --flags layer=xpath logical 2>&1 | grep -o '@offset=[0-9]*' | wc -l | tr -d ' ')
+n2=$(haicc --output . crud/read 'log/*/offset' --flags layer=xpath logical 2>&1 | grep -o '@offset=[0-9]*' | wc -l | tr -d ' ')
+is "$n2" "$n1" "a read of the xpath layers is not logged there: the log does not feed itself"
 out=$(haicc --flags log=debug -- host crud/read . 2>&1 >/dev/null); is "$?" "2" "flags in front of the URI: refused, exit 2"
 has "$out" "flags follow a URI: they are that step's" "said"
 
