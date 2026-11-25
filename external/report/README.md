@@ -14,8 +14,7 @@ The last run of a how-to, from the request log: each line, its answer whole, its
 ## Returns
 
 - `json`: `{ howto, kind, at, passed, steps, ran, scene, done, answer }`,
-  `kind` `run` or `stepped` (its steps since its first), `at` when it
-  began; each line `{ line, n, key, answer, ok, checks, failed?, ms,
+  `kind` `run` or `stepped` (its steps since its first), `at` the offset of the request that began it; each line `{ line, n, offset, answer, ok, checks, failed?, ms,
   changed }`, its answer whole and its metrics and changes from its own
   record (`request.metrics`, `request.changed`); `answer`, a line a
   block, in natural language.

@@ -17,7 +17,7 @@ at the mrepo the how-to runs in; `howto` alone is `howto/run`.
 `{ howto, passed, steps, ran, needs, cleared, scene, done, answer }`:
 whether every line passed; how many steps it has and how many ran; what
 it needs (`# needs:`); what was thrown away first; the scene's lines and
-each step's, `{ title, ok, lines: [{ n, line, key, keys, answer, ok,
+each step's, `{ title, ok, lines: [{ n, line, offset, offsets, answer, ok,
 checks, failed? }] }`, each answer cut to its start (whole in its
 line's record, read by `report`); `answer`, the outcome in natural
 language, the line that did not pass with what was expected of it and
@@ -35,6 +35,6 @@ A line that does not pass is no error: the run answers, `passed: false`.
 ## Design
 
 - **The request waits** (`exec.wait`): the lines are requests of their
-  own in the same mrepo, each recorded; its key in the run's answer.
+  own in the same mrepo, each recorded; its offset in the run's answer.
 - **The scene thrown away first**: a run starts from what a deploy
   gives, whatever ran before it.

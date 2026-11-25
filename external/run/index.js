@@ -9,9 +9,9 @@ import { scriptOf, senderOf, runBlock, clear } from '../../internal/scene/index.
 const listed = (title, lines, of) => ({ title, ok: lines.length === of && lines.every(l => l.ok), lines: lines.map(l => ({ ...l, answer: excerptOf(l.answer) })) })
 
 // The script read and checked, before anything runs: { key, script }.
-export function scriptAt (exec, given) {
+export async function scriptAt (exec, given) {
   const { key } = keyOf(given)
-  const script = parse(scriptOf(exec.runtime.dir, key))
+  const script = parse(await scriptOf(exec, key))
   exec.log('verbose', 'script', { howto: key, scene: Boolean(script.scene), steps: script.steps.length, needs: script.needs })
   return { key, script }
 }
@@ -43,7 +43,7 @@ export async function run (exec, { args = [] }) {
     exec.log(r?.passed ? 'info' : 'warn', 'ran', { howto: r?.howto, passed: r?.passed, ran: r?.ran, steps: r?.steps })
     return r
   }
-  const { key, script } = scriptAt(exec, args[0])
+  const { key, script } = await scriptAt(exec, args[0])
   const sender = senderOf(exec)
   return exec.wait(() => through(sender, key, script))
 }

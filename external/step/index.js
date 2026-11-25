@@ -29,7 +29,7 @@ export async function step (exec, { args = [] }) {
     exec.log(r?.ok ? 'info' : 'warn', 'stepped', { howto: r?.howto, step: r?.step, ok: r?.ok })
     return r
   }
-  const { key, script } = scriptAt(exec, args[0])
+  const { key, script } = await scriptAt(exec, args[0])
   const n = nextOf(await recordsOf(exec), key)
   const of = script.steps.length
   if (n > of) throw new Error(`${key}: all ${of} steps done (howto/reset . to step through again)`)

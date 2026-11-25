@@ -8,8 +8,9 @@ The tests of mrepo-base-howto, a section per file, each test by its name.
 - the script read: what it cannot hold, said with its line
 - a how-to's key: <org>/<package>/<name>
 - a line's answer and its checks: every fragment in it; a failure passes only when expected
-- run: the scene thrown away, prepared, every step and its checks; each line a request, its key in the answer
+- run: the scene thrown away, prepared, every step and its checks; each line a request, its offset in the answer
 - run: a line that does not pass ends it, what was expected and what it answered said
+- a how-to's package found where the packages manifest says: the store, then a folder of its sources
 - step: one at a time, where it is read from the request log; the first prepares the scene; the end said
 - where stepping is: after a run, a reset, or another how-to's first step, the first; after a failed step, said
 - report: the last run, from the request log: each line's answer whole and its time; as Markdown; stepped

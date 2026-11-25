@@ -4,7 +4,8 @@ The mrepo howto protocol: a how-to's steps run where it is installed, each line 
 
 A how-to is a page and its script, `steps.haicc`, beside it, in its
 package's `howto/<name>/`. The runner reads the script from the
-package's bundle in the mrepo it runs in and sends each line through
+package's bundle (the mrepo's own, the store's, or a sources folder's)
+and sends each line through
 that mrepo's own inbox, as if typed after `haicc` at it: `.` is the
 mrepo, the scene; what the line reaches is below it. Offered by
 `haiccing/base-package-howto`.
