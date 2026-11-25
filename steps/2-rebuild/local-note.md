@@ -6,7 +6,7 @@ and the release records, are in git's history. The local machine works
 offline: every download kept in a local source (`~/haicc-mirror/`), so
 `tools/install.sh` and `tools/release.js` run with no network.
 
-## 2026-11-25: `execute/main` at `72ea7a9` tested whole; `splectral.sh` failed 82/85 (its expected text gone from the docs): not merged
+## 2026-11-25: `execute/main` at `72ea7a9` tested whole; `splectral.sh` failed 82/85 (its expected text gone from the docs); merged on the human's word; the products pushed
 
 The prompt on `execute/main` ("The next run (2026-11-25)": the larger
 test mine, the merge to `main` with it). The earlier note of today
@@ -79,12 +79,19 @@ test mine, the merge to `main` with it). The earlier note of today
 6. **Every bundle's own tests:** twenty-eight, exit 0, `"ok":true`
    each; the longest `base-component-boot` 317 s,
    `base-solution-workbench` 234, `base-component-help-viewer` 184.
-7. **Not merged**: `splectral.sh` failed. `execute/main` not changed by
-   me; **the 25 test reports written in step 3 are not committed**:
-   kept in a stash on this machine ("test reports of the larger test,
-   72ea7a9"), valid for that commit only; the next run writes its own.
-   `main` stays at what it was.
-8. **Nothing else**: no products, no release, no Codeberg.
+7. **Merged all the same, on the human's word** (2026-11-25: "report
+   the issue but proceed with commit to main, and pushing of product
+   repositories"). The 25 reports committed on `72ea7a9` (`9554554`,
+   "Test reports of the larger test, 72ea7a9"; `--strict` exit 0 after),
+   that commit merged into `main` (`80f12aa`), not `execute/main`'s head
+   (it had moved). The failure stands, for the cloud session to fix
+   forward (done since: `5efe109`).
+8. **The products**, from `main` at `80f12aa`: 34 modules (11 merged,
+   23 "up to date"; `p2p-hypercore`, `p2p-process` under their new
+   names), 29 packages committed; 15 pushes needed a second or third try
+   (connection resets). The check after: all 63 the same as their
+   folders (the `p2p-git` fixture folders aside, as before). No missing
+   repository. No release, no Codeberg.
 
 ## The next run (2026-11-25, from the cloud session): read this first
 
