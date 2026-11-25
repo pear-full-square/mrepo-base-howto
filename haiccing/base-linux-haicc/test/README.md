@@ -84,12 +84,12 @@ nodes deployed into it, each registered by the host; who is registered
 and active asked of the host, the master and each node; a node
 resolved; a node gone quiet once its service stopped and its lease ran
 out, seen at the master and at the other node, active again when
-started; each node's log synced to the master, one asked to and one
-lazily, read there in one view and by node; a command dispatched from
+started; each node's requests in its own request log, read where it
+is; a command dispatched from
 one node to another by its unique URI, its path in the request's log,
 the master not on it; what is refused; a node
 taken out; the log viewer installed on Splectral, its page asked over
-HTTP, every node's records and one node's; nothing left running. What
+HTTP, the root's request log, a node's, filtered; nothing left running. What
 a lease or a node's next turn brings about is asked again until it is
 there, for some seconds. Each step timed.
 

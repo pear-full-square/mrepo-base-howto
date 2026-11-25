@@ -11,15 +11,14 @@ each at `haiccing/<repo>`, in the package structure
   `base-package-crud/`, structure in `main`; `base-package-container/`,
   an mrepo's replica in a container; `base-package-swarm/`, a host's
   node management: swarms, their masters and nodes; `base-package-rns/`,
-  a swarm's lookup db on every node; `base-package-log/`, a node's log,
-  synced to its swarm's master; `base-package-dispatch/`, a command
+  a swarm's lookup db on every node; `base-package-dispatch/`, a command
   routed to a node of the swarm by its unique URI; `base-package-splectral/`,
   Splectral: the commands of an install shown in a browser, an mrepo of
   its own beside the host.
 - Components, several packages deployed together: `base-component-boot/`,
   the initial boot mrepo and the program that puts it in place;
   `base-component-haicc/`, the haicc mrepo; `base-component-node/`, a
-  swarm's node: the haicc mrepo with its swarm's lookup, its own log
+  swarm's node: the haicc mrepo with its swarm's lookup
   and dispatch on it.
 - `base-app-haicc/`: the `haicc` command, an app run with Bare.
 - `base-linux-haicc/`: the first step on Linux, sh scripts: Bare put in

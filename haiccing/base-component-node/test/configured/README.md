@@ -13,15 +13,15 @@ value, then against the packages listed, read from the sources.
   the state the mrepo starts in. A hook file not named in the test fails
   it.
 - **The packages it lists**: each has its bundle in the sources; the
-  thirteen protocols they provide, one a package.
+  twelve protocols they provide, one a package.
 - **Every hook names what exists**: a protocol and an action a listed
   package provides; the protocol it opens or closes is provided too.
 - **What its hooks do**: run with the listed packages' own actions, on a
   minimal execution in memory. After the boot `haicc`, `help`, `info`,
   `runtime` and `service` are open; `initialise` extracts the info; `start` opens
-  `boot`, `container`, `crud`, `rns`, `log` and `dispatch` and starts the rns' and
-  the log's programs (their lines seen, not started: there is no mrepo's
-  folder here), `stop` ends them and closes them again, `shutdown` returns to booted. Every
+  `boot`, `container`, `crud`, `rns` and `dispatch` and starts the rns'
+  program (its line seen, not started: there is no mrepo's
+  folder here), `stop` ends it and closes them again, `shutdown` returns to booted. Every
   hook file must have run in that walk.
 - **Nothing left closed by forgetting**: every protocol the listed
   packages provide is opened by a hook, except the protocol protocol, on
