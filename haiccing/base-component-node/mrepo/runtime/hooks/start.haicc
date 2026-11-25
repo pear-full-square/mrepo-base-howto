@@ -1,7 +1,0 @@
-# start: run as the service opens its door, a line a command
-protocol/activate . boot
-protocol/activate . container
-protocol/activate . crud
-protocol/activate . rns
-protocol/activate . dispatch
-runtime/start . packages/haiccing/base-package-rns

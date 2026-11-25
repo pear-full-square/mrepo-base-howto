@@ -1,7 +1,0 @@
-# step: every schema the host's packages carry, by URI and fingerprint
-host info/get schemas
-# expect: haiccing/base-package-help/annotate-answer
-# expect: pear-full-square/mycelium-value-avro/record
-# step: the same at the docs mrepo, every package documented
-docs info/get schemas
-# expect: pear-full-square/mrepo-base-request/request

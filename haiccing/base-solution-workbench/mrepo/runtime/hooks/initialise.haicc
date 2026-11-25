@@ -1,3 +1,0 @@
-# initialise: its setup, a visible state for it: its info, its howtos namespace
-info/extract
-crud/create howtos '{"kind":"howtos"}'
