@@ -108,14 +108,21 @@ test('the boot: put in place, its runtime started, nothing deployed; the host de
     const backend = p2pgitBackend(gitdirOf(work, 'boot'), { fs })
     for (let i = 0; i < 300 && history.length < 11; i++) {
       history = []
-      // (request/done's natural order is its offsets': when each arrived; the
-      // history told here is when each was done: its envelope's time there)
+      // (request/done's natural order, its offsets': when each arrived. Not
+      // when each was done: that order is a race between a request and the
+      // hook lines it sets off)
       const done = []
       for (const n of await layer({ repo, backend }, 'request/done').arrived()) done.push(await layer({ repo }, 'request/done').read(n))
-      history = done.sort((a, b) => String(a.timestamp).localeCompare(String(b.timestamp))).map(r => r.value.value)
+      history = done.map(r => r.value.value)
       if (history.length < 11) await wait(100)
     }
-    t.alike(history.map(f => `${f.protocol} ${f.action} ${Array.isArray(f.uri) ? f.uri.join("/") : f.uri} ${(f.args ?? []).join(' ')}`.trim()), ['boot deploy boot', 'protocol activate . protocol', 'protocol activate main/. boot', 'protocol activate main/. crud', 'protocol activate main/. haicc', 'protocol activate main/. haici', 'protocol activate main/. help', 'protocol activate main/. info', 'protocol activate main/. runtime', 'info extract main/.', 'boot deploy main/host haiccing/base-package-runtime'], 'the history: the boot\'s deploy, the protocol protocol opened by the runtime, then its boot hook file a line a request (its protocols activated, its info extracted), then the first command')
+    // (what is causal is asserted in order: the mrepo's own requests, one
+    // after the other; the first command comes from outside while they run:
+    // where it arrives among them is not said, only that it is after the deploy)
+    const told = history.map(f => `${f.protocol} ${f.action} ${Array.isArray(f.uri) ? f.uri.join("/") : f.uri} ${(f.args ?? []).join(' ')}`.trim())
+    const FIRST = 'boot deploy main/host haiccing/base-package-runtime'
+    t.alike(told.filter(c => c !== FIRST), ['boot deploy boot', 'protocol activate . protocol', 'protocol activate main/. boot', 'protocol activate main/. crud', 'protocol activate main/. haicc', 'protocol activate main/. haici', 'protocol activate main/. help', 'protocol activate main/. info', 'protocol activate main/. runtime', 'info extract main/.'], 'the history, in the order it arrived: the boot\'s deploy, the protocol protocol opened by the runtime, then its boot hook file a line a request (its protocols activated, its info extracted)')
+    t.ok(told.indexOf(FIRST) > 0 && told.filter(c => c === FIRST).length === 1, 'and the first command, once, after the boot\'s deploy')
     t.alike(await layer({ repo }, 'inbox').list().then(r => r.length, () => 0), 1, 'through the inbox: only the command; the boot hook file\'s lines are the mrepo\'s own, internal')
     t.ok(history.slice(1, 10).every(f => !f.error), `its hooks done without an error ${history.slice(1, 10).map(f => f.error).filter(Boolean).join('; ')}`)
     t.alike((await repo.select('/protocols/*')).map(([p]) => p.slice(p.lastIndexOf('/') + 1)).filter(n => n !== '.layer.json').sort(), ['boot.json', 'crud.json', 'haicc.json', 'haici.json', 'help.json', 'info.json', 'protocol.json', 'runtime.json'], 'its active protocols, in its protocols layer: the boot\'s, crud, haicc, haici, help, info, the runtime\'s; the protocol protocol, opened by the runtime itself')

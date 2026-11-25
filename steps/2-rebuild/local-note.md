@@ -114,103 +114,115 @@ no Codeberg.
      hop; the proposals of last run stand (one request a page; where
      the 0.65 s goes, hop by hop).
 
-## The next run (2026-11-24, from the cloud session): read this first
+## The next run (2026-11-25, from the cloud session): read this first
 
 The prompt for this run, here so it is read with the notes. Write your
 own section above this one, as always; this one stays until the next
 prompt replaces it.
 
-What it needs on the local machine: as before (Linux x86-64; git, curl,
-tar; Docker, its daemon running). **Build and test only** (the human,
-2026-11-24: "leave a note for local to build and test"): **no products
-pushed, no release, no Codeberg sync** in this run; the products follow
-at a milestone, asked for in a later prompt.
+**The larger test is yours from now on, and the merge to `main` with
+it** (the human, 2026-11-25: "you do the quick checks here, but the
+long test we run local"; `handover-local.md`, "Who does what", 2). The
+cloud session builds a batch of change on `execute/main`, each change
+on a small test; you test the batch whole; passed whole, you merge it.
+`main` only ever holds a state your test passed. **No products, no
+release, no Codeberg** in this run.
 
-**Why this run**: the record-offset work, the logical reading of a
-topic over its storage, is merged to `main`: tested whole in the cloud
-session at `c317ed6c` (its content; `main`'s head is the merge that
-brings it in, with your notes). A second machine's full test of it,
-before the default reading is turned to logical on top of it.
-
-**The commit**: `main`'s head when you pull, written down. If `main`
+**The commit**: `execute/main`'s head when you pull, written down. Not
+`main`: `main` is what you merge into at the end. If `execute/main`
 moves while you test, stay on the commit you started with and say so.
 
-What is new since your last run (`8a4a9ae`), in short:
+**Your last run** (thank you: read, acted on):
 
-- **A request's identity is its offset**: milliseconds since the epoch,
-  thirteen digits, the name of its record's file; the inbox, the outbox
-  and `request/done` are streaming layers, a record a file in folders by
-  its offset's digits (`done/17954/179540/1795400000002.json`); the
-  inbox read after a pointer. `layer.json` is `.layer.json`, hidden by
-  its name.
-- **A streaming layer declares its structure** (the human, 2026-11-24:
-  "explicit declaration: yes. Otherwise it is just a folder"): in its
-  `.layer.json`, `"structure": { "type": "offset-files", "levels": [5, 6],
-  "batch": 50 }`; a box the runtime makes is made with it; the package
-  check fails an `inbox`, `outbox` or `request/done` that declares none.
-- **XPath, logical over physical** (`haiccing/base-docs-xpath`):
-  XPath 2.0's forward part; a query answers an `XPathResult`, read
-  through an `XPathIterator`, more fetched behind the scenes a slice at
-  a time by a physical query the storage's structure type generates
-  (`pear-full-square/mycelium-xpath-physical`, new: `tree`,
-  `offset-files`); one way to query an mrepo, `query` handing back the
-  result. A topic read logically: `done/*`, `done/*[@offset=N]`,
-  `done/*[@offset>N]`; a position in a topic's query is refused.
-- **Logical or physical**: `--flags logical`, `--flags physical`; with
-  neither the mrepo's setting, `/runtime/xpath.json`; with no setting
-  physical, as everywhere today. The runtime's own inbox read is
-  logical, ascending.
-- **The `xpath` layer and its log** (`xpath/log`): what the physical
-  side did for each request, under the request's offset.
-- An install from before this run does not read these layers: torn
-  down with the old `haicc` first, as always.
+- **The boot's history check, the race you found**: fixed by your
+  second form. Arrival order alone did not do it: the test's first
+  command comes from outside while the hook lines run, and arrives
+  among them. Now the mrepo's own requests are asserted in arrival
+  order (`request/done`'s offsets), the first command only as there
+  once, after the deploy. Three runs here passed; yours are the proof.
+- **The two repositories you list as missing** (`base-package-log`,
+  `mrepo-base-log`): not to be created, both are removed in this batch.
+  The renamed folders (`p2p-hypercore`, `p2p-process`) come with it.
+- **Every long test 20-50 % slower**: not looked into yet. It is on
+  the list; if this run shows the same, say so, and anything that
+  narrows it (a request's time from arrival to done, at the root and
+  at the host, against your earlier numbers).
+- **`done/*` physically answering `[]`**: so it is; the physical mode
+  is future work, its nature to be discussed with the human.
 
-> 1. **The clone.** `git checkout main`, `git pull`. Write down `git log
->    -1`. Tear down your own install first if one runs (`haicc
->    boot/teardown`), with the `haicc` it was made with.
-> 2. **The dependencies, the sources.** `sh tools/install.sh`, then
->    `tools/bare tools/release.js`: twenty-nine bundles
->    (`sources/haiccing/` 27, `sources/splectral/` 2), each with its
->    manifest, every entry's commit the one you wrote down;
->    `sources/holepunchto/` both Bare tarballs. `git status` no change
->    after it; if it changes, say so and stop.
-> 3. **The checks.** `tools/bare tools/code-check.js` ("34 modules, 30
+What is new since `c5d7e41`:
+
+- **Logical is how a topic is read**: no `logical` flag any more, no
+  mrepo setting (`/runtime/xpath.json`): `crud/read "done/*" --flags
+  layer=request` answers the records, the latest first; `--flags
+  physical` is the one flag, to look at the storage (`done/*/*/*`). A
+  path of the storage with nothing said is refused, said.
+- **Feedback's read-back** is the record's address: `crud/read
+  "done/*[@offset=<id>]" --flags layer=request`.
+- **The duplicated log removed** (the human: "the request done topic is
+  the log"; "I want the duplication removed"): the `log` module and
+  package are gone, with `log/read`, `log/status` and a node's log
+  program; a node runs two processes (its runtime, its rns). The log
+  viewer shows an mrepo's own request log, any mrepo of the install
+  (`/log/`, `?at=<position>`, `?filter=[...]`).
+- **Two modules renamed**: `p2p-topic` is `p2p-hypercore`, `p2p-local`
+  is `p2p-process` (their repositories created by the human under the
+  new names).
+- **Validation**: a batch on `execute/main`, the larger test yours
+  (`base-docs-hdlc`, "Validation").
+
+> 1. **The clone.** `git fetch`, `git checkout execute/main`, `git
+>    pull`. Write down `git log -1`. Tear down your own install first if
+>    one runs (`haicc boot/teardown`), with the `haicc` it was made with.
+> 2. **The dependencies, the sources.** `sh tools/install.sh` (a module
+>    gone and two renamed: old links in `node_modules/` may dangle,
+>    harmless; say if it complains), then `tools/bare tools/release.js`:
+>    twenty-eight bundles (`sources/haiccing/` 26, `sources/splectral/`
+>    2; `base-package-log.bundle` from an earlier run may still lie in
+>    `sources/`: remove it), every entry's commit the one you wrote
+>    down.
+> 3. **Every package's pre-release**, new for you: for each package
+>    `release.js --strict` names as not `current`, `tools/bare
+>    tools/package-test.js <org>/<package>` (its last line `"ok":true`;
+>    its report written into its `test-reports/`). Then `tools/bare
+>    tools/release.js --strict`: exit 0, every report `current`. One
+>    that fails: its report says which unit; say so and go on with the
+>    tests, no merge at the end.
+> 4. **The checks.** `tools/bare tools/code-check.js` ("33 modules, 29
 >    packages: 0 problems") and `tools/bare tools/info-extract.js
->    --files` ("616 READMEs, 0 problems"). `tools/bare tools/release.js
->    --strict`: run it and **list the reports it says are not
->    `current`, then go on**: the committed reports were not all
->    refreshed for this merge (the cloud session's to do, at the
->    milestone); do not run `tools/package-test.js`.
-> 4. **The full test** (`base-docs-hdlc`, "Validation"): every check
+>    --files` ("593 READMEs, 0 problems").
+> 5. **The full test** (`base-docs-hdlc`, "Validation"): every check
 >    passing; each one's count and time; nothing left after each
 >    (`pgrep -fa "bin/bare"`, `docker ps -a --filter label=haicc.folder`).
 >    Keep the laptop awake.
 >
 >    | test | runs | the cloud session's count |
 >    |---|---|---|
->    | boot `/test/validate` | 3 | `"ok":true` |
->    | `sh haiccing/base-linux-haicc/test/run.sh` | 2 | 386 |
->    | `test/splectral.sh` | 2 | 85 |
->    | `test/swarm.sh` | 3 (a race shows one run in a few) | 92 |
->    | `test/container.sh` | 1 | 17 |
+>    | boot `/test/validate` | 5 (the race: one run in a few showed it) | `"ok":true` |
+>    | `sh haiccing/base-linux-haicc/test/run.sh` | 2 | 387, the whole batch not run here |
+>    | `test/splectral.sh` | 2 | 85 at `9db93cc`, not run since |
+>    | `test/swarm.sh` | 3 | 83 |
+>    | `test/container.sh` | 1 | 17 at `9db93cc` |
 >    | `test/pair.sh` | 1 | not run here (39 at your last run) |
 >
->    A run that hangs: look for `runtime-stall.json` under its temporary
->    folder and copy what it says into your note. A run lost to a sleep:
->    run it again, and say so.
-> 5. **Every bundle's own tests**: `SOURCES=$PWD/sources tools/bare
+>    A count that differs from the table is not a failure by itself:
+>    every check passing is what counts; say the count. A run that
+>    hangs: look for `runtime-stall.json` under its temporary folder and
+>    copy what it says into your note.
+> 6. **Every bundle's own tests**: `SOURCES=$PWD/sources tools/bare
 >    sources/<org>/<package>.bundle /test/full` for each of the
->    twenty-nine (exit 0, last line `"ok":true`).
-> 6. **Two things to look at, by hand** (a workbench or a host of your
->    own, torn down after):
->    - a topic read both ways, and what each costs: `haicc --output host
->      crud/read "done/*" --flags layer=request logical` and the same
->      with `physical`; the time of each, and of one record by its
->      address (`"done/*[@offset=<one of them>]"`);
->    - the timings you measured last run (the ~0.65 s a hop, the help
->      pages' first visits): the same, better or worse, now that the
->      inbox is read through XPath.
-> 7. **Your note**: a section at the top of this file, as always: the
->    commit, each step's result and timings, the reports not `current`,
->    anything that looked wrong or slow. Commit it alone to `main` and
->    push. No products, no release, no Codeberg.
+>    twenty-eight (exit 0, last line `"ok":true`).
+> 7. **Passed whole (3 to 6, nothing failing): the merge.**
+>    - `git status`: only `test-reports/` changed. Commit them on
+>      `execute/main`: "Test reports of the larger test, <commit>",
+>      push.
+>    - `git checkout main`, `git pull`, `git merge --no-ff execute/main
+>      -m "Merge branch 'execute/main'"`, push. If `execute/main` moved
+>      since you started, merge the commit you tested with your reports
+>      on it, not its head.
+>    - **Anything failed: no merge.** Say what, with what you found;
+>      the cloud session fixes forward and asks again.
+> 8. **Your note**: a section at the top of this file, as always: the
+>    commit, each step's result and timings, what was merged or why
+>    not, anything that looked wrong or slow. Committed alone to `main`
+>    and pushed.
