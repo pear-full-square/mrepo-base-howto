@@ -6,112 +6,113 @@ and the release records, are in git's history. The local machine works
 offline: every download kept in a local source (`~/haicc-mirror/`), so
 `tools/install.sh` and `tools/release.js` run with no network.
 
-## 2026-11-24: `8a4a9ae` built and tested (service-every-mrepo); the products pushed; Codeberg synced
+## 2026-11-25: `c5d7e41` built and tested (record-offset); one failure, the boot's test, a race in its history check
 
-"The next run" (below), step by step. No release.
+"The next run" (below), build and test only: no products, no release,
+no Codeberg.
 
-1. **The clone:** `main` at `8a4a9aeb6974b928d72527358e237093b0f11dec`
-   (2026-11-23, "Merge branch 'execute/main'"). Nothing running before.
-2. **The dependencies, the sources:** `install.sh` exit 0, 9 s ("1
-   fetched, 207 kept, 8 linked"). `release.js` exit 0, 55 s:
+1. **The clone:** `main` at `c5d7e41001960e8b64251d43537eefa4a1b6faeb`
+   (2026-11-24, "Merge branch 'execute/main'"); `main` did not move
+   during the run. No install running before (`~/.haicc/work` empty).
+2. **The dependencies, the sources:** `install.sh` exit 0, 0.4 s ("0
+   fetched, 208 kept, 1 linked"). `release.js` exit 0, 58 s:
    twenty-nine bundles (`sources/haiccing/` 27, `sources/splectral/`
-   2), every entry's commit `8a4a9aeb`; `sources/holepunchto/` both Bare
+   2), every entry's commit `c5d7e410`; `sources/holepunchto/` both Bare
    tarballs; `git status` no change.
-3. **The checks:** `release.js --strict` exit 0 (39 s), every report
-   `current`, platforms `linux-x64`, `linux-arm64`; `code-check.js` "33
-   modules, 30 packages: 0 problems"; `info-extract.js --files` "608
-   READMEs, 0 problems".
+3. **The checks:** `code-check.js` "34 modules, 30 packages: 0
+   problems"; `info-extract.js --files` "616 READMEs, 0 problems".
+   `release.js --strict` exit 1 (51 s), as expected: **26 reports
+   `stale`**, 3 `current` (`base-package-boot`, `base-package-haicc`,
+   `base-package-runtime`); stale: `base-app-haicc`, every
+   `base-component-*` (boot, docs, haicc, node), every `base-docs-*`
+   (haicc, hdlc, package, uri, vision, xpath), `base-package-`
+   container, crud, dispatch, haici, help, info, log, protocol, rns,
+   service, splectral, swarm, `base-solution-workbench`, and both
+   splectral components. `package-test.js` not run.
 4. **The full test:** nothing left after any (0 bare, 0 containers).
+   The laptop stayed awake; nothing hung, no `runtime-stall.json`.
 
    | test | runs | result | time each |
    |---|---|---|---|
-   | boot `/test/validate` | 3 | `"ok":true` each | 109, 111, 105 s |
-   | `run.sh` | 2 | 370/370 each | 414, 506 s |
-   | `splectral.sh` | 2 | 85/85 each | 205, 203 s |
-   | `swarm.sh` | 3 | 92/92 each | 354, 355, 353 s |
-   | `container.sh` | 2 | run 1 2/17, run 2 **17/17** | 2, 32 s |
-   | `pair.sh` | 2 | run 1 27/39, run 2 **39/39** | 147, 184 s |
+   | boot `/test/validate` | 3 | **run 1 fail**, run 2 `"ok":true`, **run 3 fail** (121/122 asserts each) | 163, 177, 161 s |
+   | `run.sh` | 2 | 386/386 each | 629, 653 s |
+   | `splectral.sh` | 2 | 85/85 each | 239, 240 s |
+   | `swarm.sh` | 3 | 92/92 each | 473, 457, 454 s |
+   | `container.sh` | 1 | 17/17 | 45 s |
+   | `pair.sh` | 1 | 39/39 | 285 s |
 
-   **Runs 1 of `container.sh` and `pair.sh` failed by my doing, not
-   the code's**: "exec sh failed: Exec format error". My arm64 check in
-   the last run (`docker run --platform linux/arm64
-   debian:bookworm-slim`) had replaced the local `debian:bookworm-slim`
-   with its arm64 image, which this machine cannot run. Pulled the
-   amd64 one back (`docker pull --platform linux/amd64`), before any
-   bundle test that makes containers; both run again, whole. For a
-   later arm64 check: a tag of its own, never the shared one.
+   **The boot's failures** are one assertion, not the boot: `test/boot`
+   test 23, "the history: the boot's deploy, the protocol protocol
+   opened by the runtime, then its boot hook file …". Every one of the
+   eleven requests is there and done without an error (24–26 pass); the
+   **order** differs. The test sorts `request/done` by each record's
+   envelope `timestamp` (when it was done, `new Date().toISOString()`
+   in `mrepo-base-request/lib/record.js`), and that order is a race:
+   - run 1: `boot deploy boot` done after the `boot`, `crud`, `haicc`
+     activations (its envelope written after the first hook lines
+     finished), expected first;
+   - run 3: `info extract main/.` done before `protocol activate
+     main/. runtime`, expected after.
+   Proposed: the history in arrival order (the offsets, `request/done`'s
+   natural order, which the comment above it names), or the assertion
+   as a set plus the order only where it is causal. The cloud session's
+   to decide; the same unit passed in the bundle's own `/test/full`
+   (below), and 1 of 3 here.
 
-   `splectral.sh`'s page timings (ms, the two runs alike): `/help/`
-   1900–2170; `haiccing/base-docs-hdlc/validation` 4210–4370 (1890–2690
-   last run, as `hdlc/validation`); `/help/no/such/thing` 4050–4270;
-   the workbench's page 6110. **These are first visits, the worst
-   case, not what browsing feels like.** Measured after (a workbench
-   install, torn down after):
-   - the lookup itself is fast: the docs mrepo's info is local
-     (commission builds it); its own work under 0.1 s;
-   - a request costs ~0.65 s a hop between mrepos, whatever it asks
-     (root 0.5–0.65 s, `workbench` 1.2 s, `workbench/docs` 1.9–2.0 s;
-     `info/get` there the same as `crud/read`): the boxes, not the data;
-   - an mrepo answers one request at a time: four at once at the root
-     done at 1.0, 1.6, 2.1, 2.5 s;
-   - a page asks itself and each level above it (its drop-downs), sent
-     at once, answered in turn: cold, `/help/` 2.4 s, a page two levels
-     deep 6.3 s, three 8.0 s (the workbench); the split on package
-     made keywords a level deeper, one request more;
-   - the viewer keeps every answer until the install changes: the same
-     page again 3 ms; a new page whose levels are known one request
-     (~1.8 s in the workbench, ~1 s with the docs mrepo one hop away);
-     the command box asked each time (0.5–1 s).
-   Proposed, best first: one request a page (the levels above with
-   the answer, or the whole path asked once): a cold deep page ~2 s,
-   not 8; then where the 0.65 s a hop goes (the request records'
-   timestamps, hop by hop); read-only requests in parallel in an mrepo
-   is a design question, raised, not pushed.
-5. **Every bundle's own tests:** twenty-nine, exit 0, `"ok":true`
-   each; the longest `base-component-boot` 262 s,
-   `base-solution-workbench` 215 s, `base-package-container` 187 s.
-6. **The products**, from `main` at `8a4a9ae`. While the tests ran,
-   `origin/main` moved to `2953eaf`: one commit, a note
-   (`steps/2-rebuild/handback.md`, `handover-next.md`, a line of
-   `CLAUDE.md`), no product folder touched; the local `main` stayed the
-   commit tested, the scripts push from it, so pushed (pulled after).
-   - **Modules** (`tools/products.sh`, one at a time): 22 merged;
-     `mrepo-base-crud` and `mycelium-value-avro` "up to date"; 7
-     repositories missing.
-   - **Packages** (`tools/packages.sh`, `PACKAGES` a temporary folder,
-     removed after): 23 committed, `base-solution-workbench` among
-     them; 6 repositories missing.
-   - **The check after**: 50 the same as their folders here, one not:
-     `mrepo-base-crud`. "Up to date" was wrong: the split was in its
-     history from the push by mistake of 2026-11-21, its content the
-     reset's. Merged by content (`501d52a8`), the same after. All 51
-     repositories that exist: their content this commit's.
-   - **Missing, for the human to create (13)**: packages
-     `haiccing/base-component-node`, `base-package-dispatch`,
-     `base-package-log`, `base-package-rns`, `base-package-swarm`,
-     `splectral/base-component-log-viewer`; modules
-     `pear-full-square/mrepo-base-dispatch`, `mrepo-base-log`,
-     `mrepo-base-rns`, `mrepo-base-swarm`, `p2p-local`, `p2p-topic`,
-     `splectral-base-log-viewer`.
-   - **For a release**: `base-component-haicc` and
-     `base-solution-workbench` list `haiccing/base-package-swarm`
-     among their packages: no haiccing release that installs a host
-     until its repository exists. Splectral has none yet either: its
-     manifest's repository, `splectral/base-docs-splectral`, is not
-     there.
-7. **Codeberg** (`~/codeberg-sync.sh update`, the human's, 2026-11-24):
-   the network poor all along (connections reset, TLS cut). The first
-   try stopped at "Codeberg token rejected": a dropped connection, the
-   token fine (200 three times after). The second: 7 failures, six of
-   them the network; the third, for the owners that had them: one,
-   `pear-full-square/mrepo-base-crud`, "create on Codeberg", twice.
-   Created by hand through the API (201; its description set after,
-   200), the cause not found (not its description's apostrophe: that
-   one was taken). A last run for `pear-full-square`: "done". GitHub
-   and Codeberg's `main` the same, checked for five of today's.
-8. **The responsibilities** (the human, 2026-11-24): written into
-   `handover-local.md` ("Who does what", "Codeberg") and a line of
-   `CLAUDE.md`, pushed (`f49a6d6`).
+   **Slower than the last run, every long test**, on the same machine:
+   boot validate 161–177 s (105–111 last), `run.sh` 629–653 (414–506),
+   `swarm.sh` 454–473 (353–355), `splectral.sh` 240 (203–205),
+   `pair.sh` 285 (147–184), `container.sh` 45 (32); the bundle tests
+   too (`base-component-boot` 320 s, 262 last; workbench 240, 215).
+   About +20–50 %. Not found where: the XPath side's own work is
+   milliseconds (step 6); the per-request hop is the same as before.
+   Worth a look by the cloud session at the runtime's inbox loop (the
+   logical read, its slices) under load; the xpath log does not show
+   the runtime's own inbox reads, only commands'.
+
+   `splectral.sh`'s page timings (ms; run 1, run 2): `/help/` 2444,
+   2440 (1900–2170 last); `haiccing/base-docs-hdlc/validation` 3645,
+   5440 (4210–4370); `?at=splectral` 1419, 1823; `/help/no/such/thing`
+   5041, 5842 (4050–4270); the workbench's `/help/` 5075, 5066 and its
+   validation page 5042, 5672 (6110 last). First visits, cold, as
+   before; the same again 12–16 ms. On the whole a little worse on the
+   host, a little better in the workbench: within the noise of two runs.
+5. **Every bundle's own tests:** twenty-nine, exit 0, `"ok":true` each
+   (`base-component-boot`'s `/test/boot` passed here); the longest
+   `base-component-boot` 320 s, `base-solution-workbench` 240 s,
+   `base-package-container` 204 s.
+6. **By hand**, a host in a scratch install (`haicc-install.sh
+   --home=<scratch>`, its sources linked here, torn down and removed
+   after; the human's `~/.haicc` not touched). Times are the whole
+   `haicc` command, Bare's start included (`haicc --help` alone ~0.2 s):
+   - **A topic read both ways** (`host`, ~30–50 records in
+     `request/done`):
+     | read | time | records |
+     |---|---|---|
+     | `"done/*" --flags layer=request logical` | 1.66–2.33 s | all (32→49 as it grew) |
+     | `"done/*" … physical` (and with no flag) | 1.46–1.67 s | **0**: `[]` |
+     | `"done/*/*/*" … physical` | 1.59–2.73 s | all (35, 42) |
+     | `"done/*[@offset=N]" … logical` | 1.41 s | 1 |
+     | `"done/*[@offset=N]" … physical` | 1.43 s | 0 |
+     | `"done/*[@offset>N]" … logical` | 1.62–4.96 s | the later ones (10, 14) |
+     Physically `done/*` is the first level of folders (`17955`), which
+     have no value: an empty answer, as designed but easy to trip on;
+     the records are three levels down. The xpath log (`xpath/log`)
+     says what the physical side cost: **0–7 ms** each, the logical
+     `done/*` four slices (1, then all, then two empty) in ≤2 ms, the
+     address `[@offset=N]` two in 1 ms. So the time is the hop and the
+     record's size (a read of `done` holds the outputs of earlier
+     reads of `done`: 116 KB at 34 records, growing fast), not XPath.
+     The 4.96 s once was an outlier (1.62 s the other time).
+   - **The hop**: `haicc --output . crud/read .` 0.6–0.8 s (1.08 the
+     first), `host crud/read .` 1.40 s (five alike): ~0.6–0.65 s a hop,
+     the same as last run. Inside the host: an activation 0.28–0.41 s
+     from arrival to done (its action 55–118 ms); `info/extract` 3.3 s
+     (2.7 s its own); `service/initialise`, `service/start` 4.0, 3.3 s
+     from arrival (~0.1 s their action: the rest waiting their turn).
+     Unchanged: reading the inbox through XPath has not changed the
+     hop; the proposals of last run stand (one request a page; where
+     the 0.65 s goes, hop by hop).
 
 ## The next run (2026-11-24, from the cloud session): read this first
 
