@@ -6,7 +6,7 @@ and the release records, are in git's history. The local machine works
 offline: every download kept in a local source (`~/haicc-mirror/`), so
 `tools/install.sh` and `tools/release.js` run with no network.
 
-## 2026-11-25: `c5d7e41` built and tested (record-offset); one failure, the boot's test, a race in its history check
+## 2026-11-25: `c5d7e41` built and tested (record-offset); one failure, the boot's test, a race in its history check; the products pushed
 
 "The next run" (below), build and test only: no products, no release,
 no Codeberg.
@@ -113,6 +113,37 @@ no Codeberg.
      Unchanged: reading the inbox through XPath has not changed the
      hop; the proposals of last run stand (one request a page; where
      the 0.65 s goes, hop by hop).
+7. **The products** (the human, 2026-11-25, after this note: "push the
+   product repositories"; asked, with the boot test's race and the 26
+   stale reports put to them: "push all now"). From `main` at
+   `01b33be` (this note on `c5d7e41`, no product folder changed).
+   - **Modules** (`tools/products.sh`, one at a time): 34 of 35; 26
+     merged, 8 "up to date" (`mrepo-base-help`, `-protocol`,
+     `-service`, `mycelium-value-json`, `p2p-mrepo`, `p2p-replicate`,
+     `p2p-store`, `pkgm-base-manager`). `mrepo-base-haicc` and
+     `splectral-base-log-viewer` failed on a connection reset, pushed
+     on a second try.
+   - **Packages** (`tools/packages.sh`, `PACKAGES` a temporary folder,
+     removed after): 29 of 30 committed, the message "record-offset: a
+     request's identity its offset; streaming layers declare their
+     structure; XPath logical over physical (c5d7e41)". **They carry the
+     stale test reports** (step 3).
+   - **The check after**: every one fetched and compared with its
+     folder (the LICENSE aside): the 34 modules and
+     `base-linux-haicc` the same as `main`'s tree; the 28 other packages
+     the same as the folder on disk, their assembled `modules/` included,
+     but for two folders in 15 of them,
+     `modules/node_modules/p2p-git/__tests__/__fixtures__/test-status/{g,h}`:
+     a third-party fixture that its own `.gitignore` keeps out of git.
+     Harmless.
+   - **Missing, for the human to create (2)**: `haiccing/base-package-log`,
+     `pear-full-square/mrepo-base-log`. The other eleven missing last
+     run are there now.
+   - **Renamed on GitHub**: `pear-full-square/p2p-local` answers "moved
+     to `p2p-process`", `p2p-topic` "moved to `p2p-hypercore`"; the
+     pushes followed the redirect. The folders here keep the old names:
+     for the cloud session to follow (or the human to say).
+   - No Codeberg sync, no release (not asked).
 
 ## The next run (2026-11-25, from the cloud session): read this first
 
