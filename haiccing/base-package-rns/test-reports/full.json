@@ -1,8 +1,8 @@
 {
   "package": "haiccing/base-package-rns",
-  "content": "aca60e66683dcd8900cf55def467e20c00fd02fe02478d9e142ad330c5a8835d",
+  "content": "0429d861b9c74b5ccc3f7d319e5eaa551c9315acb71eeb1bb7d539199350fd98",
   "bare": "v1.36.0",
-  "date": "2026-11-24T04:49:59.496Z",
+  "date": "2026-11-25T00:27:53.052Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -150,7 +150,33 @@
       "failures": []
     },
     {
-      "unit": "/test/modules/pear-full-square/p2p-local",
+      "unit": "/test/modules/pear-full-square/mycelium-xpath",
+      "ok": true,
+      "tests": {
+        "passed": 22,
+        "total": 22
+      },
+      "asserts": {
+        "passed": 152,
+        "total": 152
+      },
+      "failures": []
+    },
+    {
+      "unit": "/test/modules/pear-full-square/mycelium-xpath-physical",
+      "ok": true,
+      "tests": {
+        "passed": 12,
+        "total": 12
+      },
+      "asserts": {
+        "passed": 91,
+        "total": 91
+      },
+      "failures": []
+    },
+    {
+      "unit": "/test/modules/pear-full-square/p2p-hypercore",
       "ok": true,
       "tests": {
         "passed": 4,
@@ -163,7 +189,7 @@
       "failures": []
     },
     {
-      "unit": "/test/modules/pear-full-square/p2p-topic",
+      "unit": "/test/modules/pear-full-square/p2p-process",
       "ok": true,
       "tests": {
         "passed": 4,
@@ -179,12 +205,12 @@
       "unit": "/test/modules/pear-full-square/pkgm-base-check",
       "ok": true,
       "tests": {
-        "passed": 24,
-        "total": 24
+        "passed": 26,
+        "total": 26
       },
       "asserts": {
-        "passed": 72,
-        "total": 72
+        "passed": 89,
+        "total": 89
       },
       "failures": []
     }

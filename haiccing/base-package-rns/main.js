@@ -30,8 +30,8 @@ const UNITS = {
   "/test/modules/pear-full-square/mycelium-value-json": () => Promise.all([import("./modules/pear-full-square/mycelium-value-json/test/json.test.js")]),
   "/test/modules/pear-full-square/mycelium-xpath": () => Promise.all([import("./modules/pear-full-square/mycelium-xpath/test/query.test.js"), import("./modules/pear-full-square/mycelium-xpath/test/xpath.test.js")]),
   "/test/modules/pear-full-square/mycelium-xpath-physical": () => Promise.all([import("./modules/pear-full-square/mycelium-xpath-physical/test/offset-files.test.js"), import("./modules/pear-full-square/mycelium-xpath-physical/test/physical.test.js")]),
-  "/test/modules/pear-full-square/p2p-local": () => Promise.all([import("./modules/pear-full-square/p2p-local/test/local.test.js")]),
-  "/test/modules/pear-full-square/p2p-topic": () => Promise.all([import("./modules/pear-full-square/p2p-topic/test/topic.test.js")]),
+  "/test/modules/pear-full-square/p2p-hypercore": () => Promise.all([import("./modules/pear-full-square/p2p-hypercore/test/hypercore.test.js")]),
+  "/test/modules/pear-full-square/p2p-process": () => Promise.all([import("./modules/pear-full-square/p2p-process/test/process.test.js")]),
   "/test/modules/pear-full-square/pkgm-base-check": () => Promise.all([import("./modules/pear-full-square/pkgm-base-check/test/mrepo.test.js"), import("./modules/pear-full-square/pkgm-base-check/test/package.test.js"), import("./modules/pear-full-square/pkgm-base-check/test/patterns.test.js"), import("./modules/pear-full-square/pkgm-base-check/test/rules.test.js"), import("./modules/pear-full-square/pkgm-base-check/test/tests.test.js")]),
 }
 // The test sets: their tests by name (modules: every module's unit tests).
