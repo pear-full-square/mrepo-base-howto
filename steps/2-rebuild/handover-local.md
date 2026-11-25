@@ -10,9 +10,11 @@ first step only.
 
 ## Who does what
 
-Decided by the human (2026-11-24). The cloud session does the
-implementation in this repository: the code, the documentation, the
-packages' pre-releases. The local agent takes what it built from there
+Decided by the human (2026-11-24; the larger test and the merge,
+2026-11-25: "you do the quick checks here, but the long test we run
+local"). The cloud session does the implementation in this repository,
+on `execute/main`: the code, the documentation, a small test for each
+change. It runs no full test. The local agent takes what it built from there
 to the world; its notes come from the cloud session's prompts, which
 say what was done and what needs testing.
 
@@ -20,9 +22,15 @@ The local agent's responsibilities:
 
 1. **Build**: the sources from the commit the prompt names
    (`tools/install.sh`, `tools/release.js`), and the checks.
-2. **Test**: the full test the prompt asks for, every check counted
-   and timed, nothing left running; a failure looked into, its cause
-   said.
+2. **Test**: the larger test that closes a batch of change: the
+   commit of `execute/main` the prompt names, every package's
+   pre-release (`tools/package-test.js`, its report written), the
+   checks, the full test, every check counted and timed, nothing left
+   running; a failure looked into, its cause said.
+   **Passed whole, merged to `main`**: the reports committed on
+   `execute/main`, that commit merged into `main` with a plain merge,
+   both pushed. Anything failed: no merge, said in the note; the cloud
+   session fixes forward.
 3. **The product repositories**: pushed from the commit tested, once
    the tests passed whole ("Products", below).
 4. **The manual test** (to come): the human's own install set up for

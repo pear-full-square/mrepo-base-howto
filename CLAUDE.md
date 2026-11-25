@@ -97,13 +97,16 @@ The rules are `base-docs-hdlc`'s "Validation"; here, how each is run.
   package's pre-release; documentation alone: the info check); no
   rebuild of everything, no end-to-end script, for an edit. The module
   copies in the packages not tested may lag inside a batch.
-- **The larger test closes a batch**: when a step of a design is
-  complete, at the latest at the end of a working day: the full test
-  (below) of a commit of `execute/main`, in the tree of its own; passed
-  whole, that commit is merged to `main`. `main` only ever holds a
-  state the larger test passed. What it finds is searched commit by
-  commit, fixed forward.
-- **The full test, every so often (overnight)**: every package's
+- **The larger test closes a batch, on the local machine** (the human,
+  2026-11-25: "you do the quick checks here, but the long test we run
+  local"): when a step of a design is complete, the local agent is
+  asked (`steps/2-rebuild/local-note.md`) for the full test (below) of
+  `execute/main`'s head, every package's pre-release with it; passed
+  whole, it merges that commit to `main`. `main` only ever holds a
+  state the larger test passed. What it finds is fixed forward. Here,
+  the quick checks only: the small tests, and one end-to-end script
+  where a change calls for it; no full run.
+- **The full test** (the local agent's): every package's
   pre-release, `tools/bare tools/release.js --strict` (every report
   `current`), the boot's test several times, every end-to-end script.
 - The checks: `tools/bare tools/info-extract.js` (and `--files`),
@@ -143,13 +146,6 @@ repository's and its tools'.
   scratchpad, waited for; no commit while it builds over the tree. One
   run at a time on `sources/`: a `haicc` test started while bundles are
   rebuilt hangs.
-- **The full test runs beside the work, not over it** (the human,
-  2026-11-24: "I don't mind that you run continuous background testing,
-  but organise it in a non-blocking way"): a committed state is tested
-  whole in a tree of its own (a git worktree with its own `sources/`
-  and `node_modules/`), in the background; the working tree stays free
-  and a commit waits only for its own small test. What the
-  background test finds is fixed forward.
 - **Before a long run**: `tools/bare tools/release.js`, then each changed
   package's own test from its folder: a slip is found in seconds.
 - **A removal by a variable is refused** by a safety check: write it as
