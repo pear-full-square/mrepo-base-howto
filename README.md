@@ -1,60 +1,66 @@
 # mrepo-base-howto
 
-The mrepo howto protocol: an mrepo's how-tos by activity, extracted from its packages, listed and read.
+The mrepo howto protocol: a how-to's steps run where it is installed, each line a request, its answer checked.
 
-A how-to is where an activity on the platform starts: what do you want
-to do here, and how. A package keeps its how-tos with what they are
-about, a folder each, `howto/<name>/`. `extract` gathers those of an
-mrepo's linked packages into its `howto` layer, by activity; `get`
-answers what can be done here, an activity's how-tos, or one how-to's
-steps. Offered by `haiccing/base-package-howto`.
+A how-to is a page and its script, `steps.haicc`, beside it, in its
+package's `howto/<name>/`. The runner reads the script from the
+package's bundle (the mrepo's own, the store's, or a sources folder's)
+and sends each line through
+that mrepo's own inbox, as if typed after `haicc` at it: `.` is the
+mrepo, the scene; what the line reaches is below it. Offered by
+`haiccing/base-package-howto`.
 
-| | |
-|---|---|
-| [external/](external/) | the howto protocol's actions |
-| [internal/](internal/) | a how-to's form and its rules, the layer's extraction |
-| [test/](test/) | its tests |
+## Links
+
+- [external](external/)
+- [internal](internal/)
+- [test](test/)
 
 ## Commands
 
 ```
-haicc host howto
-haicc host howto/get . node
-haicc host howto/get . node/deploy
-haicc host howto/extract
+haicc howtos howto/run . haiccing/base-package-crud/query
+haicc howtos howto/step . haiccing/base-package-crud/query
+haicc howtos howto/report . haiccing/base-package-crud/query md
+haicc howtos howto/reset .
 ```
 
-## A how-to
+## The script
 
-A folder in a package, `howto/<name>/`, its README:
+`steps.haicc`, a line a command (internal/script):
 
-- the title and a one-liner, as any README;
-- one line `Activity: <word>`: the activity it belongs to;
-- one `sh` block, its steps: each command as it is typed at the mrepo
-  that holds the how-to (`.` is that mrepo), the `#` line above it
-  saying why; the last step is the check that proves it worked, its why
-  starting with `the check`.
+- `# step: <title>` opens a step; its lines follow, one at least.
+- A line as typed after `haicc`: its position first (`.`, `host`,
+  `host/node-1`), then the command: `. crud/read "swarms/*"`.
+- `# expect: <fragment>` under a line: the fragment is in its answer,
+  its output as `haicc --output` prints it (one line of JSON), or
+  `error: <message>` when it failed. A line that fails fails its step,
+  unless an expect says the failure is its answer (`# expect: error:
+  ...`).
+- `# scene: <title>`, once, before the first step: lines that prepare
+  what the steps need, run and checked as steps are, not a step.
+- `# needs: docker` (or `network`), first: what it needs beyond an
+  install; said in its runs, for who runs it to skip it without.
+- Other comments are the page's; blank lines nothing.
 
-It is addressed as `<activity>/<name>`. Its README is in the help
-layer too, as every README is.
+## Design
 
-## Rules
-
-- **An activity is a word a how-to declares**: there is no list of
-  them. What `get` answers is what the mrepo's packages brought.
-- **Not found is said, not thrown**: a word that is no activity here,
-  or a how-to that is not there, is answered with what there is, and a
-  warning in the request's log.
-- **A how-to against its form** is left out of the layer where it
-  cannot be placed (no activity, no name), and is among the problems
-  `extract` counts.
-
-## Config
-
-`CONFIG`, in `internal/config.js`: `get`, the default action, and
-`extract`, both at the mrepo itself.
+- **No tool, no outside runner** (the human, 2026-11-21): "the required
+  functionality becomes internal"; a how-to runs where it is installed.
+- **Every step an ordinary request** (ours, agreed): a line is sent as a
+  terminal sends it, through the mrepo's own inbox, checked at the door
+  as one from outside; its record in the request log is the run's
+  record, and the report is read from it. A continuation a line answers
+  with is sent on as the terminal does.
+- **Forward only**: the scene is the mrepo the runner is in; a line
+  reaches what is below it, nothing above.
+- **The scene thrown away before a run** (and before a first step): what
+  the steps deployed torn down from the inside out, by each mrepo's
+  links, what they made in main removed; each an ordinary request.
+- **Simple first** (the human: "we can start with simple howto runners
+  and build them up"): run, step, report, reset; `explore` and `plan`
+  later (`help-mvp`).
 
 ## Tests
 
-- `npm test`: a how-to read, the rules on its form, the layer
-  extracted, the actions on an execution written for them.
+- `brittle-bare test/*.test.js` (Bare installed): the script read, its errors; a line's parts, answer and checks; a run, a step, a report and a reset on an execution written for them; each test by its name in [test/](test/).

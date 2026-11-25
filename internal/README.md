@@ -1,9 +1,8 @@
 # internal/
 
-The methods the actions use, never requested.
+The runner's code that is not an action, a folder each.
 
-| | |
-|---|---|
-| [howto/](howto/) | a how-to read from its README, the rules on its form, the layer from the packages' how-tos |
+## Links
 
-`config.js` is the protocol's config.
+- [script](script/)
+- [scene](scene/)
