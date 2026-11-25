@@ -17,7 +17,7 @@ concerns"). Non-atomic, on disk. Its first layer:
   was read (`mode`, the storage's structure `type`), from where, the
   physical query's text, how many it gave, how long it took; `fixes`
   where it fixed a node set. Read as any topic:
-  `crud/read 'log/*[@offset=<request's offset>]' --flags layer=xpath logical`.
+  `crud/read 'log/*[@offset=<request's offset>]' --flags layer=xpath`.
 - **Written as a file, committed at a checkpoint**: an execution writes
   its record into the layer's folder, `<dir>/xpath/log/`, when it ends:
   no commit, so a read stays a read. The runtime commits the folder's new

@@ -46,7 +46,7 @@ test('feedback: recorded where the command would run, nothing of it executed, no
   const protocols = { ...mounted.protocols, crud: { default: 'read', actions: { read: { uris: ['**'] } } } }
   const exec = execution(protocols)
   const f = await act('feedback', exec, { protocol: 'haici', action: 'feedback', uri: ['main', 'swarms'], args: ['the list is empty', 'crud/read'] })
-  t.alike(f, { feedback: 'recorded', on: 'crud/read swarms', id: '1795312345678', read: 'crud/read done/17953/179531/1795312345678.json --flags layer=request', answer: ['Feedback on crud/read swarms recorded: request 1795312345678.', 'To read it back: crud/read done/17953/179531/1795312345678.json --flags layer=request'] }, 'the command as understood, the request\'s id, to read it back; the same in natural language')
+  t.alike(f, { feedback: 'recorded', on: 'crud/read swarms', id: '1795312345678', read: 'crud/read "done/*[@offset=1795312345678]" --flags layer=request', answer: ['Feedback on crud/read swarms recorded: request 1795312345678.', 'To read it back: crud/read "done/*[@offset=1795312345678]" --flags layer=request'] }, 'the command as understood, the request\'s id, to read it back; the same in natural language')
   await t.exception(act('feedback', exec, { protocol: 'haici', action: 'feedback', uri: ['main', 'x'], args: ['crud/read'] }), /missing argument: command/, 'no text: the command taken for it, none after it')
 })
 

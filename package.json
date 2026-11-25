@@ -31,11 +31,10 @@
     "pear-full-square/mrepo-base-haici",
     "pear-full-square/mrepo-base-help",
     "pear-full-square/mrepo-base-info",
-    "pear-full-square/p2p-local",
-    "pear-full-square/p2p-topic",
+    "pear-full-square/p2p-process",
+    "pear-full-square/p2p-hypercore",
     "pear-full-square/mrepo-base-rns",
     "pear-full-square/mrepo-base-swarm",
-    "pear-full-square/mrepo-base-log",
     "pear-full-square/splectral-base-log-viewer",
     "pear-full-square/mrepo-base-dispatch",
     "pear-full-square/mycelium-xpath-physical"

@@ -272,7 +272,7 @@ out=$(haicc --output . boot/teardown host --flags help 2>&1); has "$out" '"door"
 is "$(running | wc -l | tr -d ' ')" 3 "nothing of it executed: the host and its node still running"
 out=$(haicc --output host haicc node-1 crud/read . --flags help 2>&1); has "$out" '"door":"refused here: no protocol: crud' "through a chain: answered by the node, where it would run (no crud there)"
 out=$(haicc host crud/read swarms --flags nope 2>&1 >/dev/null); is $? 1 "a flag that is none: not run, exit 1"
-is "$out" "haicc: not run: no flag: nope (container, feedback, help, layer, log, logical, physical)" "said why"
+is "$out" "haicc: not run: no flag: nope (container, feedback, help, layer, log, physical)" "said why"
 out=$(haicc host --flags help -- crud/read swarms 2>&1 >/dev/null); is "$out" "haicc: not run: help: on the last command only (it rewrites the command it is on)" "help on a command that passes its words on: not the last, not run"
 out=$(haicc host crud/read swarms --flags help 2>&1); has "$out" "To run it: crud/read swarms" "by default its answer in natural language, a line each"
 hasnt "$out" '"topic":' "not the record (--raw for it)"
@@ -282,15 +282,14 @@ hasnt "$out" '"topic":' "not the record (--raw for it)"
 out=$(haicc host crud/read swarms --flags feedback the list is empty, a swarm was expected 2>&1); is $? 0 "haicc host crud/read swarms --flags feedback <text>: recorded, exit 0"
 id=$(printf '%s\n' "$out" | sed -n 's/^Feedback on crud\/read swarms recorded: request \([0-9a-f-]*\)\.$/\1/p')
 [ -n "$id" ] && ok "answered in natural language: the command as understood, its request's id" || no "answered in natural language: the command as understood, its request's id" "$out"
-# (where its record is in request/done, a streaming layer: under its offset,
-# in its buckets; the query reads the layer as it is stored: logical = physical)
-at="${id%????????}/${id%???????}/$id"
-has "$out" "To read it back: crud/read done/$at.json --flags layer=request" "the command to read it back, as typed after the position"
-out=$(haicc --output host crud/read "done/$at.json" --flags layer=request 2>&1); is $? 0 "read back: haicc host crud/read done/<buckets>/<id>.json --flags layer=request"
+# (its record in request/done, a topic: at its address, its offset; how it
+# is stored no part of it)
+has "$out" "To read it back: crud/read \"done/*[@offset=$id]\" --flags layer=request" "the command to read it back, as typed after the position"
+out=$(haicc --output host crud/read "done/*[@offset=$id]" --flags layer=request 2>&1); is $? 0 "read back: haicc host crud/read \"done/*[@offset=<id>]\" --flags layer=request"
 has "$out" '"protocol":"haici","action":"feedback","uri":["main","swarms"],"args":["the list is empty, a swarm was expected","crud/read"]' "its record: haici/feedback at the command's URI, the text, then the command"
 has "$out" '"rewritten":"feedback"' "made by the flag"
 has "$out" "\"output\":{\"feedback\":\"recorded\",\"on\":\"crud/read swarms\",\"id\":\"$id\"" "its answer kept with it"
-out=$(haicc --output host crud/read "done/*/*/*[value/value/protocol='haici']" --flags layer=request 2>&1); has "$out" "\"offset\":$id" "all the feedback there: the request layer read by protocol"
+out=$(haicc --output host crud/read "done/*[value/value/protocol='haici']" --flags layer=request 2>&1); has "$out" "\"offset\":$id" "all the feedback there: the request layer read by protocol"
 out=$(haicc --output . boot/teardown host --flags feedback do not, it is in use 2>&1); has "$out" '"on":"boot/teardown host"' "haicc . boot/teardown host --flags feedback <text>: recorded at the root"
 is "$(running | wc -l | tr -d ' ')" 3 "nothing of it executed: the host and its node still running"
 out=$(haicc --output host haici/feedback swarms "asked directly" crud/read 2>&1); has "$out" '"on":"crud/read swarms"' "asked directly: haicc host haici/feedback swarms <text> crud/read"
@@ -383,7 +382,7 @@ has "$out" '"run":false' "completed, not failed: not run"
 has "$out" '"event":"request.flag"' "each reason a warning in its log"
 hasnt "$out" '"event":"crud.read.' "nothing of the command executed"
 out=$(haicc --raw host --flags nope log=verbose -- crud/read . 2>&1); is "$?" "1" "a flag there is none of, before the --: that step not run, exit 1"
-has "$out" '"why":["no flag: nope (container, feedback, help, layer, log, logical, physical)"]' "said why"
+has "$out" '"why":["no flag: nope (container, feedback, help, layer, log, physical)"]' "said why"
 hasnt "$out" '"event":"crud.read.' "the command after it not sent on"
 out=$(haicc host --flags log=debug crud/read . 2>&1 >/dev/null); is "$?" "1" "a list not closed where a command follows: exit 1"
 has "$out" "no command after the flags of haicc (-- closes a flag list, the command follows it)" "said: only -- or the end of the command closes a list"
@@ -415,54 +414,57 @@ is "$(haicc --output . boot/teardown extra-1 2>&1)$(haicc --output . boot/teardo
 [ ! -e "$T/home/work/mrepos/local/extra-1" ] && [ ! -e "$T/home/work/mrepos/local/extra-2" ] && [ -d "$T/home/work/mrepos/local/host" ] && ok "their folders removed, the host left" || no "their folders removed, the host left"
 is "$(running | wc -l | tr -d ' ')" 3 "three runtimes running again"
 # main is the default layer; layer=<name> changes it: the request records read
-out=$(haicc --output . crud/read "done/*/*/*[value/value/protocol='boot']" --flags layer=request 2>&1); is "$?" "0" "haicc . crud/read \"done/*/*/*[...]\" --flags layer=request: the request layer read"
-has "$out" '"uri":["request","done/' "records, each a file answered with its document, its URI at that layer"
+out=$(haicc --output . crud/read "done/*[value/value/protocol='boot']" --flags layer=request 2>&1); is "$?" "0" "haicc . crud/read \"done/*[...]\" --flags layer=request: the request layer read"
+has "$out" '"uri":["request","done/' "records, each answered with its document, its URI at that layer"
 has "$out" '"protocol":"boot"' "those the filter holds for"
 hasnt "$out" '"protocol":"service"' "and no others"
-out=$(haicc --output . --flags layer=request -- crud/read "done/*/*/*[value/value/protocol='boot']" 2>&1)
+out=$(haicc --output . --flags layer=request -- crud/read "done/*[value/value/protocol='boot']" 2>&1)
 has "$out" '"uri":["request","done/' "the flag at the step: held for the command that follows"
 is "$(haicc --output . crud/read 'done/*' 2>&1)" '[]' "without the flag: main, where there is no done"
-out=$(haicc --output host crud/read 'done/*/*/*' --flags layer=request 2>&1)
+out=$(haicc --output host crud/read 'done/*' --flags layer=request 2>&1)
 has "$out" '"uri":["request","done/' "through a shortcut: the host's records, the routing still in main"
-# a batch, read as the layer is stored: the latest folder, the latest of it,
+# a batch, read as the layer is stored (--flags physical): the latest folder, the latest of it,
 # by positions; then the ones before an offset, by name: no record opened
 # to choose them (each record's offset asked: a record's own output may
 # hold other records)
-out=$(haicc --output . crud/read 'done/*[last()]/*[last()]/*[position()>last()-2]/offset' --flags layer=request 2>&1)
+out=$(haicc --output . crud/read 'done/*[last()]/*[last()]/*[position()>last()-2]/offset' --flags layer=request physical 2>&1)
 is "$(printf '%s' "$out" | grep -o 'done/[0-9]*/[0-9]*/[0-9]*\.json/offset' | wc -l | tr -d ' ')" 2 "a batch: the latest two records of the latest folder, by position"
 last=$(printf '%s' "$out" | grep -o 'done/[0-9]*/[0-9]*/[0-9]*\.json' | tail -1); name=${last##*/}; folder=${last%/*}
-out=$(haicc --output . crud/read "$folder/*[name()<'$name'][position()>last()-1]/offset" --flags layer=request 2>&1)
+out=$(haicc --output . crud/read "$folder/*[name()<'$name'][position()>last()-1]/offset" --flags layer=request physical 2>&1)
 is "$(printf '%s' "$out" | grep -o "$folder/[0-9]*\.json/offset" | wc -l | tr -d ' ')" 1 "the batch before an offset: by its name, in its folder"
 hasnt "$out" "$name" "the offset itself not in it"
-# the same topic read logically (--flags logical): its records, the latest
-# first, each by its address; nothing of how it is stored in the answer;
-# an address read back
-out=$(haicc --output . crud/read 'done/*/offset' --flags layer=request logical 2>&1)
-has "$out" '"uri":["request","done/*[@offset=' "logical: the topic's records, each by its address"
+# the same topic read logically, the reading when nothing is said: its
+# records, the latest first, each by its address; nothing of how it is
+# stored in the answer; an address read back; a path of its storage
+# refused there
+out=$(haicc . crud/read "$last" --flags layer=request 2>&1)
+has "$out" "not a topic's records" "a path of its storage with nothing said: refused, said (physical reads it)"
+out=$(haicc --output . crud/read 'done/*/offset' --flags layer=request 2>&1)
+has "$out" '"uri":["request","done/*[@offset=' "logical, nothing said: the topic's records, each by its address"
 hasnt "$out" '.json' "nothing of its storage in it: no folder, no file's name"
 nl=$(printf '%s' "$out" | grep -o '@offset=[0-9]*' | wc -l | tr -d ' ')
 a1=$(printf '%s' "$out" | grep -o '@offset=[0-9]*' | sed -n 1p); a2=$(printf '%s' "$out" | grep -o '@offset=[0-9]*' | sed -n 2p)
 [ "${a1#@offset=}" -gt "${a2#@offset=}" ] && ok "the latest first" || no "the latest first" "$a1 $a2"
 np=$(haicc --output . crud/read 'done/*/*/*/offset' --flags layer=request physical 2>&1 | grep -o '\.json/offset' | wc -l | tr -d ' ')
 is "$np" "$((nl + 1))" "every record of it: as many as are stored (and the read itself, done since)"
-out=$(haicc --output . crud/read "done/*[$a2]" --flags layer=request logical 2>&1)
+out=$(haicc --output . crud/read "done/*[$a2]" --flags layer=request 2>&1)
 has "$out" "\"uri\":[\"request\",\"done/*[$a2]\"],\"value\":{\"topic\":\"/request/done\",\"offset\":${a2#@offset=}," "an address an answer gave: read back, its record"
-out=$(haicc --output . crud/read "done/*[value/value/protocol='boot']/value/value/action" --flags layer=request logical 2>&1)
+out=$(haicc --output . crud/read "done/*[value/value/protocol='boot']/value/value/action" --flags layer=request 2>&1)
 has "$out" '"value":"deploy"' "by its data, a field of each: the boot protocol's requests"
-out=$(haicc --output . crud/read "done/*[${a2%=*}<${a2#@offset=}]/offset" --flags layer=request logical 2>&1)
+out=$(haicc --output . crud/read "done/*[${a2%=*}<${a2#@offset=}]/offset" --flags layer=request 2>&1)
 has "$out" '@offset=' "logical: from an offset back: a bound on @offset"
 hasnt "$out" "$a2" "below it: not the offset itself"
-out=$(haicc . crud/read 'done/*[last()]' --flags layer=request logical 2>&1)
+out=$(haicc . crud/read 'done/*[last()]' --flags layer=request 2>&1)
 has "$out" "a position is no part of a topic's query" "a position in a topic's query: refused, said: a query says where, never how many"
 # the physical log: what the physical side did for a request, in the xpath
 # layer, a record under the request's offset: each physical query its
 # logical ones stood for; committed at a checkpoint, apart from requests
-out=$(haicc --output . crud/read "log/*[$a2]" --flags layer=xpath logical 2>&1)
+out=$(haicc --output . crud/read "log/*[$a2]" --flags layer=xpath 2>&1)
 has "$out" "\"request\":${a2#@offset=}," "the xpath layer's log: a request's record, under its offset"
 has "$out" '"physical":"' "its physical queries, each with the logical one it stood for"
 has "$out" '"logical":"' "and what was asked"
-n1=$(haicc --output . crud/read 'log/*/offset' --flags layer=xpath logical 2>&1 | grep -o '@offset=[0-9]*' | wc -l | tr -d ' ')
-n2=$(haicc --output . crud/read 'log/*/offset' --flags layer=xpath logical 2>&1 | grep -o '@offset=[0-9]*' | wc -l | tr -d ' ')
+n1=$(haicc --output . crud/read 'log/*/offset' --flags layer=xpath 2>&1 | grep -o '@offset=[0-9]*' | wc -l | tr -d ' ')
+n2=$(haicc --output . crud/read 'log/*/offset' --flags layer=xpath 2>&1 | grep -o '@offset=[0-9]*' | wc -l | tr -d ' ')
 is "$n2" "$n1" "a read of the xpath layers is not logged there: the log does not feed itself"
 out=$(haicc --flags log=debug -- host crud/read . 2>&1 >/dev/null); is "$?" "2" "flags in front of the URI: refused, exit 2"
 has "$out" "flags follow a URI: they are that step's" "said"
@@ -521,7 +523,7 @@ has "$(haicc --output host info/get howto 2>&1)" '"keyword":"haiccing/base-compo
 out=$(haicc docs info/get haiccing/base-docs-hdlc/validation --flags feedback unclear: which state holds a request? 2>&1); is $? 0 "haicc docs info/get <keywords> --flags feedback <text>: recorded at the docs mrepo"
 id=$(printf '%s\n' "$out" | sed -n 's/^Feedback on info\/get haiccing\/base-docs-hdlc\/validation recorded: request \([0-9a-f-]*\)\.$/\1/p')
 [ -n "$id" ] && ok "answered with its request's id" || no "answered with its request's id" "$out"
-out=$(haicc --output docs crud/read "done/${id%????????}/${id%???????}/$id.json" --flags layer=request 2>&1); has "$out" '"protocol":"haici","action":"feedback","uri":["main","haiccing/base-docs-hdlc/validation"]' "read back there: haici/feedback at the keywords' URI"
+out=$(haicc --output docs crud/read "done/*[@offset=$id]" --flags layer=request 2>&1); has "$out" '"protocol":"haici","action":"feedback","uri":["main","haiccing/base-docs-hdlc/validation"]' "read back there: haici/feedback at the keywords' URI"
 # its build: removed at shutdown, built again at initialise
 haicc --output docs service/stop >/dev/null 2>&1; out=$(haicc --output docs service/shutdown 2>&1); has "$out" '"state":"booted"' "haicc docs service/shutdown: shut down, its shutdown hook run"
 out=$(haicc --output docs info/get 2>&1 >/dev/null); has "$out" "no info extracted in this mrepo yet" "its build removed (info/clear)"

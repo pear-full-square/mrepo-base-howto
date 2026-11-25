@@ -254,8 +254,9 @@ natural order the order requests arrived. Each declares it in its
 explicit, always. A layer that declares no structure is a folder,
 whatever its name (the human, 2026-11-24: "explicit declaration: yes.
 Otherwise it is just a folder"); the structure check fails a box or
-`request/done` that does not declare. A query reads them as they
-are stored: `done/*/*/*[value/value/protocol='boot']`.
+`request/done` that does not declare. A query reads one as its
+records: `done/*[value/value/protocol='boot']`; as it is stored only
+with `--flags physical` (`done/*/*/*`).
 Requests are checked at the inbox, and again as they execute.
 
 ## Deploying an mrepo

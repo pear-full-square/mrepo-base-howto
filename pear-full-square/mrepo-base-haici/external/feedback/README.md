@@ -19,8 +19,8 @@ feedback <text>` on the command itself.
 
 `{ feedback, on, id, read, answer }`: `recorded`; the command as
 understood; the request's id (`exec.id`), what is acted on, in a fixed
-place; the command that reads it back here (`crud/read done/<id>.json
---flags layer=request`); `answer`, the same in natural language, a line
+place; the command that reads it back here (`crud/read "done/*[@offset=<id>]"
+--flags layer=request`: its record's address); `answer`, the same in natural language, a line
 each, what the `haicc` command prints (the record with `--raw`).
 
 ## Errors
@@ -33,8 +33,8 @@ each, what the `haicc` command prints (the record with `--raw`).
 - **The request log is the store** (the team, 2026-11-20): it writes
   nothing; its request's record holds the text and the command (its
   arguments) and its answer, in `request/done` once done, under its
-  offset in that layer's folders
-  (`done/17953/179531/<id>.json`), read with `layer=request`.
+  offset: its address `done/*[@offset=<id>]`, read with
+  `layer=request`.
 - **Nothing of the command executed**, nor checked: feedback can be
   given on anything that exists as a command, one the door would refuse
   too.

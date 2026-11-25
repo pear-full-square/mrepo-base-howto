@@ -1,8 +1,8 @@
 {
   "package": "haiccing/base-component-haicc",
-  "content": "2bda0481850de0ab4fec5cb7541aadaa4894d4a847a48eebedd9a2b6416c94e7",
+  "content": "6f89076b0bfe27c9c712d36aa5eb876acc58bb8dc092a7bea796d2b3e4c7e212",
   "bare": "v1.36.0",
-  "date": "2026-11-24T04:35:23.335Z",
+  "date": "2026-11-25T04:11:31.000Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -137,15 +137,41 @@
       "failures": []
     },
     {
+      "unit": "/test/modules/pear-full-square/mycelium-xpath",
+      "ok": true,
+      "tests": {
+        "passed": 22,
+        "total": 22
+      },
+      "asserts": {
+        "passed": 152,
+        "total": 152
+      },
+      "failures": []
+    },
+    {
+      "unit": "/test/modules/pear-full-square/mycelium-xpath-physical",
+      "ok": true,
+      "tests": {
+        "passed": 12,
+        "total": 12
+      },
+      "asserts": {
+        "passed": 91,
+        "total": 91
+      },
+      "failures": []
+    },
+    {
       "unit": "/test/modules/pear-full-square/pkgm-base-check",
       "ok": true,
       "tests": {
-        "passed": 24,
-        "total": 24
+        "passed": 26,
+        "total": 26
       },
       "asserts": {
-        "passed": 72,
-        "total": 72
+        "passed": 89,
+        "total": 89
       },
       "failures": []
     }

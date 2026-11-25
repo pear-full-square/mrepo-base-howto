@@ -1,8 +1,6 @@
 # stop: run as the service closes its door, a line a command
-runtime/stop . packages/haiccing/base-package-log
 runtime/stop . packages/haiccing/base-package-rns
 protocol/deactivate . dispatch
-protocol/deactivate . log
 protocol/deactivate . rns
 protocol/deactivate . boot
 protocol/deactivate . container

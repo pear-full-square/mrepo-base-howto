@@ -1,6 +1,6 @@
 {
   "mode": "replicated",
-  "description": "The packages a swarm's node is made of, in deploy order: the haicc mrepo's (the runtime, info, help, haici, the protocol protocol, boot, service, haicc, crud, container), then the rns protocol, the log protocol and the dispatch protocol, this component last.",
+  "description": "The packages a swarm's node is made of, in deploy order: the haicc mrepo's (the runtime, info, help, haici, the protocol protocol, boot, service, haicc, crud, container), then the rns protocol and the dispatch protocol, this component last.",
   "packages": [
     "haiccing/base-package-runtime",
     "haiccing/base-package-info",
@@ -13,7 +13,6 @@
     "haiccing/base-package-crud",
     "haiccing/base-package-container",
     "haiccing/base-package-rns",
-    "haiccing/base-package-log",
     "haiccing/base-package-dispatch",
     "haiccing/base-component-node"
   ]

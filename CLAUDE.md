@@ -38,15 +38,15 @@ history, and each package and module has its own repository).
 
 - `haiccing/`: the packages, each at the path of its repository:
   `base-package-runtime`, `-protocol`, `-info`, `-help`, `-haici`, `-boot`,
-  `-service`, `-haicc`, `-crud`, `-container`, `-swarm`, `-rns`, `-log`,
+  `-service`, `-haicc`, `-crud`, `-container`, `-swarm`, `-rns`,
   `-dispatch`, `-splectral` (one package, one protocol); the solution
   `base-solution-workbench` (the workbench, the local manager in the
   host's role: one deploy, its commission deploying the docs mrepo and
   Splectral below it; its `howtos` namespace); the components
   `base-component-boot` (the boot mrepo and the program that puts it in
   place), `base-component-haicc` (the haicc mrepo, a host),
-  `base-component-node` (a swarm's node: the haicc mrepo with `rns`,
-  `log` and `dispatch`) and
+  `base-component-node` (a swarm's node: the haicc mrepo with `rns`
+  and `dispatch`) and
   `base-component-docs` (the docs mrepo); `base-app-haicc` (the `haicc` command, an app run with Bare)
   and `base-linux-haicc` (the first step on Linux, sh scripts); the
   documentation packages `base-docs-package` (the package specification,
@@ -58,8 +58,9 @@ history, and each package and module has its own repository).
   `base-component-help-viewer`, the help viewer, the first component, a
   standalone first implementation (one package: its program and its
   page in it, its module `splectral-base-help-viewer`);
-  `base-component-log-viewer`, the log viewer, on its pattern: a
-  swarm's logs as its master holds them (`splectral-base-log-viewer`).
+  `base-component-log-viewer`, the log viewer, on its pattern: an
+  mrepo's requests, its own request log, for any mrepo of the install
+  (`splectral-base-log-viewer`).
   Brought to haiccing's template.
 - `pear-full-square/`: the modules those packages carry, and
   `pkgm-base-manager`, which the tools use.
@@ -87,11 +88,25 @@ history, and each package and module has its own repository).
 The rules are `base-docs-hdlc`'s "Validation"; here, how each is run.
 
 - A package's pre-release: `tools/bare tools/package-test.js <org>/<package>` (`haiccing/`, `splectral/`).
-- **Scoped to the change** (`base-docs-hdlc`, "Validation"): the changed
-  packages' pre-releases, the checks, and the boot's test or the one
-  end-to-end script the change touches. A release built from a tested
-  change stays valid.
-- **The full test, every so often (overnight)**: every package's
+- **A batch of change, built up on `execute/main`** (the human,
+  2026-11-24: "the batch of change needs to be larger. We can do
+  (small) single package testing where the change is being exercised.
+  Build up batch of change in execute/main, then regularly run larger
+  tests with main commit at the end"): each change its own commit, on a
+  small test where it is exercised (one module's tests, or one
+  package's pre-release; documentation alone: the info check); no
+  rebuild of everything, no end-to-end script, for an edit. The module
+  copies in the packages not tested may lag inside a batch.
+- **The larger test closes a batch, on the local machine** (the human,
+  2026-11-25: "you do the quick checks here, but the long test we run
+  local"): when a step of a design is complete, the local agent is
+  asked (`steps/2-rebuild/local-note.md`) for the full test (below) of
+  `execute/main`'s head, every package's pre-release with it; passed
+  whole, it merges that commit to `main`. `main` only ever holds a
+  state the larger test passed. What it finds is fixed forward. Here,
+  the quick checks only: the small tests, and one end-to-end script
+  where a change calls for it; no full run.
+- **The full test** (the local agent's): every package's
   pre-release, `tools/bare tools/release.js --strict` (every report
   `current`), the boot's test several times, every end-to-end script.
 - The checks: `tools/bare tools/info-extract.js` (and `--files`),
@@ -103,7 +118,7 @@ The rules are `base-docs-hdlc`'s "Validation"; here, how each is run.
 - Splectral as an app platform, a component installed and its pages
   served: `sh haiccing/base-linux-haicc/test/splectral.sh`.
 - A swarm on one host, its master, its nodes registered, a node gone
-  quiet, the logs at the master and in the log viewer, a command
+  quiet, each mrepo's request log in the log viewer, a command
   dispatched between nodes:
   `sh haiccing/base-linux-haicc/test/swarm.sh`, several times (a
   race shows one run in a few).
@@ -131,13 +146,6 @@ repository's and its tools'.
   scratchpad, waited for; no commit while it builds over the tree. One
   run at a time on `sources/`: a `haicc` test started while bundles are
   rebuilt hangs.
-- **The full test runs beside the work, not over it** (the human,
-  2026-11-24: "I don't mind that you run continuous background testing,
-  but organise it in a non-blocking way"): a committed state is tested
-  whole in a tree of its own (a git worktree with its own `sources/`
-  and `node_modules/`), in the background; the working tree stays free
-  and a commit waits only for the checks scoped to its change. What the
-  background test finds is fixed forward.
 - **Before a long run**: `tools/bare tools/release.js`, then each changed
   package's own test from its folder: a slip is found in seconds.
 - **A removal by a variable is refused** by a safety check: write it as

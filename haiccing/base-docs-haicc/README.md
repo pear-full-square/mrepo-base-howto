@@ -42,8 +42,8 @@ docs mrepo: `haicc docs info/get <keywords>`.
   Nodes are deployed into it (`swarm/deploy swarms/<swarm>/<name>`),
   each an mrepo, `<swarm>/<name>`, registered by the host that created
   it. Every node runs `rns` on the swarm's lookup db: `rns/status` says
-  who is registered and active. Every node keeps its own log, synced
-  lazily to the master: `log/read` there answers every node's. A node
+  who is registered and active. A node's log is its request log, as every mrepo's: read where it is
+  (`crud/read "done/*" --flags layer=request`). A node
   reaches another by its unique URI, `haicc <swarm>/<name>
   <protocol>/<action>`: dispatched, resolved by `rns`, delivered to it
   directly. A node can have a replica in a

@@ -193,19 +193,31 @@ demo nothing runs is prose with code in it, and goes stale as prose does.
 
 ## Validation
 
-Before every commit, scoped to the change (the human, 2026-11-23: "a
-change made and tested, and a release built from it, remains valid;
-package scoped tests only, with a full test every so often"):
+Change is built up in a batch, each change tested small, the batch
+closed by a larger test (the human, 2026-11-24: "the batch of change
+needs to be larger. We can do (small) single package testing where the
+change is being exercised. Build up batch of change in execute/main,
+then regularly run larger tests with main commit at the end"):
 
-- **A package that changed: its pre-release**: rebuilt, its `full` set
-  run from its bundle when its content changed, the report written into
-  `test-reports/` and committed with it. A module that changed: the
-  pre-release of the packages whose behaviour it changes, not of every
-  package that carries it. A package runs self-contained, its own copy:
-  a release built from a tested change stays valid.
-- **What the change touches end to end**: the boot's test, or the one
-  end-to-end script that covers it (`run.sh`, `splectral.sh`, ...); not
-  all of them.
+- **Each change its own commit, on a small test where it is
+  exercised**: one module's tests, or one package's pre-release
+  (rebuilt, its `full` set run from its bundle, the report written into
+  `test-reports/` and committed with it); documentation alone: the
+  READMEs' check. Not every package that carries a changed module, no
+  end-to-end script, for an edit. A package runs self-contained, its
+  own copy: a release built from a tested change stays valid.
+- **The larger test closes a batch**: when a step of a design is
+  complete, at the latest at the end of a working day: the full test of
+  a commit of the execution branch; passed whole, that commit goes to
+  `main`. `main` only ever holds a state the larger test passed. What
+  it finds is searched commit by commit, fixed forward.
+- **The larger test is run on the local machine**, by the local agent
+  (the human, 2026-11-25: "you do the quick checks here, but the long
+  test we run local"): the commit of the execution branch its prompt
+  names, every package's pre-release with it, its reports written
+  there; passed whole, the local agent merges that commit to `main`.
+  Where the work is done, the quick checks only: the small tests, and
+  one end-to-end script where a change calls for it.
 - **The full test, every so often** (overnight): every package's
   pre-release, the strict release check (every package's report
   current), the boot's test several times, every end-to-end script.
