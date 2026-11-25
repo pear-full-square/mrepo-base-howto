@@ -1,8 +1,8 @@
 {
   "package": "haiccing/base-app-haicc",
-  "content": "9322fe2786d9bfd91a7fa95acd41c7cf944d0ba2240e691ed5e75bb6a61ba678",
+  "content": "976ca7a6ce8b87e1fa23896e7a76eabbe56a54b2396cf5f711e6898bb31673b0",
   "bare": "v1.36.0",
-  "date": "2026-11-24T22:41:12.001Z",
+  "date": "2026-11-25T04:11:11.480Z",
   "set": "full",
   "ok": true,
   "units": [
@@ -92,8 +92,8 @@
         "total": 10
       },
       "asserts": {
-        "passed": 90,
-        "total": 90
+        "passed": 87,
+        "total": 87
       },
       "failures": []
     },
@@ -144,8 +144,8 @@
         "total": 21
       },
       "asserts": {
-        "passed": 264,
-        "total": 264
+        "passed": 261,
+        "total": 261
       },
       "failures": []
     },

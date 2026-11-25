@@ -1,18 +1,18 @@
 # Test report: haiccing/base-package-dispatch
 
-The package passed its `full` set: all 15 units, 92 of 92 tests and 587 of 587 asserts.
+The package passed its `full` set: all 17 units, 128 of 128 tests and 847 of 847 asserts.
 
 | | |
 |---|---|
 | Package | `haiccing/base-package-dispatch` |
 | Set | `full` |
 | Result | passed |
-| Units | 15 of 15 passed |
-| Tests | 92 of 92 passed |
-| Asserts | 587 of 587 passed |
-| Run | 2026-11-24 04:44 UTC |
+| Units | 17 of 17 passed |
+| Tests | 128 of 128 passed |
+| Asserts | 847 of 847 passed |
+| Run | 2026-11-25 04:18 UTC |
 | Bare | v1.36.0 |
-| Content | `ec0be860536875848f38291ca598716f04b591b3416b231ca34f51e3a18e054e` |
+| Content | `82f7b623a970e02a3346cecfccf4bf70102562e86588190445da47ff4e5ae989` |
 
 ## Units
 
@@ -30,8 +30,10 @@ The package passed its `full` set: all 15 units, 92 of 92 tests and 587 of 587 a
 | `/test/modules/pear-full-square/mycelium-uri` | passed | 22 of 22 | 217 of 217 |
 | `/test/modules/pear-full-square/mycelium-value-avro` | passed | 8 of 8 | 57 of 57 |
 | `/test/modules/pear-full-square/mycelium-value-json` | passed | 1 of 1 | 3 of 3 |
-| `/test/modules/pear-full-square/p2p-local` | passed | 4 of 4 | 16 of 16 |
-| `/test/modules/pear-full-square/p2p-topic` | passed | 4 of 4 | 16 of 16 |
-| `/test/modules/pear-full-square/pkgm-base-check` | passed | 24 of 24 | 72 of 72 |
+| `/test/modules/pear-full-square/mycelium-xpath` | passed | 22 of 22 | 152 of 152 |
+| `/test/modules/pear-full-square/mycelium-xpath-physical` | passed | 12 of 12 | 91 of 91 |
+| `/test/modules/pear-full-square/p2p-hypercore` | passed | 4 of 4 | 16 of 16 |
+| `/test/modules/pear-full-square/p2p-process` | passed | 4 of 4 | 16 of 16 |
+| `/test/modules/pear-full-square/pkgm-base-check` | passed | 26 of 26 | 89 of 89 |
 
 Written by the package's pre-release from `full.json`, beside it. The content is the hash of the bundle that was tested, its test reports left out.
