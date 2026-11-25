@@ -132,7 +132,7 @@ no Codeberg.
      folder (the LICENSE aside): the 34 modules and
      `base-linux-haicc` the same as `main`'s tree; the 28 other packages
      the same as the folder on disk, their assembled `modules/` included,
-     but for two folders in 16 of them,
+     but for two folders in 15 of them,
      `modules/node_modules/p2p-git/__tests__/__fixtures__/test-status/{g,h}`:
      a third-party fixture that its own `.gitignore` keeps out of git.
      Harmless.
